@@ -1,0 +1,24 @@
+@import 'tailwindcss';
+@plugin "daisyui" {
+  themes: light --default;
+}
+
+@plugin "daisyui/theme" {
+  name: 'light';
+  default: true;
+  /* Main colors for Blood Donation App */
+  --color-base-100: #fff5f5; /* subtle light red background */
+  --color-base-content: #331111; /* dark text on base */
+
+  --color-primary: #d32f2f; /* blood red for buttons/highlights */
+  --color-primary-content: #ffffff; /* text on primary */
+
+  --color-secondary: #5c6bc0; /* soft blue/purple for secondary elements */
+  --color-secondary-content: #ffffff;
+
+  --color-accent: #43a047; /* greenish accent */
+  --color-accent-content: #ffffff;
+
+  --color-error: #b71c1c; /* strong blood red for errors */
+  --color-error-content: #ffffff;
+}

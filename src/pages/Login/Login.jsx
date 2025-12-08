@@ -1,8 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router';
+import { Link, useLocation, useNavigate } from 'react-router';
+import { AuthContext } from '../../context/AuthContext';
 
 const Login = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { loginUser } = useContext(AuthContext);
+
   const {
     register,
     handleSubmit,
@@ -10,8 +15,15 @@ const Login = () => {
   } = useForm();
 
   const onSubmit = data => {
-    console.log('Login Data:', data);
-    // এখানে API call করতে পারো user authentication এর জন্য
+    loginUser(data.email, data.password)
+      .then(userCredential => {
+        console.log('Logged in user:', userCredential.user);
+        navigate(location?.state?.from || '/'); // Redirect after login
+      })
+      .catch(err => {
+        console.log(err.message);
+        alert(err.message); // simple error handling
+      });
   };
 
   return (
@@ -40,17 +52,7 @@ const Login = () => {
                 type="email"
                 {...register('email', { required: true })}
                 placeholder="Your Email"
-                className="
-                  w-full
-                  px-4 py-3
-                  rounded-xl
-                  bg-red-50 dark:bg-red-900/10
-                  border border-gray-300 dark:border-red-800/50
-                  text-gray-900 dark:text-gray-200
-                  focus:outline-none focus:border-red-500 
-                  shadow-sm hover:shadow-md
-                  transition-all duration-300
-                "
+                className="w-full px-4 py-3 rounded-xl bg-red-50 dark:bg-red-900/10 border border-gray-300 dark:border-red-800/50 text-gray-900 dark:text-gray-200 focus:outline-none focus:border-red-500 shadow-sm hover:shadow-md transition-all duration-300"
               />
               {errors.email && (
                 <p className="text-red-500 text-sm mt-1">Email is required</p>
@@ -66,17 +68,7 @@ const Login = () => {
                 type="password"
                 {...register('password', { required: true })}
                 placeholder="Your Password"
-                className="
-                  w-full
-                  px-4 py-3
-                  rounded-xl
-                  bg-red-50
-                  border border-gray-300 dark:border-red-800/50 focus:border-red-500 dark:bg-red-900/10
-                  text-gray-900 dark:text-gray-200
-                  focus:outline-none  
-                  shadow-sm hover:shadow-md
-                  transition-all duration-300
-                "
+                className="w-full px-4 py-3 rounded-xl bg-red-50 border border-gray-300 dark:border-red-800/50 focus:border-red-500 dark:bg-red-900/10 text-gray-900 dark:text-gray-200 focus:outline-none shadow-sm hover:shadow-md transition-all duration-300"
               />
               {errors.password && (
                 <p className="text-red-500 text-sm mt-1">

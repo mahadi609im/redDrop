@@ -23,6 +23,7 @@ import DonationRequestDetails from '../pages/DonationRequestDetails/DonationRequ
 import MyDonationRequestDetails from '../pages/DonationRequestDetails/DonationRequestDetails';
 import MyDonationDetails from '../pages/Dashboard/Donor/MyDonationDetails/MyDonationDetails';
 import MyDonationEdit from '../pages/Dashboard/Donor/MyDonationEdit/MyDonationEdit';
+import PrivateRoute from '../Components/PrivateRoute/PrivateRoute';
 
 const router = createBrowserRouter([
   {
@@ -69,7 +70,11 @@ const router = createBrowserRouter([
       // Profile page - everyone can access
       {
         path: 'profile',
-        element: <Profile />,
+        element: (
+          <PrivateRoute>
+            <Profile />
+          </PrivateRoute>
+        ),
       },
 
       // Donor specific pages

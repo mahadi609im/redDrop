@@ -1,14 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { NavLink, Link } from 'react-router';
 import logo from '../../assets/blood-logo.png';
+import { AuthContext } from '../../context/AuthContext';
 
 const Navbar = () => {
-  // Dummy login state
-  const [user, setUser] = useState({
-    isLoggedIn: true,
-    name: 'Maha',
-    avatar: 'https://i.pravatar.cc/40?img=3', // dummy avatar
-  });
+  const { user, logoutUser } = useContext(AuthContext);
 
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -42,8 +38,11 @@ const Navbar = () => {
   // };
 
   const handleLogout = () => {
-    console.log('User logged out');
-    setUser({ isLoggedIn: false });
+    logoutUser()
+      .then(() => {
+        alert('logout successfully');
+      })
+      .catch(err => console.log(err));
   };
 
   const publicLinks = [
@@ -124,14 +123,18 @@ const Navbar = () => {
       {/* Navbar End - Auth + Theme Toggle */}
       <div className="navbar-end flex items-center space-x-2 relative">
         {/* Auth / User Dropdown */}
-        {user.isLoggedIn ? (
+        {user ? (
           <div className="relative" ref={dropdownRef}>
             <button
               onClick={() => setOpen(!open)}
               className="btn btn-ghost btn-circle avatar"
             >
               <div className="w-10 rounded-full border-2 border-primary">
-                <img src={user.avatar} alt="User Avatar" />
+                <img
+                  referrerPolicy="no-referrer"
+                  src={user?.photoURL}
+                  alt="User Avatar"
+                />
               </div>
             </button>
 
@@ -159,7 +162,6 @@ const Navbar = () => {
                   <button
                     onClick={() => {
                       handleLogout();
-                      setOpen(false);
                     }}
                     className="w-full text-left font-medium px-3 py-2 rounded-md hover:bg-primary hover:text-white"
                   >

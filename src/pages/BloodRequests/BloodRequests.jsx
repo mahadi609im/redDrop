@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { use } from 'react';
 import { useNavigate } from 'react-router';
+import { AuthContext } from '../../context/AuthContext';
+import Loading from '../../Components/Loading/Loading';
 
 const BloodRequests = () => {
   const navigate = useNavigate();
@@ -36,6 +38,11 @@ const BloodRequests = () => {
   ];
 
   const pendingRequests = dummyRequests.filter(req => req.status === 'pending');
+
+  const { loading } = use(AuthContext);
+  if (loading) {
+    return <Loading></Loading>;
+  }
 
   return (
     <section

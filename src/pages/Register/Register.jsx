@@ -1,12 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
+import { AuthContext } from '../../context/AuthContext';
+import axios from 'axios';
 
 const Register = () => {
   const [districts, setDistricts] = useState([]);
   const [upazilas, setUpazilas] = useState([]);
   const [selectedDistrict, setSelectedDistrict] = useState('');
+  const { registerUser, updateUserProfile } = useContext(AuthContext);
+  const navigate = useNavigate('/');
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -28,10 +32,9 @@ const Register = () => {
   }, []);
 
   const filteredUpazilas = upazilas.filter(u => {
-    // Name থেকে district object খুঁজে বের করা
     const districtObj = districts.find(d => d.name === selectedDistrict);
-    if (!districtObj) return false; // যদি district name না মিলে
-    return u.district_id === districtObj.id; // id match হলে true
+    if (!districtObj) return false;
+    return u.district_id === districtObj.id;
   });
 
   const handleRegister = data => {
@@ -39,7 +42,8 @@ const Register = () => {
       alert('Passwords do not match!');
       return;
     }
-    const profilePhoto = data.photo[0];
+    console.log(data);
+    const profilePhoto = data.profilePhoto[0];
 
     registerUser(data.email, data.password)
       .then(() => {
@@ -59,7 +63,10 @@ const Register = () => {
           };
 
           updateUserProfile(updateProfile)
-            .then(result => console.log(result))
+            .then(result => {
+              console.log(result);
+              navigate('/');
+            })
             .catch(error => console.log(error));
         });
       })
@@ -84,18 +91,20 @@ const Register = () => {
             onSubmit={handleSubmit(handleRegister)}
             className="grid grid-cols-1 md:grid-cols-2 gap-6"
           >
-            {/* Avatar */}
+            {/* profilePhoto */}
             <div>
               <label className="block mb-1 font-medium text-gray-700 dark:text-gray-300">
-                Avatar
+                profilePhoto
               </label>
               <input
                 type="file"
-                {...register('avatar', { required: true })}
+                {...register('profilePhoto', { required: true })}
                 className="block w-full cursor-pointer text-sm file:px-4 file:py-2 file:border file:rounded-xl file:border-red-400 file:bg-red-50 dark:file:bg-red-900/10 file:text-red-700 dark:file:text-red-400 text-white file:shadow-md hover:file:bg-red-100 transition-all"
               />
-              {errors.avatar && (
-                <p className="text-red-500 text-sm mt-1">Avatar is required</p>
+              {errors.profilePhoto && (
+                <p className="text-red-500 text-sm mt-1">
+                  profilePhoto is required
+                </p>
               )}
             </div>
 

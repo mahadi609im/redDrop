@@ -1,17 +1,10 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import { AuthContext } from '../../../../context/AuthContext';
 
 const Profile = () => {
   const [editMode, setEditMode] = useState(false);
 
-  // Dummy user data (replace with real user from context or API)
-  const user = {
-    name: 'Jhon Doe',
-    email: 'jhon@example.com',
-    bloodGroup: 'A+',
-    district: 'Dhaka',
-    upazila: 'Mirpur',
-    avatar: 'https://i.ibb.co/3T8v6YH/user.png',
-  };
+  const { user } = useContext(AuthContext);
 
   return (
     <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-md p-6 border border-red-100">
@@ -39,8 +32,9 @@ const Profile = () => {
       {/* Avatar */}
       <div className="flex justify-center mb-6">
         <img
-          src={user.avatar}
+          src={user.photoURL}
           alt="avatar"
+          referrerPolicy="no-referrer"
           className="w-28 h-28 rounded-full border-4 border-red-200 shadow"
         />
       </div>
@@ -52,7 +46,7 @@ const Profile = () => {
           <label className="font-medium text-gray-600">Full Name</label>
           <input
             type="text"
-            defaultValue={user.name}
+            defaultValue={user.displayName}
             disabled={!editMode}
             className="w-full mt-1 px-3 py-2 border rounded-lg dark:border-red-800/50 focus:border-red-500 dark:bg-red-900/10 disabled:cursor-not-allowed focus:outline-none"
           />

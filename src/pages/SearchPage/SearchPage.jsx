@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
+import { AuthContext } from '../../context/AuthContext';
+import Loading from '../../Components/Loading/Loading';
 
 const dummyDonors = [
   {
@@ -67,6 +69,11 @@ const SearchPage = () => {
       .then(res => res.json())
       .then(data => setUpazilas(data));
   }, []);
+
+  const { loading } = use(AuthContext);
+  if (!loading) {
+    return <Loading></Loading>;
+  }
 
   const filteredUpazilas = upazilas.filter(u => u.district_id === district);
 

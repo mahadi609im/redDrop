@@ -42,7 +42,6 @@ const Register = () => {
       alert('Passwords do not match!');
       return;
     }
-    console.log(data);
     const profilePhoto = data.profilePhoto[0];
 
     registerUser(data.email, data.password)

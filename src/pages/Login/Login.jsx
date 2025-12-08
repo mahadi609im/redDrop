@@ -7,6 +7,7 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { loginUser } = useContext(AuthContext);
+  console.log(location);
 
   const {
     register,
@@ -18,7 +19,7 @@ const Login = () => {
     loginUser(data.email, data.password)
       .then(userCredential => {
         console.log('Logged in user:', userCredential.user);
-        navigate(location?.state?.from || '/'); // Redirect after login
+        navigate(location?.state || '/'); // Redirect after login
       })
       .catch(err => {
         console.log(err.message);

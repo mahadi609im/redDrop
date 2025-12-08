@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router';
+import React, { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import Swal from 'sweetalert2';
+import useAxiosSecure from '../../../../hooks/useAxiosSecure';
+import { AuthContext } from '../../../../context/AuthContext';
 
 // Example logged-in user
 const loggedInUser = {
@@ -14,10 +16,11 @@ const loggedInUser = {
 const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
 const CreateDonationRequest = () => {
-  const navigate = useNavigate();
   const [districts, setDistricts] = useState([]);
   const [upazilas, setUpazilas] = useState([]);
   const [selectedDistrict, setSelectedDistrict] = useState('');
+  const axiosSecure = useAxiosSecure();
+  const { user } = useContext(AuthContext);
 
   // Load JSON data
   useEffect(() => {
@@ -33,9 +36,11 @@ const CreateDonationRequest = () => {
   }, []);
 
   // Filter Upazilas based on selected district
-  const filteredUpazilas = upazilas.filter(
-    u => u.district_id.toString() === selectedDistrict
-  );
+  const filteredUpazilas = upazilas.filter(u => {
+    const districtObj = districts.find(d => d.name === selectedDistrict);
+    if (!districtObj) return false;
+    return u.district_id === districtObj.id;
+  });
 
   const {
     register,
@@ -51,11 +56,20 @@ const CreateDonationRequest = () => {
     );
   }
 
-  const onSubmit = data => {
+  const handleCreateRequest = data => {
     const requestData = { ...data, status: 'pending' };
-    console.log('Donation Request Submitted:', requestData);
-    alert('Donation request created successfully!');
-    navigate('/dashboard');
+
+    axiosSecure.post('/donationRequests', requestData).then(res => {
+      if (res.data.insertedId) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Request Created!',
+          text: 'Your blood donation request has been submitted successfully.',
+          timer: 2000,
+          showConfirmButton: false,
+        });
+      }
+    });
   };
 
   return (
@@ -66,7 +80,7 @@ const CreateDonationRequest = () => {
         </h1>
 
         <form
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(handleCreateRequest)}
           className="grid grid-cols-1 md:grid-cols-2 gap-6"
         >
           {/* Requester Name */}
@@ -76,7 +90,8 @@ const CreateDonationRequest = () => {
             </label>
             <input
               type="text"
-              value={loggedInUser.name}
+              value={user?.displayName}
+              {...register('requesterName', { required: true })}
               readOnly
               className="cursor-not-allowed w-full px-4 py-3 rounded-xl bg-red-300 dark:bg-red-500/10
                 border border-gray-300 dark:border-red-800/50
@@ -92,8 +107,9 @@ const CreateDonationRequest = () => {
             </label>
             <input
               type="email"
-              value={loggedInUser.email}
+              defaultValue={user?.email}
               readOnly
+              {...register('requesterEmail', { required: true })}
               className="cursor-not-allowed w-full px-4 py-3 rounded-xl bg-red-300 dark:bg-red-500/10
                 border border-gray-300 dark:border-red-800/50
                 text-gray-900 dark:text-gray-500
@@ -159,7 +175,7 @@ const CreateDonationRequest = () => {
             >
               <option value="">Select District</option>
               {districts.map(d => (
-                <option key={d.id} value={d.id}>
+                <option key={d.id} value={d.name}>
                   {d.name}
                 </option>
               ))}

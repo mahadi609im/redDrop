@@ -37,6 +37,7 @@ const router = createBrowserRouter([
       {
         path: '/register',
         element: <Register />,
+        loader: () => fetch('/district.json').then(res => res.json()),
       },
       {
         path: '/login',
@@ -52,7 +53,11 @@ const router = createBrowserRouter([
       },
       {
         path: '/blood-details/:id',
-        element: <DonationRequestDetails></DonationRequestDetails>,
+        element: (
+          <PrivateRoute>
+            <DonationRequestDetails></DonationRequestDetails>
+          </PrivateRoute>
+        ),
       },
     ],
   },
@@ -84,7 +89,11 @@ const router = createBrowserRouter([
       },
       {
         path: 'donation-details/:id',
-        element: <MyDonationDetails></MyDonationDetails>,
+        element: (
+          <PrivateRoute>
+            <MyDonationDetails></MyDonationDetails>
+          </PrivateRoute>
+        ),
       },
       {
         path: 'edit-donation/:id',

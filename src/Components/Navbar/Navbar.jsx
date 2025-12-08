@@ -139,7 +139,7 @@ const Navbar = () => {
             </button>
 
             {open && (
-              <ul className="absolute right-0 mt-2 w-48 p-2 shadow-lg rounded-xl backdrop-blur-md bg-white/90 border border-gray-200 z-50 menu menu-compact translate-x-1/2">
+              <ul className="absolute right-0 mt-2 w-48 p-2 shadow-lg rounded-xl backdrop-blur-md bg-white/90 border border-gray-200 z-50 menu menu-compact ">
                 <li>
                   <Link
                     to="/dashboard/profile"
@@ -192,15 +192,12 @@ const Navbar = () => {
           </ul>
         )}
 
-        {/* Theme Toggle
-        <button
-          onClick={handleThemeToggle}
-          className="btn btn-circle bg-primary hover:bg-red-700 text-white ml-2"
-        >
+        {/* Theme Toggle */}
+        <button className="btn btn-circle bg-primary hover:bg-red-700 text-white ml-2">
           <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
             <path d="M10 2a.75.75 0 01.75.75V4a.75.75 0 01-1.5 0V2.75A.75.75 0 0110 2zm0 14a.75.75 0 01.75.75V18a.75.75 0 01-1.5 0v-1.25A.75.75 0 0110 16zm8-6a.75.75 0 01.75.75H18a.75.75 0 010-1.5h1.25A.75.75 0 0118 10zm-14 0a.75.75 0 01.75.75H4a.75.75 0 010-1.5h1.25A.75.75 0 014 10zm11.657-5.657a.75.75 0 011.06 1.06l-.884.884a.75.75 0 11-1.06-1.06l.884-.884zm-9.9 9.9a.75.75 0 011.06 1.06l-.884.884a.75.75 0 11-1.06-1.06l.884-.884zm0-9.9l.884.884a.75.75 0 11-1.06 1.06l-.884-.884a.75.75 0 111.06-1.06zm9.9 9.9l.884.884a.75.75 0 11-1.06 1.06l-.884-.884a.75.75 0 111.06-1.06z" />
           </svg>
-        </button> */}
+        </button>
       </div>
     </div>
   );

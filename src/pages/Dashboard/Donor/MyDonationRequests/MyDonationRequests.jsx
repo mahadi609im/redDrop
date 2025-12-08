@@ -1,56 +1,27 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { FaCheck, FaTimes, FaEdit, FaTrash, FaEye } from 'react-icons/fa';
-
-const dummyRequests = [
-  {
-    id: 'req001',
-    recipientName: 'Rahim Uddin',
-    district: 'Dhaka',
-    upazila: 'Uttara',
-    hospital: 'Dhaka Medical College Hospital',
-    address: 'Zahir Raihan Rd, Dhaka',
-    date: '2025-12-10',
-    time: '10:00 AM',
-    bloodGroup: 'A+',
-    status: 'inprogress',
-    donor: { name: 'Maha Hasan', email: 'maha@example.com' },
-    message: 'Urgent need of blood for surgery',
-  },
-  {
-    id: 'req002',
-    recipientName: 'Karim Ahmed',
-    district: 'Chattogram',
-    upazila: 'Pahartali',
-    hospital: 'Chattogram Medical College Hospital',
-    address: 'O.R. Nizam Rd, Chattogram',
-    date: '2025-12-12',
-    time: '02:00 PM',
-    bloodGroup: 'B-',
-    status: 'pending',
-    donor: { name: 'Maha Hasan', email: 'maha@example.com' },
-    message: 'Need blood for accident patient',
-  },
-  {
-    id: 'req003',
-    recipientName: 'Sonia Rahman',
-    district: 'Khulna',
-    upazila: 'Sonadanga',
-    hospital: 'Khulna Medical College Hospital',
-    address: 'Jashore Rd, Khulna',
-    date: '2025-12-15',
-    time: '11:00 AM',
-    bloodGroup: 'O+',
-    status: 'done',
-    donor: { name: 'Maha Hasan', email: 'maha@example.com' },
-    message: 'Scheduled blood donation',
-  },
-];
+import { AuthContext } from '../../../../context/AuthContext';
+import useAxiosSecure from '../../../../hooks/useAxiosSecure';
+import { useQuery } from '@tanstack/react-query';
 
 const MyDonationRequests = () => {
   const navigate = useNavigate();
-  const [requests, setRequests] = useState(dummyRequests);
   const [filterStatus, setFilterStatus] = useState('all');
+
+  const { user } = useContext(AuthContext);
+  const axiosSecure = useAxiosSecure();
+
+  const { data: requests = [] } = useQuery({
+    queryKey: ['myParcels', user?.email],
+    queryFn: async () => {
+      const res = await axiosSecure.get(
+        `/donationRequests?email=${user.email}`
+      );
+      console.log(res.data);
+      return res.data;
+    },
+  });
 
   // Pagination setup
   const [currentPage, setCurrentPage] = useState(1);
@@ -66,17 +37,17 @@ const MyDonationRequests = () => {
     currentPage * itemsPerPage
   );
 
-  const handleDelete = id => {
-    if (window.confirm('Are you sure to delete this donation request?')) {
-      setRequests(requests.filter(r => r.id !== id));
-    }
-  };
+  // const handleDelete = id => {
+  //   if (window.confirm('Are you sure to delete this donation request?')) {
+  //     setRequests(requests.filter(r => r.id !== id));
+  //   }
+  // };
 
-  const handleStatusChange = (id, newStatus) => {
-    setRequests(
-      requests.map(r => (r.id === id ? { ...r, status: newStatus } : r))
-    );
-  };
+  // const handleStatusChange = (id, newStatus) => {
+  //   setRequests(
+  //     requests.map(r => (r.id === id ? { ...r, status: newStatus } : r))
+  //   );
+  // };
 
   return (
     <section className="min-h-screen bg-red-50 py-20">
@@ -140,7 +111,7 @@ const MyDonationRequests = () => {
                     </span>
                   </td>
                   <td className="px-4 py-3 text-gray-700 whitespace-nowrap">
-                    {req.date} | {req.time}
+                    {req.donationDate} | {req.donationTime}
                   </td>
                   <td className="px-4 py-3 whitespace-nowrap">
                     {req.status === 'done' ? (
@@ -162,21 +133,23 @@ const MyDonationRequests = () => {
                     )}
                   </td>
                   <td className="px-4 py-3 text-gray-700 whitespace-nowrap">
-                    {req.donor ? `${req.donor.name} (${req.donor.email})` : '-'}
+                    {req.status === 'inprogress'
+                      ? `${req.donor?.name} (${req.donor?.email})`
+                      : '-'}
                   </td>
                   <td className="px-4 py-3 flex flex-nowrap gap-1 justify-center items-center">
                     {/* Status buttons only for inprogress */}
                     {req.status === 'inprogress' && (
                       <>
                         <button
-                          onClick={() => handleStatusChange(req.id, 'done')}
+                          // onClick={() => handleStatusChange(req.id, 'done')}
                           className="p-2 rounded-full border border-green-700 bg-green-700/30 text-green-700 shadow hover:bg-green-700/50 transition"
                           title="Mark Done"
                         >
                           <FaCheck />
                         </button>
                         <button
-                          onClick={() => handleStatusChange(req.id, 'canceled')}
+                          // onClick={() => handleStatusChange(req.id, 'canceled')}
                           className="p-2 rounded-full border border-red-700 bg-red-700/30 text-red-700 shadow hover:bg-red-700/50 transition"
                           title="Mark Canceled"
                         >
@@ -187,7 +160,7 @@ const MyDonationRequests = () => {
 
                     {/* Delete */}
                     <button
-                      onClick={() => handleDelete(req.id)}
+                      // onClick={() => handleDelete(req.id)}
                       className="p-2 rounded-full border border-red-600 bg-red-600/30 text-red-500 shadow hover:bg-red-600/50 transition"
                       title="Delete Request"
                     >

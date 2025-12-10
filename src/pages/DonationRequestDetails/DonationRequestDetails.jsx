@@ -1,28 +1,52 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
+import { useLoaderData, useParams } from 'react-router';
+import { AuthContext } from '../../context/AuthContext';
+import useAxiosSecure from '../../hooks/useAxiosSecure';
+import Swal from 'sweetalert2';
+// import useAxiosSecure from '../../hooks/useAxiosSecure';
+// import { useParams } from 'react-router';
 
 const DonationRequestDetails = () => {
-  const requestData = {
-    id: 'req001',
-    requesterName: 'Maha Hasan',
-    requesterEmail: 'maha@example.com',
-    recipientName: 'Rahim Uddin',
-    district: 'Dhaka',
-    upazila: 'Savar',
-    hospital: 'Dhaka Medical College Hospital',
-    address: 'Zahir Raihan Rd, Dhaka',
-    blood: 'A+',
-    donationDate: '2025-12-15',
-    donationTime: '14:30',
-    message: 'Urgent need of blood for surgery',
-    status: 'pending',
-  };
+  const { id } = useParams();
+  console.log(id);
+  const { user } = useContext(AuthContext);
+
+  const requestData = useLoaderData();
+  console.log(requestData);
 
   const [status, setStatus] = useState(requestData.status);
   const [showModal, setShowModal] = useState(false);
+  const axiosSecure = useAxiosSecure();
 
-  const handleConfirmDonation = () => {
-    setStatus('inprogress');
-    setShowModal(false);
+  const statusColor = {
+    pending:
+      'px-2 py-1 rounded-full text-sm font-semibold bg-yellow-100 text-yellow-800 capitalize',
+    inprogress:
+      'px-2 py-1 rounded-full text-sm font-semibold bg-blue-100 text-blue-800 capitalize',
+    done: 'px-2 py-1 rounded-full text-sm font-semibold bg-green-100 text-green-800 capitalize',
+    canceled:
+      'px-2 py-1 rounded-full text-sm font-semibold bg-red-100 text-red-800 capitalize',
+  };
+
+  const handleConfirmDonation = async () => {
+    const donorInfo = {
+      name: user?.displayName,
+      email: user?.email,
+    };
+    try {
+      const res = await axiosSecure.patch(`/donationRequests/${id}/status`, {
+        status: 'inprogress',
+        donor: donorInfo,
+      });
+      if (res.data.modifiedCount) {
+        setStatus('inprogress');
+        setShowModal(false);
+        Swal.fire('Updated!', `Status changed to inprogress`, 'success');
+      }
+    } catch (err) {
+      console.error(err);
+      Swal.fire('Error!', 'Something went wrong', 'error');
+    }
   };
 
   return (
@@ -57,11 +81,11 @@ const DonationRequestDetails = () => {
               </p>
               <p>
                 <span className="font-semibold text-red-100">Hospital:</span>{' '}
-                {requestData.hospital}
+                {requestData.hospitalName}
               </p>
               <p>
                 <span className="font-semibold text-red-100">Address:</span>{' '}
-                {requestData.address}
+                {requestData.fullAddress}
               </p>
             </div>
 
@@ -76,7 +100,7 @@ const DonationRequestDetails = () => {
               <p>
                 <span className="font-semibold text-red-100">Blood Group:</span>{' '}
                 <span className="inline-block px-4 py-1 rounded-full font-bold bg-red-600 text-white shadow-[0_4px_15px_rgba(255,0,0,0.3)]">
-                  {requestData.blood}
+                  {requestData.bloodGroup}
                 </span>
               </p>
               <p>
@@ -93,17 +117,11 @@ const DonationRequestDetails = () => {
               </p>
               <p>
                 <span className="font-semibold text-red-100">Message:</span>{' '}
-                {requestData.message}
+                {requestData.requestMessage}
               </p>
               <p>
                 <span className="font-semibold text-red-100">Status:</span>{' '}
-                <span
-                  className={`${
-                    status === 'pending' ? 'text-yellow-500' : 'text-green-500'
-                  } font-semibold text-red-100`}
-                >
-                  {status}
-                </span>
+                <span className={statusColor[status]}>{status}</span>
               </p>
             </div>
           </div>

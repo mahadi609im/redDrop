@@ -1,57 +1,11 @@
-import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router';
 import { FaCheck, FaTimes, FaEdit, FaTrash, FaEye } from 'react-icons/fa';
-
-const user = {
-  name: 'Maha',
-  email: 'maha@example.com',
-  role: 'donor',
-};
-
-const dummyRequests = [
-  {
-    id: 'req001',
-    recipientName: 'Rahim Uddin',
-    district: 'Dhaka',
-    upazila: 'Uttara',
-    hospital: 'Dhaka Medical College Hospital',
-    address: 'Zahir Raihan Rd, Dhaka',
-    date: '2025-12-10',
-    time: '10:00 AM',
-    bloodGroup: 'A+',
-    status: 'inprogress',
-    donor: { name: 'Maha Hasan', email: 'maha@example.com' },
-    message: 'Urgent need of blood for surgery',
-  },
-  {
-    id: 'req002',
-    recipientName: 'Karim Ahmed',
-    district: 'Chattogram',
-    upazila: 'Pahartali',
-    hospital: 'Chattogram Medical College Hospital',
-    address: 'O.R. Nizam Rd, Chattogram',
-    date: '2025-12-12',
-    time: '02:00 PM',
-    bloodGroup: 'B-',
-    status: 'pending',
-    donor: { name: 'Maha Hasan', email: 'maha@example.com' },
-    message: 'Need blood for accident patient',
-  },
-  {
-    id: 'req003',
-    recipientName: 'Sonia Rahman',
-    district: 'Khulna',
-    upazila: 'Sonadanga',
-    hospital: 'Khulna Medical College Hospital',
-    address: 'Jashore Rd, Khulna',
-    date: '2025-12-15',
-    time: '11:00 AM',
-    bloodGroup: 'O+',
-    status: 'done',
-    donor: { name: 'Maha Hasan', email: 'maha@example.com' },
-    message: 'Scheduled blood donation',
-  },
-];
+import useAxiosSecure from '../../../../hooks/useAxiosSecure';
+import { useQuery } from '@tanstack/react-query';
+import Swal from 'sweetalert2';
+import { use, useContext } from 'react';
+import { AuthContext } from '../../../../context/AuthContext';
+import Loading from '../../../../Components/Loading/Loading';
 
 const statusColor = {
   pending:
@@ -65,38 +19,60 @@ const statusColor = {
 
 const DonorHome = () => {
   const navigate = useNavigate();
-  const [requests, setRequests] = useState(dummyRequests);
+  const { user } = useContext(AuthContext);
 
-  const handleDelete = id => {
-    const requestToDelete = requests.find(r => r.id === id);
-    if (!requestToDelete) return;
+  const axiosSecure = useAxiosSecure();
 
-    const confirmDelete = window.confirm(
-      `Are you sure you want to delete the donation request for ${requestToDelete.recipientName}?`
-    );
+  const { data: requests = [], refetch } = useQuery({
+    queryKey: ['myParcels', user?.email],
+    queryFn: async () => {
+      const res = await axiosSecure.get(
+        `/donationRequests?email=${user.email}`
+      );
+      console.log(res.data);
+      return res.data;
+    },
+  });
 
-    if (confirmDelete) {
-      // Remove the request from state
-      const updatedRequests = requests.filter(r => r.id !== id);
-      setRequests(updatedRequests);
-    }
-  };
-
-  const handleStatusChange = (id, newStatus) => {
-    setRequests(
-      requests.map(r => (r.id === id ? { ...r, status: newStatus } : r))
-    );
+  const handleRequestDelete = id => {
+    Swal.fire({
+      title: 'Are you sure ?',
+      text: `Please confirm to delete this request`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Delete',
+    }).then(result => {
+      if (result.isConfirmed) {
+        axiosSecure.delete(`/donationRequests/${id}`).then(res => {
+          console.log(res.data);
+          if (res.data.deletedCount) {
+            refetch();
+            Swal.fire({
+              title: 'Deleted!',
+              text: 'Your Request has been deleted.',
+              icon: 'success',
+            });
+          }
+        });
+      }
+    });
   };
 
   // Limit to maximum 3 recent requests
   const recentRequests = requests.slice(0, 3);
+  const { loading } = use(AuthContext);
+  if (loading) {
+    return <Loading></Loading>;
+  }
 
   return (
     <section className="min-h-screen bg-red-50 py-20 px-0 md:px-10 lg:px-20">
       {/* Header */}
       <div className="text-center mb-14">
         <h1 className="text-4xl md:text-5xl font-bold text-red-700">
-          Welcome, {user?.name} 👋
+          Welcome, {user?.displayName} 👋
         </h1>
         <p className="text-gray-700 max-w-xl mx-auto mt-3">
           Here are your recent donation requests.
@@ -146,7 +122,7 @@ const DonorHome = () => {
                     </span>
                   </td>
                   <td className="px-4 py-3 text-gray-700 whitespace-nowrap">
-                    {req.date} | {req.time}
+                    {req.donationDate} | {req.donationTime}
                   </td>
                   <td className="px-4 py-3 whitespace-nowrap">
                     <span className={statusColor[req.status]}>
@@ -163,14 +139,12 @@ const DonorHome = () => {
                     {req.status === 'inprogress' && (
                       <>
                         <button
-                          onClick={() => handleStatusChange(req.id, 'done')}
                           className="p-2 rounded-full border border-green-700 bg-green-700/30 text-green-700 shadow hover:bg-green-700/50 transition"
                           title="Mark Done"
                         >
                           <FaCheck />
                         </button>
                         <button
-                          onClick={() => handleStatusChange(req.id, 'canceled')}
                           className="p-2 rounded-full border border-red-700 bg-red-700/30 text-red-700 shadow hover:bg-red-700/50 transition"
                           title="Mark Canceled"
                         >
@@ -193,7 +167,7 @@ const DonorHome = () => {
 
                     {/* Delete button for all statuses */}
                     <button
-                      onClick={() => handleDelete(req.id)}
+                      onClick={() => handleRequestDelete(req._id)}
                       className="p-2 rounded-full border border-red-600 bg-red-600/30 text-red-500 shadow hover:bg-red-600/50 transition"
                       title="Delete Request"
                     >
@@ -203,7 +177,7 @@ const DonorHome = () => {
                     {/* View button  */}
                     <button
                       onClick={() =>
-                        navigate(`/dashboard/donation-details/${req.id}`)
+                        navigate(`/dashboard/donation-details/${req._id}`)
                       }
                       className="p-2 rounded-full border border-blue-600 bg-blue-600/30 text-blue-700 shadow hover:bg-blue-600/50 transition"
                       title="View Details"

@@ -131,9 +131,9 @@ const Navbar = () => {
             >
               <div className="w-10 rounded-full border-2 border-primary">
                 <img
-                  referrerPolicy="no-referrer"
                   src={user?.photoURL}
                   alt="User Avatar"
+                  referrerPolicy="no-referrer"
                 />
               </div>
             </button>

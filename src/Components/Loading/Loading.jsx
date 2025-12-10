@@ -3,7 +3,7 @@ import logo from '../../assets/blood-logo.png';
 
 const Loading = () => {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-linear-to-b from-red-50 to-white dark:from-[#1a0c0c] dark:to-black">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-linear-to-b from-red-50 to-white dark:from-[#1a0c0c] dark:to-black rounded-2xl">
       {/* Glowing Ring */}
       <div className="relative flex items-center justify-center">
         <div className="absolute w-28 h-28 rounded-full bg-red-600/20 blur-2xl animate-pulse"></div>

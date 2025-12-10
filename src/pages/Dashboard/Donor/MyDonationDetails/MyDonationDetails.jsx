@@ -1,24 +1,14 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router';
+import { useLoaderData, useNavigate, useParams } from 'react-router';
 import { FaEdit, FaTrash, FaArrowLeft, FaCheck, FaTimes } from 'react-icons/fa';
 
 const MyDonationDetails = () => {
   const navigate = useNavigate();
 
-  const requestData = {
-    id: 'req001',
-    recipientName: 'Rahim Uddin',
-    district: 'Dhaka',
-    upazila: 'Uttara',
-    hospital: 'Dhaka Medical College Hospital',
-    address: 'Zahir Raihan Rd, Dhaka',
-    date: '2025-12-10',
-    time: '10:00 AM',
-    bloodGroup: 'A+',
-    status: 'inprogress',
-    donor: { name: 'Maha Hasan', email: 'maha@example.com' },
-    message: 'Urgent need of blood for surgery',
-  };
+  const { id } = useParams();
+  console.log(id);
+
+  const requestData = useLoaderData();
 
   const [status, setStatus] = useState(requestData.status);
 
@@ -69,6 +59,18 @@ const MyDonationDetails = () => {
               {requestData.recipientName}
             </p>
             <p>
+              <span className="font-semibold text-red-600">
+                Requester Name:
+              </span>{' '}
+              {requestData.requesterName}
+            </p>
+            <p>
+              <span className="font-semibold text-red-600">
+                Requester Email:
+              </span>{' '}
+              {requestData.requesterEmail}
+            </p>
+            <p>
               <span className="font-semibold text-red-600">District:</span>{' '}
               {requestData.district}
             </p>
@@ -78,11 +80,7 @@ const MyDonationDetails = () => {
             </p>
             <p>
               <span className="font-semibold text-red-600">Hospital:</span>{' '}
-              {requestData.hospital}
-            </p>
-            <p>
-              <span className="font-semibold text-red-600">Address:</span>{' '}
-              {requestData.address}
+              {requestData.hospitalName}
             </p>
           </div>
 
@@ -101,15 +99,19 @@ const MyDonationDetails = () => {
             </p>
             <p>
               <span className="font-semibold text-red-600">Donation Date:</span>{' '}
-              {requestData.date}
+              {requestData.donationDate}
             </p>
             <p>
               <span className="font-semibold text-red-600">Donation Time:</span>{' '}
-              {requestData.time}
+              {requestData.donationTime}
             </p>
             <p>
               <span className="font-semibold text-red-600">Message:</span>{' '}
-              {requestData.message}
+              {requestData.requestMessage}
+            </p>
+            <p>
+              <span className="font-semibold text-red-600">Address:</span>{' '}
+              {requestData.fullAddress}
             </p>
             <p className="space-x-2">
               <span className="font-semibold text-red-600">Status:</span>{' '}

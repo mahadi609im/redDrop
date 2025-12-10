@@ -58,6 +58,8 @@ const router = createBrowserRouter([
             <DonationRequestDetails></DonationRequestDetails>
           </PrivateRoute>
         ),
+        loader: ({ params }) =>
+          fetch(`http://localhost:3000/donationRequests/${params.id}`),
       },
     ],
   },
@@ -94,10 +96,14 @@ const router = createBrowserRouter([
             <MyDonationDetails></MyDonationDetails>
           </PrivateRoute>
         ),
+        loader: ({ params }) =>
+          fetch(`http://localhost:3000/donationRequests/${params.id}`),
       },
       {
         path: 'edit-donation/:id',
         element: <MyDonationEdit></MyDonationEdit>,
+        loader: ({ params }) =>
+          fetch(`http://localhost:3000/donationRequests/${params.id}`),
       },
       {
         path: 'create-donation-request',

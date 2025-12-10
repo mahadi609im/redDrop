@@ -1,20 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router';
+import { useLoaderData, useNavigate, useParams } from 'react-router';
 import { useForm } from 'react-hook-form';
-
-// Example prefilled donation request data
-const exampleRequest = {
-  id: 'req001',
-  recipientName: 'Rahim Uddin',
-  district: 'Dhaka',
-  upazila: 'Uttara',
-  hospital: 'Dhaka Medical College Hospital',
-  address: 'Zahir Raihan Rd, Dhaka',
-  date: '2025-12-10',
-  time: '10:00',
-  bloodGroup: 'A+',
-  message: 'Urgent need of blood for surgery',
-};
+import useAxiosSecure from '../../../../hooks/useAxiosSecure';
 
 const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
@@ -22,51 +9,72 @@ const MyDonationEdit = () => {
   const navigate = useNavigate();
   const [districts, setDistricts] = useState([]);
   const [upazilas, setUpazilas] = useState([]);
-  const [selectedDistrict, setSelectedDistrict] = useState(
-    exampleRequest.district
-  );
-  console.log(selectedDistrict);
 
   // Load districts & upazilas (you can replace with actual JSON)
   useEffect(() => {
-    fetch('/district.json')
-      .then(res => res.json())
-      .then(data => setDistricts(data))
-      .catch(err => console.error(err));
+    const loadData = async () => {
+      try {
+        const districtRes = await fetch('/district.json');
+        const districtData = await districtRes.json();
+        setDistricts(districtData);
 
-    fetch('/upazilas.json')
-      .then(res => res.json())
-      .then(data => setUpazilas(data))
-      .catch(err => console.error(err));
+        const upazilaRes = await fetch('/upazilas.json');
+        const upazilaData = await upazilaRes.json();
+        setUpazilas(upazilaData);
+      } catch (error) {
+        console.error('Error loading JSON files:', error);
+      }
+    };
+
+    loadData();
   }, []);
 
-  // Filter upazilas based on selected district
-  const filteredUpazilas = upazilas.filter(
-    u => u.district_id.toString() === selectedDistrict
-  );
+  const district = districts.map(d => d.name);
+
+  const requestData = useLoaderData();
+  const axiosSecure = useAxiosSecure();
 
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
+    reset,
   } = useForm({
-    defaultValues: {
-      recipientName: exampleRequest.recipientName,
-      hospital: exampleRequest.hospital,
-      district: exampleRequest.district,
-      upazila: exampleRequest.upazila,
-      fullAddress: exampleRequest.address,
-      bloodGroup: exampleRequest.bloodGroup,
-      donationDate: exampleRequest.date,
-      donationTime: exampleRequest.time,
-      requestMessage: exampleRequest.message,
-    },
+    defaultValues: requestData,
   });
 
-  const onSubmit = data => {
-    console.log('Updated Donation Request:', data);
-    alert('Donation request updated successfully!');
-    navigate('/dashboard');
+  const donorUpazilas = watch('district');
+
+  // Filter upazilas based on selected district
+  const upazilaByDistricts = district => {
+    const districtObj = districts.find(d => d.name === district);
+    const districtId = districtObj?.id;
+    const districtUpazilas = upazilas.filter(d => d.district_id === districtId);
+    const upazila = districtUpazilas.map(u => u.name);
+    return upazila;
+  };
+
+  const { id } = useParams();
+  console.log(id);
+
+  const handleEditDonationRequests = async data => {
+    try {
+      const res = await axiosSecure.patch(`/donationRequests/${id}`, data);
+      console.log(res.data);
+      if (res.data.modifiedCount > 0) {
+        alert('Donation request updated successfully!');
+        reset();
+        navigate('/dashboard/my-donation-requests');
+        console.log(res.data);
+      } else {
+        alert('No changes detected.');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Something went wrong while updating.');
+    }
+    console.log(data);
   };
 
   return (
@@ -77,7 +85,7 @@ const MyDonationEdit = () => {
         </h1>
 
         <form
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(handleEditDonationRequests)}
           className="grid grid-cols-1 md:grid-cols-2 gap-6"
         >
           {/* Recipient Name */}
@@ -104,10 +112,10 @@ const MyDonationEdit = () => {
             </label>
             <input
               type="text"
-              {...register('hospital', { required: true })}
+              {...register('hospitalName', { required: true })}
               className="w-full px-4 py-3 rounded-xl bg-red-300 dark:bg-red-500/10 border border-gray-300 dark:border-red-800/50 text-gray-900 dark:text-gray-500 focus:outline-none focus:border-red-500"
             />
-            {errors.hospital && (
+            {errors.hospitalName && (
               <p className="text-red-500 text-sm mt-1">
                 Hospital name is required
               </p>
@@ -121,14 +129,13 @@ const MyDonationEdit = () => {
             </label>
             <select
               {...register('district', { required: true })}
-              value={selectedDistrict}
-              onChange={e => setSelectedDistrict(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl bg-red-300 dark:bg-red-500/10 border border-gray-300 dark:border-red-800/50 text-gray-900 dark:text-gray-500 focus:outline-none focus:border-red-500"
+              defaultValue="Pick a district"
+              className="select w-full px-4 py-3 rounded-xl bg-red-300 dark:bg-red-200 border border-gray-300 dark:border-red-800 text-gray-900 dark:text-gray-700 focus:outline-none focus:border-red-500"
             >
-              <option value="">Select District</option>
-              {districts.map(d => (
-                <option key={d.id} value={d.id}>
-                  {d.name}
+              <option disabled={true}>Pick a district</option>
+              {district.map((d, i) => (
+                <option key={i} value={d}>
+                  {d}
                 </option>
               ))}
             </select>
@@ -137,26 +144,25 @@ const MyDonationEdit = () => {
             )}
           </div>
 
-          {/* Upazila */}
+          {/* upazila */}
           <div>
             <label className="block mb-1 font-medium text-gray-700">
-              Upazila
+              upazila
             </label>
             <select
               {...register('upazila', { required: true })}
-              className="w-full px-4 py-3 rounded-xl bg-red-300 dark:bg-red-500/10 border border-gray-300 dark:border-red-800/50 text-gray-900 dark:text-gray-500 focus:outline-none focus:border-red-500"
+              defaultValue="Pick a upazila"
+              className="select w-full px-4 py-3 rounded-xl bg-red-300 dark:bg-red-200 border border-gray-300 dark:border-red-800 text-gray-900 dark:text-gray-700 focus:outline-none focus:border-red-500"
             >
-              <option selected value="">
-                Select Upazila
-              </option>
-              {filteredUpazilas.map(u => (
-                <option key={u.id} value={u.name}>
-                  {u.name}
+              <option disabled={true}>Pick a upazila</option>
+              {upazilaByDistricts(donorUpazilas).map((d, i) => (
+                <option key={i} value={d}>
+                  {d}
                 </option>
               ))}
             </select>
-            {errors.upazila && (
-              <p className="text-red-500 text-sm mt-1">Upazila is required</p>
+            {errors.district && (
+              <p className="text-red-500 text-sm mt-1">District is required</p>
             )}
           </div>
 

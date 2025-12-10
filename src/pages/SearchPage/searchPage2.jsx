@@ -1,65 +1,36 @@
-import React, { use, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { AuthContext } from '../../context/AuthContext';
 import Loading from '../../Components/Loading/Loading';
+import useAxiosSecure from '../../hooks/useAxiosSecure';
+import { useForm } from 'react-hook-form';
 
-const dummyDonors = [
-  {
-    id: 'req001',
-    recipientName: 'Rahim Uddin',
-    district: 'Chandpur',
-    upazila: 'Kachua',
-    hospital: 'Dhaka Medical College Hospital',
-    address: 'Zahir Raihan Rd, Dhaka',
-    date: '2025-12-10',
-    time: '10:00 AM',
-    bloodGroup: 'O+',
-    status: 'inprogress',
-    donor: { name: 'Maha Hasan', email: 'maha@example.com' },
-    message: 'Urgent need of blood for surgery',
-  },
-  {
-    id: 'req002',
-    recipientName: 'Karim Ahmed',
-    district: 'Chandpur',
-    upazila: 'Kachua',
-    hospital: 'Chattogram Medical College Hospital',
-    address: 'O.R. Nizam Rd, Chattogram',
-    date: '2025-12-12',
-    time: '02:00 PM',
-    bloodGroup: 'O+',
-    status: 'pending',
-    donor: { name: 'Maha Hasan', email: 'maha@example.com' },
-    message: 'Need blood for accident patient',
-  },
-  {
-    id: 'req003',
-    recipientName: 'Sonia Rahman',
-    district: 'Chandpur',
-    upazila: 'Kachua',
-    hospital: 'Khulna Medical College Hospital',
-    address: 'Jashore Rd, Khulna',
-    date: '2025-12-15',
-    time: '11:00 AM',
-    bloodGroup: 'O+',
-    status: 'done',
-    donor: { name: 'Maha Hasan', email: 'maha@example.com' },
-    message: 'Scheduled blood donation',
-  },
-];
-
-const SearchPage = () => {
+const SearchPage2 = () => {
   const navigate = useNavigate();
+  const { loading } = useContext(AuthContext);
+  const axiosSecure = useAxiosSecure();
+
   const [districts, setDistricts] = useState([]);
   const [upazilas, setUpazilas] = useState([]);
-
-  const [blood, setBlood] = useState('');
-  const [district, setDistrict] = useState('');
-  const [upazila, setUpazila] = useState('');
-
   const [results, setResults] = useState([]);
   const [searched, setSearched] = useState(false);
 
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      bloodGroup: '',
+      district: '',
+      upazila: '',
+    },
+  });
+
+  const selectedDistrict = watch('district');
+
+  // Load districts & upazilas
   useEffect(() => {
     fetch('/district.json')
       .then(res => res.json())
@@ -70,26 +41,37 @@ const SearchPage = () => {
       .then(data => setUpazilas(data));
   }, []);
 
-  const { loading } = use(AuthContext);
+  // Filter upazilas based on selected district
+  const filteredUpazilas = upazilas.filter(u => {
+    return u.district_id === selectedDistrict;
+  });
+
   if (loading) {
-    return <Loading></Loading>;
+    return <Loading />;
   }
 
-  const filteredUpazilas = upazilas.filter(u => u.district_id === district);
+  const handleSearch = async data => {
+    try {
+      // Get district name from id if backend expects name
+      const selectedDistrictName =
+        districts.find(d => d.id === data.district)?.name || '';
+      console.log(data.bloodGroup, selectedDistrictName, data.upazila);
 
-  const handleSearch = () => {
-    const selectedDistrictName =
-      districts.find(d => d.id === district)?.name || '';
+      const response = await axiosSecure.get('/donors', {
+        params: {
+          bloodGroup: data.bloodGroup,
+          district: selectedDistrictName,
+          upazila: data.upazila,
+        },
+      });
 
-    const filtered = dummyDonors.filter(
-      d =>
-        d.bloodGroup === blood &&
-        d.district === selectedDistrictName &&
-        d.upazila === upazila
-    );
-
-    setResults(filtered);
-    setSearched(true);
+      setResults(response.data);
+      setSearched(true);
+    } catch (error) {
+      console.error('Error fetching donors:', error);
+      setResults([]);
+      setSearched(true);
+    }
   };
 
   return (
@@ -110,78 +92,89 @@ const SearchPage = () => {
 
       {/* Search Box */}
       <div className="relative z-10 max-w-5xl mx-auto bg-white/80 dark:bg-[#1a1a1a]/70 backdrop-blur-xl border border-red-500/10 rounded-3xl p-6 md:p-10 shadow-[0_0_25px_rgba(255,0,0,0.1)]">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Blood */}
-          <div className="group">
-            <label className="block mb-2 font-semibold text-primary-content">
-              Blood Group
-            </label>
-            <select
-              value={blood}
-              onChange={e => setBlood(e.target.value)}
-              className="select select-bordered w-full bg-base-100 transition-all duration-300 focus:outline-none focus:border-red-500 group-hover:border-red-400 shadow-[0_0_10px_rgba(255,0,0,0.1)]"
-            >
-              <option value="">Select Blood</option>
-              <option>A+</option>
-              <option>A-</option>
-              <option>B+</option>
-              <option>B-</option>
-              <option>AB+</option>
-              <option>AB-</option>
-              <option>O+</option>
-              <option>O-</option>
-            </select>
+        <form onSubmit={handleSubmit(handleSearch)}>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Blood Group */}
+            <div className="group">
+              <label className="block mb-2 font-semibold text-primary-content">
+                Blood Group
+              </label>
+              <select
+                {...register('bloodGroup', { required: true })}
+                className="select select-bordered w-full bg-base-100 transition-all duration-300 focus:outline-none focus:border-red-500 group-hover:border-red-400 shadow-[0_0_10px_rgba(255,0,0,0.1)]"
+              >
+                <option value="">Select Blood Group</option>
+                {['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'].map(bg => (
+                  <option key={bg} value={bg}>
+                    {bg}
+                  </option>
+                ))}
+              </select>
+              {errors.bloodGroup && (
+                <p className="text-red-500 text-sm mt-1">
+                  Blood group is required
+                </p>
+              )}
+            </div>
+
+            {/* District */}
+            <div className="group">
+              <label className="block mb-2 font-semibold text-primary-content">
+                District
+              </label>
+              <select
+                {...register('district', { required: true })}
+                className="select select-bordered w-full bg-base-100 transition-all duration-300 focus:outline-none focus:border-red-500 group-hover:border-red-400 shadow-[0_0_10px_rgba(255,0,0,0.1)]"
+              >
+                <option value="">Select District</option>
+                {districts.map(d => (
+                  <option key={d.id} value={d.id}>
+                    {d.name}
+                  </option>
+                ))}
+              </select>
+              {errors.district && (
+                <p className="text-red-500 text-sm mt-1">
+                  District is required
+                </p>
+              )}
+            </div>
+
+            {/* Upazila */}
+            <div className="group">
+              <label className="block mb-2 font-semibold text-primary-content">
+                Upazila
+              </label>
+              <select
+                {...register('upazila', { required: true })}
+                className="select select-bordered w-full bg-base-100 transition-all duration-300 focus:outline-none focus:border-red-500 group-hover:border-red-400 shadow-[0_0_10px_rgba(255,0,0,0.1)]"
+              >
+                <option value="">Select Upazila</option>
+                {filteredUpazilas.map(u => (
+                  <option key={u.id} value={u.name}>
+                    {u.name}
+                  </option>
+                ))}
+              </select>
+              {errors.upazila && (
+                <p className="text-red-500 text-sm mt-1">Upazila is required</p>
+              )}
+            </div>
           </div>
 
-          {/* District */}
-          <div className="group">
-            <label className="block mb-2 font-semibold text-primary-content">
-              District
-            </label>
-            <select
-              value={district}
-              onChange={e => setDistrict(e.target.value)}
-              className="select select-bordered w-full bg-base-100 transition-all duration-300 focus:outline-none focus:border-red-500 group-hover:border-red-400 shadow-[0_0_10px_rgba(255,0,0,0.1)]"
+          {/* Button */}
+          <div className="flex justify-center mt-10">
+            <button
+              type="submit"
+              className="px-8 py-3 bg-primary text-primary-content text-lg font-semibold rounded-xl
+              hover:bg-red-600 shadow-[0_4px_16px_rgba(255,0,0,0.25)]
+              hover:shadow-[0_6px_22px_rgba(255,0,0,0.35)]
+              active:scale-95 transition-all duration-300 ease-out"
             >
-              <option value="">Select district</option>
-              {districts.map(d => (
-                <option key={d.id} value={d.id}>
-                  {d.name}
-                </option>
-              ))}
-            </select>
+              Search Donors
+            </button>
           </div>
-
-          {/* Upazila */}
-          <div className="group">
-            <label className="block mb-2 font-semibold text-primary-content">
-              Upazila
-            </label>
-            <select
-              value={upazila}
-              onChange={e => setUpazila(e.target.value)}
-              className="select select-bordered w-full bg-base-100 transition-all duration-300 focus:outline-none focus:border-red-500 group-hover:border-red-400 shadow-[0_0_10px_rgba(255,0,0,0.1)]"
-            >
-              <option value="">Select upazila</option>
-              {filteredUpazilas.map(u => (
-                <option key={u.id}>{u.name}</option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        {/* Button */}
-        <div className="flex justify-center mt-10">
-          <button
-            onClick={handleSearch}
-            className="px-8 py-3 bg-primary text-primary-content text-lg font-semibold rounded-xl
-            hover:bg-red-600 shadow-[0_4px_16px_rgba(255,0,0,0.25)]
-            hover:shadow-[0_6px_22px_rgba(255,0,0,0.35)]
-            active:scale-95 transition-all duration-300 ease-out"
-          >
-            Search Donors
-          </button>
-        </div>
+        </form>
       </div>
 
       {/* Results Section */}
@@ -201,7 +194,6 @@ const SearchPage = () => {
         {results.length > 0 && (
           <div className="relative z-10 max-w-6xl mx-auto mt-10 bg-white/80 dark:bg-[#1a1a1a]/70 backdrop-blur-xl border border-red-500/10 rounded-3xl shadow-[0_0_25px_rgba(255,0,0,0.08)] overflow-x-auto scrollbar-thin scrollbar-thumb-red-600/60 hover:scrollbar-thumb-red-600 scrollbar-track-transparent">
             <table className="min-w-full table-auto text-sm md:text-base">
-              {/* Table Head */}
               <thead>
                 <tr className="bg-red-600 text-white text-left">
                   <th className="px-4 md:px-6 py-3 font-semibold whitespace-nowrap">
@@ -224,8 +216,6 @@ const SearchPage = () => {
                   </th>
                 </tr>
               </thead>
-
-              {/* Table Body */}
               <tbody>
                 {results.map(req => (
                   <tr
@@ -235,22 +225,17 @@ const SearchPage = () => {
                     <td className="px-4 md:px-6 py-3 font-semibold text-red-700 dark:text-red-300 whitespace-nowrap">
                       {req.recipientName}
                     </td>
-
                     <td className="px-4 md:px-6 py-3 text-gray-700 dark:text-gray-300 whitespace-nowrap">
                       {req.district}, {req.upazila}
                     </td>
-
                     <td className="px-4 md:px-6 py-3 whitespace-nowrap">
                       <span className="px-3 py-1 bg-red-600 text-white rounded-full text-sm font-semibold shadow">
                         {req.bloodGroup}
                       </span>
                     </td>
-
                     <td className="px-4 md:px-6 py-3 text-gray-700 dark:text-gray-300 whitespace-nowrap">
                       {req.hospital}
                     </td>
-
-                    {/* Status */}
                     <td className="py-4">
                       <span
                         className={`px-3 py-1 rounded-full text-sm font-medium capitalize ${
@@ -266,16 +251,13 @@ const SearchPage = () => {
                         {req.status}
                       </span>
                     </td>
-
                     <td className="px-4 md:px-6 py-3 text-center whitespace-nowrap">
                       <button
                         onClick={() => navigate(`/blood-details/${req.id}`)}
-                        className="
-                px-4 md:px-5 py-2 bg-red-600 text-white rounded-lg font-semibold
-                shadow-[0_4px_16px_rgba(255,0,0,0.25)]
-                hover:bg-red-700 hover:shadow-[0_6px_20px_rgba(255,0,0,0.35)]
-                active:scale-95 transition-all
-              "
+                        className="px-4 md:px-5 py-2 bg-red-600 text-white rounded-lg font-semibold
+                        shadow-[0_4px_16px_rgba(255,0,0,0.25)]
+                        hover:bg-red-700 hover:shadow-[0_6px_20px_rgba(255,0,0,0.35)]
+                        active:scale-95 transition-all"
                       >
                         View
                       </button>
@@ -291,4 +273,4 @@ const SearchPage = () => {
   );
 };
 
-export default SearchPage;
+export default SearchPage2;

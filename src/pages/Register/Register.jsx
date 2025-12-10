@@ -1,9 +1,11 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { use, useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router';
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
 import { AuthContext } from '../../context/AuthContext';
 import axios from 'axios';
+import useAxiosSecure from '../../hooks/useAxiosSecure';
+import Loading from '../../Components/Loading/Loading';
 
 const Register = () => {
   const [districts, setDistricts] = useState([]);
@@ -14,6 +16,8 @@ const Register = () => {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const axiosSecure = useAxiosSecure();
 
   const {
     register,
@@ -43,6 +47,7 @@ const Register = () => {
       return;
     }
     const profilePhoto = data.profilePhoto[0];
+    console.log(data);
 
     registerUser(data.email, data.password)
       .then(() => {
@@ -53,12 +58,29 @@ const Register = () => {
         }`;
 
         axios.post(image_api_key, formData).then(res => {
-          console.log('after data', res.data.data.url);
-          // update user profile  here
+          const photoURL = res.data.data.url;
 
+          // Create user in the db
+
+          const userInfo = {
+            email: data.email,
+            displayName: data.name,
+            photoURL: photoURL,
+            bloodGroup: data.bloodGroup,
+            district: data.district,
+            upazila: data.upazila,
+          };
+
+          axiosSecure.post('/users', userInfo).then(res => {
+            if (res.data.insertedId) {
+              console.log(res.data);
+            }
+          });
+
+          // update user profile  here
           const updateProfile = {
             displayName: data.name,
-            photoURL: res.data.data.url,
+            photoURL: photoURL,
           };
 
           updateUserProfile(updateProfile)
@@ -71,6 +93,11 @@ const Register = () => {
       })
       .catch(error => console.log(error));
   };
+
+  const { loading } = use(AuthContext);
+  if (loading) {
+    return <Loading></Loading>;
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-linear-to-b from-red-50 to-white dark:from-[#150c0c] dark:to-[#0d0b0b] py-20">

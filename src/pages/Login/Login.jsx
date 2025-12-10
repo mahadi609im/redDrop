@@ -1,7 +1,8 @@
-import React, { useContext } from 'react';
+import React, { use, useContext } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useLocation, useNavigate } from 'react-router';
 import { AuthContext } from '../../context/AuthContext';
+import Loading from '../../Components/Loading/Loading';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -26,6 +27,11 @@ const Login = () => {
         alert(err.message); // simple error handling
       });
   };
+
+  const { loading } = use(AuthContext);
+  if (loading) {
+    return <Loading></Loading>;
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-linear-to-b from-red-50 to-white dark:from-[#150c0c] dark:to-[#0d0b0b] py-20">

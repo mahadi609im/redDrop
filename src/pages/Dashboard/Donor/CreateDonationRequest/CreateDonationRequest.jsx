@@ -57,9 +57,7 @@ const CreateDonationRequest = () => {
   }
 
   const handleCreateRequest = data => {
-    const requestData = { ...data, status: 'pending' };
-
-    axiosSecure.post('/donationRequests', requestData).then(res => {
+    axiosSecure.post('/donationRequests', data).then(res => {
       if (res.data.insertedId) {
         Swal.fire({
           icon: 'success',

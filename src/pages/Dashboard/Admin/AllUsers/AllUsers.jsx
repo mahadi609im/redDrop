@@ -8,7 +8,7 @@ const AllUsers = () => {
 
   const axiosSecure = useAxiosSecure();
 
-  const { data: allUsers = [] } = useQuery({
+  const { data: allUsers = [], refetch } = useQuery({
     queryKey: ['allUsers'],
     queryFn: async () => {
       const res = await axiosSecure.get('/users');
@@ -18,6 +18,25 @@ const AllUsers = () => {
 
   const filteredUsers =
     filter === 'all' ? allUsers : allUsers.filter(u => u.status === filter);
+
+  const toggleBlock = async (id, currentStatus) => {
+    try {
+      const newStatus = currentStatus === 'active' ? 'blocked' : 'active';
+      await axiosSecure.patch(`/users/status/${id}`, { status: newStatus });
+      refetch(); // ডাটা আবার লোড হবে
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const changeRole = async (id, newRole) => {
+    try {
+      await axiosSecure.patch(`/users/role/${id}`, { role: newRole });
+      refetch();
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-linear-to-b from-red-50 to-white dark:from-[#1a0c0c] dark:to-[#0d0b0b] py-20 px-4 md:px-10 rounded-2xl">
@@ -112,6 +131,68 @@ const AllUsers = () => {
                   >
                     {user.status}
                   </span>
+                </td>
+
+                {/* Actions */}
+                <td className="py-4 w-[20%]">
+                  <div className="flex items-center justify-center gap-3">
+                    {/* Admin হলে শুধু “Make Volunteer” */}
+                    {user.role === 'admin' ? (
+                      user.status === 'active' && (
+                        <button
+                          onClick={() => changeRole(user._id, 'volunteer')}
+                          className="p-2 rounded-full border border-yellow-400 bg-yellow-500/20 text-white shadow hover:bg-yellow-500/50 transition"
+                          title="Make Volunteer"
+                        >
+                          🌟
+                        </button>
+                      )
+                    ) : (
+                      <>
+                        {/* Block / Unblock */}
+                        {user.status === 'active' ? (
+                          <button
+                            onClick={() => toggleBlock(user._id, user.status)}
+                            className="p-2 rounded-full border border-red-500 bg-red-500/20 text-white shadow hover:bg-red-500/50 transition"
+                            title="Block User"
+                          >
+                            🚫
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => toggleBlock(user._id, user.status)}
+                            className="p-2 rounded-full border border-green-500 bg-green-500/20 text-white shadow hover:bg-green-500/50 transition"
+                            title="Unblock User"
+                          >
+                            ✅
+                          </button>
+                        )}
+
+                        {/* Donor → Make Volunteer */}
+                        {user.role === 'donor' && user.status === 'active' && (
+                          <button
+                            onClick={() => changeRole(user._id, 'volunteer')}
+                            className="p-2 rounded-full border border-yellow-400 bg-yellow-500/20 text-white shadow hover:bg-yellow-500/50 transition"
+                            title="Make Volunteer"
+                          >
+                            🌟
+                          </button>
+                        )}
+
+                        {/* Donor বা Volunteer → Make Admin */}
+                        {(user.role === 'donor' || user.role === 'volunteer') &&
+                          user.status === 'active' && (
+                            <button
+                              onClick={() => changeRole(user._id, 'admin')}
+                              className="p-2 rounded-full border border-blue-500 bg-blue-600/20 text-white shadow hover:bg-blue-500/50 transition"
+                              title="Make Admin"
+                            >
+                              👑
+                            </button>
+                          )}
+                      </>
+                    )}
+                  </div>
                 </td>
               </tr>
             ))}

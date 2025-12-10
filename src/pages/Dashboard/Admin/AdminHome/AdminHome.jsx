@@ -1,14 +1,32 @@
 import React from 'react';
 import { FaMoneyBillWave, FaUsers } from 'react-icons/fa';
 import { FaHandHoldingDroplet } from 'react-icons/fa6';
+import useAxiosSecure from '../../../../hooks/useAxiosSecure';
+import { useQuery } from '@tanstack/react-query';
 
 const AdminHome = () => {
   // Example stats, later fetch from API
   const stats = {
-    totalUsers: 1250,
     totalFunds: 8420,
-    totalRequests: 320,
   };
+
+  const axiosSecure = useAxiosSecure();
+
+  const { data: totalRequests = [] } = useQuery({
+    queryKey: ['donationRequests'],
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/donationRequests`);
+      return res.data;
+    },
+  });
+
+  const { data: allUsers = [] } = useQuery({
+    queryKey: ['allUsers'],
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/users`);
+      return res.data;
+    },
+  });
 
   return (
     <div className="min-h-screen bg-linear-to-b from-red-50 to-white dark:from-[#1a0c0c] dark:to-[#0d0b0b] p-6 md:p-10  overflow-hidden flex flex-col justify-center rounded-2xl">
@@ -31,7 +49,7 @@ const AdminHome = () => {
             <div>
               <h3 className="text-gray-500 dark:text-gray-400">Total Users</h3>
               <p className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
-                {stats.totalUsers}
+                {allUsers.length}
               </p>
             </div>
           </div>
@@ -61,7 +79,7 @@ const AdminHome = () => {
                 Total Requests
               </h3>
               <p className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
-                {stats.totalRequests}
+                {totalRequests.length}
               </p>
             </div>
           </div>

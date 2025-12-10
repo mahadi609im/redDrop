@@ -5,9 +5,18 @@ import logo from '../../assets/blood-logo.png';
 import { MdBloodtype } from 'react-icons/md';
 import { PiMapPinPlusFill } from 'react-icons/pi';
 import { LuDroplets } from 'react-icons/lu';
+import useUserRole from '../../hooks/useUserRole';
+import Loading from '../../Components/Loading/Loading';
+import { use } from 'react';
+import { AuthContext } from '../../context/AuthContext';
 
 const DashBoardLayout = () => {
-  const role = localStorage.getItem('userRole');
+  const { role } = useUserRole();
+
+  const { loading } = use(AuthContext);
+  if (loading) {
+    return <Loading></Loading>;
+  }
 
   const links = (
     <>

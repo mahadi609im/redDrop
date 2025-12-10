@@ -7,6 +7,10 @@ import Swal from 'sweetalert2';
 const AllUsers = () => {
   const [filter, setFilter] = useState('all');
 
+  // ✅ Pagination States
+  const [currentPage, setCurrentPage] = useState(1);
+  const usersPerPage = 10;
+
   const axiosSecure = useAxiosSecure();
 
   const { data: allUsers = [], refetch } = useQuery({
@@ -19,6 +23,12 @@ const AllUsers = () => {
 
   const filteredUsers =
     filter === 'all' ? allUsers : allUsers.filter(u => u.status === filter);
+
+  // ✅ Pagination Logic
+  const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
+  const startIndex = (currentPage - 1) * usersPerPage;
+  const endIndex = startIndex + usersPerPage;
+  const displayedUsers = filteredUsers.slice(startIndex, endIndex);
 
   const toggleBlock = async (id, currentStatus) => {
     const action = currentStatus === 'active' ? 'Block' : 'Unblock';
@@ -37,7 +47,7 @@ const AllUsers = () => {
         const newStatus = currentStatus === 'active' ? 'blocked' : 'active';
         await axiosSecure.patch(`/users/status/${id}`, { status: newStatus });
         Swal.fire('Success!', `User has been ${action}ed.`, 'success');
-        refetch(); // ডাটা আবার লোড হবে
+        refetch();
       } catch (err) {
         console.error(err);
         Swal.fire('Error!', 'Something went wrong!', 'error');
@@ -86,11 +96,14 @@ const AllUsers = () => {
       </div>
 
       {/* Filter Buttons */}
-      <div className="flex justify-center space-x-4 mb-8">
+      <div className="flex flex-wrap justify-center gap-4 mb-8">
         {['all', 'active', 'blocked'].map(f => (
           <button
             key={f}
-            onClick={() => setFilter(f)}
+            onClick={() => {
+              setFilter(f);
+              setCurrentPage(1); // ✅ filter change করলে page reset
+            }}
             className={`px-4 py-2 rounded-full font-medium transition ${
               filter === f
                 ? f === 'active'
@@ -101,8 +114,7 @@ const AllUsers = () => {
                 : 'bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200'
             }`}
           >
-            {f.charAt(0).toUpperCase() + f.slice(1)}Active (
-            {allUsers.filter(u => u.status === 'active').length})
+            {f.charAt(0).toUpperCase() + f.slice(1)}
           </button>
         ))}
       </div>
@@ -124,12 +136,11 @@ const AllUsers = () => {
           </thead>
 
           <tbody className="bg-white dark:bg-[#111]">
-            {filteredUsers.map(user => (
+            {displayedUsers.map(user => (
               <tr
                 key={user._id}
                 className="hover:bg-red-50/60 dark:hover:bg-red-900/20 transition-all border-b border-red-500/10"
               >
-                {/* Avatar */}
                 <td className="py-4 w-[10%]">
                   <div className="flex justify-center">
                     <img
@@ -140,22 +151,18 @@ const AllUsers = () => {
                   </div>
                 </td>
 
-                {/* Name */}
                 <td className="py-4 w-[18%] text-center font-semibold text-red-700 dark:text-red-300">
                   {user.displayName}
                 </td>
 
-                {/* Email */}
                 <td className="py-4 w-[28%] text-center text-gray-700 dark:text-gray-300 break-all">
                   {user.email}
                 </td>
 
-                {/* Role */}
                 <td className="py-4 w-[12%] text-center capitalize text-red-500 font-medium">
                   {user.role}
                 </td>
 
-                {/* Status */}
                 <td className="py-4 w-[12%] text-center">
                   <span
                     className={`px-3 py-1 rounded-full text-sm font-medium capitalize ${
@@ -168,28 +175,23 @@ const AllUsers = () => {
                   </span>
                 </td>
 
-                {/* Actions */}
                 <td className="py-4 w-[20%]">
                   <div className="flex items-center justify-center gap-3">
-                    {/* Admin হলে শুধু “Make Volunteer” */}
                     {user.role === 'admin' ? (
                       user.status === 'active' && (
                         <button
                           onClick={() => changeRole(user._id, 'volunteer')}
                           className="p-2 rounded-full border border-yellow-400 bg-yellow-500/20 text-white shadow hover:bg-yellow-500/50 transition"
-                          title="Make Volunteer"
                         >
                           🌟
                         </button>
                       )
                     ) : (
                       <>
-                        {/* Block / Unblock */}
                         {user.status === 'active' ? (
                           <button
                             onClick={() => toggleBlock(user._id, user.status)}
                             className="p-2 rounded-full border border-red-500 bg-red-500/20 text-white shadow hover:bg-red-500/50 transition"
-                            title="Block User"
                           >
                             🚫
                           </button>
@@ -197,30 +199,25 @@ const AllUsers = () => {
                           <button
                             onClick={() => toggleBlock(user._id, user.status)}
                             className="p-2 rounded-full border border-green-500 bg-green-500/20 text-white shadow hover:bg-green-500/50 transition"
-                            title="Unblock User"
                           >
                             ✅
                           </button>
                         )}
 
-                        {/* Donor → Make Volunteer */}
                         {user.role === 'donor' && user.status === 'active' && (
                           <button
                             onClick={() => changeRole(user._id, 'volunteer')}
                             className="p-2 rounded-full border border-yellow-400 bg-yellow-500/20 text-white shadow hover:bg-yellow-500/50 transition"
-                            title="Make Volunteer"
                           >
                             🌟
                           </button>
                         )}
 
-                        {/* Donor বা Volunteer → Make Admin */}
                         {(user.role === 'donor' || user.role === 'volunteer') &&
                           user.status === 'active' && (
                             <button
                               onClick={() => changeRole(user._id, 'admin')}
                               className="p-2 rounded-full border border-blue-500 bg-blue-600/20 text-white shadow hover:bg-blue-500/50 transition"
-                              title="Make Admin"
                             >
                               👑
                             </button>
@@ -234,6 +231,25 @@ const AllUsers = () => {
           </tbody>
         </table>
       </div>
+
+      {/* ✅ Pagination UI */}
+      {totalPages > 1 && (
+        <div className="flex justify-center mt-8 gap-2 flex-wrap">
+          {[...Array(totalPages).keys()].map(num => (
+            <button
+              key={num}
+              onClick={() => setCurrentPage(num + 1)}
+              className={`px-4 py-2 rounded-lg font-semibold ${
+                currentPage === num + 1
+                  ? 'bg-red-600 text-white'
+                  : 'bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200'
+              }`}
+            >
+              {num + 1}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

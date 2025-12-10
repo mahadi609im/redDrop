@@ -6,6 +6,7 @@ import useAxiosSecure from '../../../../hooks/useAxiosSecure';
 import { useQuery } from '@tanstack/react-query';
 import Swal from 'sweetalert2';
 import Loading from '../../../../Components/Loading/Loading';
+import LoadingSpin from '../../../../Components/Loading/LoadingSpin';
 
 const MyDonationRequests = () => {
   const navigate = useNavigate();
@@ -80,9 +81,6 @@ const MyDonationRequests = () => {
   };
 
   const { loading } = use(AuthContext);
-  if (loading) {
-    return <Loading></Loading>;
-  }
 
   return (
     <section className="min-h-screen bg-red-50 py-20">
@@ -115,173 +113,183 @@ const MyDonationRequests = () => {
 
       {/* Table */}
       <div className="w-full max-w-7xl mx-auto overflow-x-auto bg-white border border-red-500/20 rounded-3xl shadow-[0_0_25px_rgba(255,0,0,0.08)]">
-        {displayedRequests.length > 0 ? (
-          <table className="min-w-auto md:min-w-full table-auto text-sm">
-            <thead>
-              <tr className="bg-red-600 text-white text-left">
-                <th className="px-4 py-3 font-semibold">Recipient</th>
-                <th className="px-4 py-3 font-semibold">Location</th>
-                <th className="px-4 py-3 font-semibold">Blood</th>
-                <th className="px-4 py-3 font-semibold">Date & Time</th>
-                <th className="px-4 py-3 font-semibold">Status</th>
-                <th className="px-4 py-3 font-semibold">Donor Info</th>
-                <th className="px-4 py-3 font-semibold text-center">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {displayedRequests.map(req => (
-                <tr
-                  key={req.id}
-                  className="border-b border-red-500/10 hover:bg-red-50 transition-all"
-                >
-                  <td className="px-4 py-3 font-semibold text-red-700 whitespace-nowrap">
-                    {req.recipientName}
-                  </td>
-                  <td className="px-4 py-3 text-gray-700 whitespace-nowrap">
-                    {req.district}, {req.upazila}
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className="px-2 py-1 bg-red-600 text-white rounded-full text-xs font-semibold shadow">
-                      {req.bloodGroup}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-gray-700 whitespace-nowrap">
-                    {req.donationDate} | {req.donationTime}
-                  </td>
-                  <td className="px-4 py-3 whitespace-nowrap">
-                    {req.status === 'done' ? (
-                      <span className="px-2 py-1 rounded-full text-sm font-semibold bg-green-100 text-green-800 capitalize">
-                        {req.status}
-                      </span>
-                    ) : req.status === 'inprogress' ? (
-                      <span className="px-2 py-1 rounded-full text-sm font-semibold bg-yellow-100 text-yellow-800 capitalize">
-                        {req.status}
-                      </span>
-                    ) : req.status === 'cancel' ? (
-                      <span className="px-2 py-1 rounded-full text-sm font-semibold bg-red-100 text-red-800 capitalize">
-                        {req.status}
-                      </span>
-                    ) : (
-                      <span className="px-2 py-1 rounded-full text-sm font-semibold bg-red-100 text-red-500 capitalize">
-                        {req.status}
-                      </span>
-                    )}
-                  </td>
-                  <td className="px-4 py-3 text-gray-700 whitespace-nowrap">
-                    {req.status === 'inprogress'
-                      ? `${req.donor?.name} (${req.donor?.email})`
-                      : '-'}
-                  </td>
-                  <td className="px-4 py-3 flex flex-nowrap gap-1 justify-center items-center">
-                    {/* Status buttons only for inprogress */}
-                    {req.status === 'inprogress' && (
-                      <>
+        {loading ? (
+          <LoadingSpin></LoadingSpin>
+        ) : (
+          <>
+            {displayedRequests.length > 0 ? (
+              <table className="min-w-auto md:min-w-full table-auto text-sm">
+                <thead>
+                  <tr className="bg-red-600 text-white text-left">
+                    <th className="px-4 py-3 font-semibold">Recipient</th>
+                    <th className="px-4 py-3 font-semibold">Location</th>
+                    <th className="px-4 py-3 font-semibold">Blood</th>
+                    <th className="px-4 py-3 font-semibold">Date & Time</th>
+                    <th className="px-4 py-3 font-semibold">Status</th>
+                    <th className="px-4 py-3 font-semibold">Donor Info</th>
+                    <th className="px-4 py-3 font-semibold text-center">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {displayedRequests.map(req => (
+                    <tr
+                      key={req.id}
+                      className="border-b border-red-500/10 hover:bg-red-50 transition-all"
+                    >
+                      <td className="px-4 py-3 font-semibold text-red-700 whitespace-nowrap">
+                        {req.recipientName}
+                      </td>
+                      <td className="px-4 py-3 text-gray-700 whitespace-nowrap">
+                        {req.district}, {req.upazila}
+                      </td>
+                      <td className="px-4 py-3">
+                        <span className="px-2 py-1 bg-red-600 text-white rounded-full text-xs font-semibold shadow">
+                          {req.bloodGroup}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-gray-700 whitespace-nowrap">
+                        {req.donationDate} | {req.donationTime}
+                      </td>
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        {req.status === 'done' ? (
+                          <span className="px-2 py-1 rounded-full text-sm font-semibold bg-green-100 text-green-800 capitalize">
+                            {req.status}
+                          </span>
+                        ) : req.status === 'inprogress' ? (
+                          <span className="px-2 py-1 rounded-full text-sm font-semibold bg-yellow-100 text-yellow-800 capitalize">
+                            {req.status}
+                          </span>
+                        ) : req.status === 'cancel' ? (
+                          <span className="px-2 py-1 rounded-full text-sm font-semibold bg-red-100 text-red-800 capitalize">
+                            {req.status}
+                          </span>
+                        ) : (
+                          <span className="px-2 py-1 rounded-full text-sm font-semibold bg-red-100 text-red-500 capitalize">
+                            {req.status}
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3 text-gray-700 whitespace-nowrap">
+                        {req.status === 'inprogress'
+                          ? `${req.donor?.name} (${req.donor?.email})`
+                          : '-'}
+                      </td>
+                      <td className="px-4 py-3 flex flex-nowrap gap-1 justify-center items-center">
+                        {/* Status buttons only for inprogress */}
+                        {req.status === 'inprogress' && (
+                          <>
+                            <button
+                              onClick={() =>
+                                handleStatusChange(req._id, 'done')
+                              }
+                              className="p-2 rounded-full border border-green-700 bg-green-700/30 text-green-700 shadow hover:bg-green-700/50 transition"
+                              title="Mark Done"
+                            >
+                              <FaCheck />
+                            </button>
+                            <button
+                              onClick={() =>
+                                handleStatusChange(req._id, 'canceled')
+                              }
+                              className="p-2 rounded-full border border-red-700 bg-red-700/30 text-red-700 shadow hover:bg-red-700/50 transition"
+                              title="Mark Canceled"
+                            >
+                              <FaTimes />
+                            </button>
+                          </>
+                        )}
+
+                        {/* Delete */}
                         <button
-                          onClick={() => handleStatusChange(req._id, 'done')}
-                          className="p-2 rounded-full border border-green-700 bg-green-700/30 text-green-700 shadow hover:bg-green-700/50 transition"
-                          title="Mark Done"
+                          onClick={() => handleRequestDelete(req._id)}
+                          className="p-2 rounded-full border border-red-600 bg-red-600/30 text-red-500 shadow hover:bg-red-600/50 transition"
+                          title="Delete Request"
                         >
-                          <FaCheck />
+                          <FaTrash />
                         </button>
+
+                        {/* View */}
                         <button
                           onClick={() =>
-                            handleStatusChange(req._id, 'canceled')
+                            navigate(`/dashboard/donation-details/${req._id}`)
                           }
-                          className="p-2 rounded-full border border-red-700 bg-red-700/30 text-red-700 shadow hover:bg-red-700/50 transition"
-                          title="Mark Canceled"
+                          className="p-2 rounded-full border border-blue-600 bg-blue-600/30 text-blue-700 shadow hover:bg-blue-600/50 transition"
+                          title="View Details"
                         >
-                          <FaTimes />
+                          <FaEye />
                         </button>
-                      </>
-                    )}
 
-                    {/* Delete */}
-                    <button
-                      onClick={() => handleRequestDelete(req._id)}
-                      className="p-2 rounded-full border border-red-600 bg-red-600/30 text-red-500 shadow hover:bg-red-600/50 transition"
-                      title="Delete Request"
-                    >
-                      <FaTrash />
-                    </button>
+                        {/* Edit */}
+                        <button
+                          onClick={() =>
+                            navigate(`/dashboard/edit-donation/${req._id}`)
+                          }
+                          className="p-2 rounded-full border border-yellow-600 bg-yellow-600/30 text-yellow-600 shadow hover:bg-yellow-600/50 transition"
+                          title="Edit Request"
+                        >
+                          <FaEdit />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <div className="px-4 py-12 text-center text-gray-500 font-semibold">
+                No donation requests found.
+              </div>
+            )}
 
-                    {/* View */}
-                    <button
-                      onClick={() =>
-                        navigate(`/dashboard/donation-details/${req._id}`)
-                      }
-                      className="p-2 rounded-full border border-blue-600 bg-blue-600/30 text-blue-700 shadow hover:bg-blue-600/50 transition"
-                      title="View Details"
-                    >
-                      <FaEye />
-                    </button>
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="flex justify-center gap-2 p-4">
+                {/* Prev Button */}
+                <button
+                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                  disabled={currentPage === 1} // 🔹 Disable on first page
+                  className={`px-3 py-1 rounded ${
+                    currentPage === 1
+                      ? 'bg-gray-200 cursor-not-allowed'
+                      : 'bg-gray-300 hover:bg-gray-400'
+                  }`}
+                >
+                  Prev
+                </button>
 
-                    {/* Edit */}
-                    <button
-                      onClick={() =>
-                        navigate(`/dashboard/edit-donation/${req._id}`)
-                      }
-                      className="p-2 rounded-full border border-yellow-600 bg-yellow-600/30 text-yellow-600 shadow hover:bg-yellow-600/50 transition"
-                      title="Edit Request"
-                    >
-                      <FaEdit />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <div className="px-4 py-12 text-center text-gray-500 font-semibold">
-            No donation requests found.
-          </div>
-        )}
+                {/* Page Numbers */}
+                {[...Array(totalPages)].map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setCurrentPage(idx + 1)}
+                    className={`px-3 py-1 rounded ${
+                      currentPage === idx + 1
+                        ? 'bg-red-600 text-white'
+                        : 'bg-gray-200 hover:bg-gray-300'
+                    }`}
+                  >
+                    {idx + 1}
+                  </button>
+                ))}
 
-        {/* Pagination */}
-        {totalPages > 1 && (
-          <div className="flex justify-center gap-2 p-4">
-            {/* Prev Button */}
-            <button
-              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-              disabled={currentPage === 1} // 🔹 Disable on first page
-              className={`px-3 py-1 rounded ${
-                currentPage === 1
-                  ? 'bg-gray-200 cursor-not-allowed'
-                  : 'bg-gray-300 hover:bg-gray-400'
-              }`}
-            >
-              Prev
-            </button>
-
-            {/* Page Numbers */}
-            {[...Array(totalPages)].map((_, idx) => (
-              <button
-                key={idx}
-                onClick={() => setCurrentPage(idx + 1)}
-                className={`px-3 py-1 rounded ${
-                  currentPage === idx + 1
-                    ? 'bg-red-600 text-white'
-                    : 'bg-gray-200 hover:bg-gray-300'
-                }`}
-              >
-                {idx + 1}
-              </button>
-            ))}
-
-            {/* Next Button */}
-            <button
-              onClick={() =>
-                setCurrentPage(prev => Math.min(prev + 1, totalPages))
-              }
-              disabled={currentPage === totalPages} // 🔹 Disable on last page
-              className={`px-3 py-1 rounded ${
-                currentPage === totalPages
-                  ? 'bg-gray-200 cursor-not-allowed'
-                  : 'bg-gray-300 hover:bg-gray-400'
-              }`}
-            >
-              Next
-            </button>
-          </div>
+                {/* Next Button */}
+                <button
+                  onClick={() =>
+                    setCurrentPage(prev => Math.min(prev + 1, totalPages))
+                  }
+                  disabled={currentPage === totalPages} // 🔹 Disable on last page
+                  className={`px-3 py-1 rounded ${
+                    currentPage === totalPages
+                      ? 'bg-gray-200 cursor-not-allowed'
+                      : 'bg-gray-300 hover:bg-gray-400'
+                  }`}
+                >
+                  Next
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
     </section>

@@ -120,6 +120,8 @@ const router = createBrowserRouter([
       {
         path: 'all-blood-requests',
         element: <AllBloodRequests />,
+        loader: ({ params }) =>
+          fetch(`http://localhost:3000/donationRequests/${params.id}`),
       },
     ],
   },

@@ -101,7 +101,8 @@ const AllUsers = () => {
                 : 'bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200'
             }`}
           >
-            {f.charAt(0).toUpperCase() + f.slice(1)}
+            {f.charAt(0).toUpperCase() + f.slice(1)}Active (
+            {allUsers.filter(u => u.status === 'active').length})
           </button>
         ))}
       </div>

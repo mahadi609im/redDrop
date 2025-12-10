@@ -1,11 +1,9 @@
 import { Link, NavLink, Outlet } from 'react-router';
 import { FaHome, FaUsers } from 'react-icons/fa';
-import { BiSolidDonateBlood, BiSolidDonateHeart } from 'react-icons/bi';
+import { BiSolidDonateHeart } from 'react-icons/bi';
 import logo from '../../assets/blood-logo.png';
 import { MdBloodtype } from 'react-icons/md';
 import { PiMapPinPlusFill } from 'react-icons/pi';
-import { BsFillDropletFill } from 'react-icons/bs';
-import { GiDroplets } from 'react-icons/gi';
 import { LuDroplets } from 'react-icons/lu';
 
 const DashBoardLayout = () => {

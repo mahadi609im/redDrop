@@ -15,7 +15,7 @@ const VolunteerHome = () => {
       {/* Welcome Section */}
       <div className=" text-center mb-14">
         <h1 className="text-4xl md:text-5xl font-bold text-red-700 ">
-          Welcome, volunteer! 👋
+          Welcome, Volunteer! 👋
         </h1>
         <p className="text-gray-700 dark:text-gray-300 mt-3 max-w-xl mx-auto">
           Here's an overview of your platform's current statistics and activity.

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { FaEllipsisV, FaUsers } from 'react-icons/fa';
 import useAxiosSecure from '../../../../hooks/useAxiosSecure';
 import { useQuery } from '@tanstack/react-query';
+import Swal from 'sweetalert2';
 
 const AllUsers = () => {
   const [filter, setFilter] = useState('all');
@@ -20,21 +21,54 @@ const AllUsers = () => {
     filter === 'all' ? allUsers : allUsers.filter(u => u.status === filter);
 
   const toggleBlock = async (id, currentStatus) => {
-    try {
-      const newStatus = currentStatus === 'active' ? 'blocked' : 'active';
-      await axiosSecure.patch(`/users/status/${id}`, { status: newStatus });
-      refetch(); // ডাটা আবার লোড হবে
-    } catch (err) {
-      console.error(err);
+    const action = currentStatus === 'active' ? 'Block' : 'Unblock';
+    const result = await Swal.fire({
+      title: `Are you sure?`,
+      text: `You are going to ${action} this user!`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: `Yes, ${action} it!`,
+    });
+
+    if (result.isConfirmed) {
+      try {
+        const newStatus = currentStatus === 'active' ? 'blocked' : 'active';
+        await axiosSecure.patch(`/users/status/${id}`, { status: newStatus });
+        Swal.fire('Success!', `User has been ${action}ed.`, 'success');
+        refetch(); // ডাটা আবার লোড হবে
+      } catch (err) {
+        console.error(err);
+        Swal.fire('Error!', 'Something went wrong!', 'error');
+      }
     }
   };
 
   const changeRole = async (id, newRole) => {
-    try {
-      await axiosSecure.patch(`/users/role/${id}`, { role: newRole });
-      refetch();
-    } catch (err) {
-      console.error(err);
+    const result = await Swal.fire({
+      title: `Are you sure?`,
+      text: `You are going to change this user role to "${newRole}"!`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: `Yes, change it!`,
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await axiosSecure.patch(`/users/role/${id}`, { role: newRole });
+        Swal.fire(
+          'Success!',
+          `User role has been changed to "${newRole}".`,
+          'success'
+        );
+        refetch();
+      } catch (err) {
+        console.error(err);
+        Swal.fire('Error!', 'Something went wrong!', 'error');
+      }
     }
   };
 

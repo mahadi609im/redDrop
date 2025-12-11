@@ -29,8 +29,8 @@ const useAxiosSecure = () => {
         const statusCode = error.response?.status;
         if (statusCode === 401 || statusCode === 403) {
           console.warn('Unauthorized access:', error.response?.data?.message);
-          // await logoutUser();  // comment this out
-          // navigate('/login');  // comment this out
+          await logoutUser();
+          navigate('/login');
         }
         return Promise.reject(error);
       }

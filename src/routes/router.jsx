@@ -24,6 +24,9 @@ import MyDonationRequestDetails from '../pages/DonationRequestDetails/DonationRe
 import MyDonationDetails from '../pages/Dashboard/Donor/MyDonationDetails/MyDonationDetails';
 import MyDonationEdit from '../pages/Dashboard/Donor/MyDonationEdit/MyDonationEdit';
 import PrivateRoute from '../Components/PrivateRoute/PrivateRoute';
+import AdminPrivateRoute from '../Components/PrivateRoute/AdminPrivateRoute';
+import VAPrivate from '../Components/PrivateRoute/VAPrivate';
+import DAPrivate from '../Components/PrivateRoute/DAPrivate';
 
 const router = createBrowserRouter([
   {
@@ -37,7 +40,6 @@ const router = createBrowserRouter([
       {
         path: '/register',
         element: <Register />,
-        loader: () => fetch('/district.json').then(res => res.json()),
       },
       {
         path: '/login',
@@ -58,8 +60,6 @@ const router = createBrowserRouter([
             <DonationRequestDetails></DonationRequestDetails>
           </PrivateRoute>
         ),
-        loader: ({ params }) =>
-          fetch(`http://localhost:3000/donationRequests/${params.id}`),
       },
     ],
   },
@@ -67,7 +67,11 @@ const router = createBrowserRouter([
   // Dashboard Routes (Private)
   {
     path: '/dashboard',
-    element: <DashBoardLayout />,
+    element: (
+      <PrivateRoute>
+        <DashBoardLayout />
+      </PrivateRoute>
+    ),
     children: [
       // Dashboard home - role-based
       {
@@ -87,7 +91,11 @@ const router = createBrowserRouter([
       // Donor specific pages
       {
         path: 'my-donation-requests',
-        element: <MyDonationRequests />,
+        element: (
+          <DAPrivate>
+            <MyDonationRequests />
+          </DAPrivate>
+        ),
       },
       {
         path: 'donation-details/:id',
@@ -101,27 +109,41 @@ const router = createBrowserRouter([
       },
       {
         path: 'edit-donation/:id',
-        element: <MyDonationEdit></MyDonationEdit>,
+        element: (
+          <DAPrivate>
+            <MyDonationEdit></MyDonationEdit>
+          </DAPrivate>
+        ),
         loader: ({ params }) =>
           fetch(`http://localhost:3000/donationRequests/${params.id}`),
       },
       {
         path: 'create-donation-request',
-        element: <CreateDonationRequest />,
+        element: (
+          <DAPrivate>
+            <CreateDonationRequest />
+          </DAPrivate>
+        ),
       },
 
       // Admin only pages
       {
         path: 'all-users',
-        element: <AllUsers />, // AdminRoute wrapper
+        element: (
+          <AdminPrivateRoute>
+            <AllUsers />
+          </AdminPrivateRoute>
+        ), // AdminRoute wrapper
       },
 
       // Admin + Volunteer
       {
         path: 'all-blood-requests',
-        element: <AllBloodRequests />,
-        loader: ({ params }) =>
-          fetch(`http://localhost:3000/donationRequests/${params.id}`),
+        element: (
+          <VAPrivate>
+            <AllBloodRequests />
+          </VAPrivate>
+        ),
       },
     ],
   },

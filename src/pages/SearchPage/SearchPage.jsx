@@ -1,52 +1,8 @@
-import React, { use, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { AuthContext } from '../../context/AuthContext';
 import Loading from '../../Components/Loading/Loading';
-
-const dummyDonors = [
-  {
-    id: 'req001',
-    recipientName: 'Rahim Uddin',
-    district: 'Chandpur',
-    upazila: 'Kachua',
-    hospital: 'Dhaka Medical College Hospital',
-    address: 'Zahir Raihan Rd, Dhaka',
-    date: '2025-12-10',
-    time: '10:00 AM',
-    bloodGroup: 'O+',
-    status: 'inprogress',
-    donor: { name: 'Maha Hasan', email: 'maha@example.com' },
-    message: 'Urgent need of blood for surgery',
-  },
-  {
-    id: 'req002',
-    recipientName: 'Karim Ahmed',
-    district: 'Chandpur',
-    upazila: 'Kachua',
-    hospital: 'Chattogram Medical College Hospital',
-    address: 'O.R. Nizam Rd, Chattogram',
-    date: '2025-12-12',
-    time: '02:00 PM',
-    bloodGroup: 'O+',
-    status: 'pending',
-    donor: { name: 'Maha Hasan', email: 'maha@example.com' },
-    message: 'Need blood for accident patient',
-  },
-  {
-    id: 'req003',
-    recipientName: 'Sonia Rahman',
-    district: 'Chandpur',
-    upazila: 'Kachua',
-    hospital: 'Khulna Medical College Hospital',
-    address: 'Jashore Rd, Khulna',
-    date: '2025-12-15',
-    time: '11:00 AM',
-    bloodGroup: 'O+',
-    status: 'done',
-    donor: { name: 'Maha Hasan', email: 'maha@example.com' },
-    message: 'Scheduled blood donation',
-  },
-];
+import useAxiosSecure from '../../hooks/useAxiosSecure';
 
 const SearchPage = () => {
   const navigate = useNavigate();
@@ -60,6 +16,32 @@ const SearchPage = () => {
   const [results, setResults] = useState([]);
   const [searched, setSearched] = useState(false);
 
+  const axiosSecure = useAxiosSecure();
+  const [loadingResults, setLoadingResults] = useState(false);
+
+  // handleSearch function
+  const handleSearch = async () => {
+    setLoadingResults(true);
+    try {
+      const res = await axiosSecure.get('/donors', {
+        params: {
+          bloodGroup: blood,
+          district: districts.find(d => String(d.id) === district)?.name,
+          upazila: upazila,
+        },
+      });
+      setResults(res.data);
+      console.log(res.data);
+      setSearched(true);
+    } catch (err) {
+      console.error(err);
+      setResults([]);
+    } finally {
+      setLoadingResults(false);
+      setSearched(true);
+    }
+  };
+
   useEffect(() => {
     fetch('/district.json')
       .then(res => res.json())
@@ -70,27 +52,12 @@ const SearchPage = () => {
       .then(data => setUpazilas(data));
   }, []);
 
-  const { loading } = use(AuthContext);
-  if (loading) {
+  const { loading } = useContext(AuthContext);
+  if (loading || loadingResults) {
     return <Loading></Loading>;
   }
 
-  const filteredUpazilas = upazilas.filter(u => u.district_id === district);
-
-  const handleSearch = () => {
-    const selectedDistrictName =
-      districts.find(d => d.id === district)?.name || '';
-
-    const filtered = dummyDonors.filter(
-      d =>
-        d.bloodGroup === blood &&
-        d.district === selectedDistrictName &&
-        d.upazila === upazila
-    );
-
-    setResults(filtered);
-    setSearched(true);
-  };
+  const filteredUpazilas = upazilas.filter(u => u.district_id == district);
 
   return (
     <section className="min-h-screen py-20 px-6 md:px-20 relative bg-linear-to-b from-red-50 to-white dark:from-[#150c0c] dark:to-[#0d0b0b]">
@@ -164,7 +131,9 @@ const SearchPage = () => {
             >
               <option value="">Select upazila</option>
               {filteredUpazilas.map(u => (
-                <option key={u.id}>{u.name}</option>
+                <option key={u.id} value={u.name}>
+                  {u.name}
+                </option>
               ))}
             </select>
           </div>
@@ -208,13 +177,13 @@ const SearchPage = () => {
                     Recipient
                   </th>
                   <th className="px-4 md:px-6 py-3 font-semibold whitespace-nowrap">
+                    Email
+                  </th>
+                  <th className="px-4 md:px-6 py-3 font-semibold whitespace-nowrap">
                     Location
                   </th>
                   <th className="px-4 md:px-6 py-3 font-semibold whitespace-nowrap">
                     Blood
-                  </th>
-                  <th className="px-4 md:px-6 py-3 font-semibold whitespace-nowrap">
-                    Hospital
                   </th>
                   <th className="px-4 md:px-6 py-3 font-semibold whitespace-nowrap">
                     Status
@@ -233,7 +202,11 @@ const SearchPage = () => {
                     className="border-b border-red-500/10 hover:bg-red-50/60 dark:hover:bg-red-900/20 transition-all"
                   >
                     <td className="px-4 md:px-6 py-3 font-semibold text-red-700 dark:text-red-300 whitespace-nowrap">
-                      {req.recipientName}
+                      {req.displayName}
+                    </td>
+
+                    <td className="px-4 md:px-6 py-3 text-gray-700 dark:text-gray-300 whitespace-nowrap">
+                      {req.email}
                     </td>
 
                     <td className="px-4 md:px-6 py-3 text-gray-700 dark:text-gray-300 whitespace-nowrap">
@@ -246,12 +219,8 @@ const SearchPage = () => {
                       </span>
                     </td>
 
-                    <td className="px-4 md:px-6 py-3 text-gray-700 dark:text-gray-300 whitespace-nowrap">
-                      {req.hospital}
-                    </td>
-
                     {/* Status */}
-                    <td className="py-4">
+                    <td className="p-4">
                       <span
                         className={`px-3 py-1 rounded-full text-sm font-medium capitalize ${
                           req.status === 'pending'

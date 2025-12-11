@@ -7,17 +7,19 @@ const useUserRole = () => {
   const { user } = useContext(AuthContext);
   const axiosSecure = useAxiosSecure();
 
-  const { data: currentUser = {}, isLoading } = useQuery({
-    queryKey: ['currentUser', user?.email],
+  const { data, isLoading } = useQuery({
+    queryKey: ['user-role', user?.email],
+    enabled: !!user?.email, // user না থাকলে query চলবে না
     queryFn: async () => {
-      if (!user?.email) return {};
-      const res = await axiosSecure.get(`/users?email=${user.email}`);
-      return res.data?.[0] || {}; // optional chaining
+      const res = await axiosSecure.get(`/users/${user.email}/role`);
+      return res.data; // { role: "admin" }
     },
-    enabled: !!user?.email,
   });
 
-  return { role: currentUser?.role || 'donor', isLoading };
+  // DEFAULT fallback
+  const role = data?.role || 'donor';
+
+  return { role, isLoading };
 };
 
 export default useUserRole;

@@ -1,20 +1,18 @@
-import React, { use, useContext } from 'react';
+import React, { use } from 'react';
 import { useNavigate } from 'react-router';
 import { AuthContext } from '../../context/AuthContext';
-import Loading from '../../Components/Loading/Loading';
 import { useQuery } from '@tanstack/react-query';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 import LoadingSpin from '../../Components/Loading/LoadingSpin';
 
 const BloodRequests = () => {
   const navigate = useNavigate();
-  const { user } = useContext(AuthContext);
   const axiosSecure = useAxiosSecure();
 
   const { data: requests = [] } = useQuery({
-    queryKey: ['myParcels', user?.email],
+    queryKey: ['pendingDonationRequests'],
     queryFn: async () => {
-      const res = await axiosSecure.get(`/donationRequests`);
+      const res = await axiosSecure.get(`/donationRequests/pending`);
       console.log(res.data);
       return res.data;
     },
@@ -105,7 +103,7 @@ const BloodRequests = () => {
                         {req.donationDate}
                       </td>
                       <td className="px-4 md:px-6 py-3 text-gray-700 dark:text-gray-300 whitespace-nowrap">
-                        {req.donationTime}
+                        {req.status}
                       </td>
                       <td className="px-4 md:px-6 py-3 text-center whitespace-nowrap">
                         <button
@@ -114,7 +112,7 @@ const BloodRequests = () => {
                 px-4 md:px-5 py-2 bg-red-600 text-white rounded-lg font-semibold
                 shadow-[0_4px_16px_rgba(255,0,0,0.25)]
                 hover:bg-red-700 hover:shadow-[0_6px_20px_rgba(255,0,0,0.35)]
-                active:scale-95 transition-all
+                active:scale-95 transition-all cursor-pointer
               "
                         >
                           View

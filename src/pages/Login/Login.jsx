@@ -7,7 +7,7 @@ import Loading from '../../Components/Loading/Loading';
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { loginUser } = useContext(AuthContext);
+  const { loginUser, setLoading } = useContext(AuthContext);
   console.log(location);
 
   const {
@@ -25,6 +25,7 @@ const Login = () => {
       .catch(err => {
         console.log(err.message);
         alert(err.message); // simple error handling
+        setLoading(false);
       });
   };
 

@@ -7,14 +7,14 @@ import { PiMapPinPlusFill } from 'react-icons/pi';
 import { LuDroplets } from 'react-icons/lu';
 import useUserRole from '../../hooks/useUserRole';
 import Loading from '../../Components/Loading/Loading';
-import { use } from 'react';
+import { useContext } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 
 const DashBoardLayout = () => {
-  const { role } = useUserRole();
+  const { role, isLoading } = useUserRole();
 
-  const { loading } = use(AuthContext);
-  if (loading) {
+  const { loading } = useContext(AuthContext);
+  if (loading || isLoading) {
     return <Loading></Loading>;
   }
 
@@ -55,7 +55,7 @@ const DashBoardLayout = () => {
       </li>
 
       {/* Donor Links */}
-      {role === 'donor' && (
+      {(role === 'admin' || role === 'donor') && (
         <>
           <li>
             <NavLink

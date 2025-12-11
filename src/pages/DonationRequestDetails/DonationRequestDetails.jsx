@@ -1,22 +1,51 @@
 import React, { useContext, useState } from 'react';
-import { useLoaderData, useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { AuthContext } from '../../context/AuthContext';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 import Swal from 'sweetalert2';
+import { useQuery } from '@tanstack/react-query';
+import Loading from '../../Components/Loading/Loading';
+import { FaArrowLeft } from 'react-icons/fa';
 // import useAxiosSecure from '../../hooks/useAxiosSecure';
 // import { useParams } from 'react-router';
 
 const DonationRequestDetails = () => {
   const { id } = useParams();
-  console.log(id);
-  const { user } = useContext(AuthContext);
-
-  const requestData = useLoaderData();
-  console.log(requestData);
-
-  const [status, setStatus] = useState(requestData.status);
-  const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
   const axiosSecure = useAxiosSecure();
+  const { user } = useContext(AuthContext);
+  const [showModal, setShowModal] = useState(false);
+
+  const {
+    data: requestData = {},
+    isLoading,
+    refetch,
+    error,
+  } = useQuery({
+    queryKey: ['singleRequest', id],
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/donationRequests/${id}`);
+      console.log(res.data);
+      return res.data;
+    },
+    enabled: !!id,
+  });
+
+  const handleConfirmDonation = async () => {
+    const donorInfo = { name: user?.displayName, email: user?.email };
+    const res = await axiosSecure.patch(`/donationRequests/${id}/status`, {
+      status: 'inprogress',
+      donor: donorInfo,
+    });
+    if (res.data.modifiedCount) {
+      await refetch(); // ✅ UI update হবে
+      setShowModal(false);
+      Swal.fire('Updated!', `Status changed to inprogress`, 'success');
+    }
+  };
+
+  if (isLoading) return <Loading></Loading>;
+  if (error) return <p>Something went wrong</p>;
 
   const statusColor = {
     pending:
@@ -26,27 +55,6 @@ const DonationRequestDetails = () => {
     done: 'px-2 py-1 rounded-full text-sm font-semibold bg-green-100 text-green-800 capitalize',
     canceled:
       'px-2 py-1 rounded-full text-sm font-semibold bg-red-100 text-red-800 capitalize',
-  };
-
-  const handleConfirmDonation = async () => {
-    const donorInfo = {
-      name: user?.displayName,
-      email: user?.email,
-    };
-    try {
-      const res = await axiosSecure.patch(`/donationRequests/${id}/status`, {
-        status: 'inprogress',
-        donor: donorInfo,
-      });
-      if (res.data.modifiedCount) {
-        setStatus('inprogress');
-        setShowModal(false);
-        Swal.fire('Updated!', `Status changed to inprogress`, 'success');
-      }
-    } catch (err) {
-      console.error(err);
-      Swal.fire('Error!', 'Something went wrong', 'error');
-    }
   };
 
   return (
@@ -60,6 +68,12 @@ const DonationRequestDetails = () => {
       <div className="relative z-10 max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10 items-center">
         {/* Details */}
         <div className="bg-white/70 dark:bg-[#1a1a1a]/70 backdrop-blur-xl rounded-3xl p-10 shadow-[0_12px_30px_rgba(255,0,0,0.2)] border border-red-500/20 hover:shadow-[0_15px_40px_rgba(255,0,0,0.3)] transition-all duration-500 col-span-2">
+          <button
+            onClick={() => navigate(-1)}
+            className=" text-red-200/50 shadow cursor-pointer hover:scale-125 hover:text-red-200 transition"
+          >
+            <FaArrowLeft size={20} />
+          </button>
           <h2 className="text-3xl font-extrabold text-red-700 dark:text-red-400 mb-6">
             Donation Request Details
           </h2>
@@ -121,14 +135,16 @@ const DonationRequestDetails = () => {
               </p>
               <p>
                 <span className="font-semibold text-red-100">Status:</span>{' '}
-                <span className={statusColor[status]}>{status}</span>
+                <span className={statusColor[requestData.status]}>
+                  {requestData.status}
+                </span>
               </p>
             </div>
           </div>
 
           <button
             onClick={() => setShowModal(true)}
-            disabled={status !== 'pending'}
+            disabled={requestData.status !== 'pending'}
             className="mt-8 w-full px-6 py-3 bg-red-600 text-white rounded-2xl font-bold shadow-[0_6px_20px_rgba(255,0,0,0.4)] hover:shadow-[0_8px_30px_rgba(255,0,0,0.5)] hover:scale-105 transition-all disabled:bg-red-300 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:shadow-[0_0px_0px_rgba(255,0,0,0.5)]"
           >
             Donate

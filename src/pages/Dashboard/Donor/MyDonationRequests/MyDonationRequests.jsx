@@ -15,12 +15,14 @@ const MyDonationRequests = () => {
   const { user } = useContext(AuthContext);
   const axiosSecure = useAxiosSecure();
 
-  const { data: requests = [], refetch } = useQuery({
+  const {
+    data: requests = [],
+    refetch,
+    isLoading,
+  } = useQuery({
     queryKey: ['myDonationRequests', user?.email],
     queryFn: async () => {
-      const res = await axiosSecure.get(
-        `/donationRequests?email=${user.email}`
-      );
+      const res = await axiosSecure.get(`/donationRequests/my`);
       return res.data;
     },
   });
@@ -113,7 +115,7 @@ const MyDonationRequests = () => {
 
       {/* Table */}
       <div className="w-full max-w-7xl mx-auto overflow-x-auto bg-white border border-red-500/20 rounded-3xl shadow-[0_0_25px_rgba(255,0,0,0.08)]">
-        {loading ? (
+        {loading || isLoading ? (
           <LoadingSpin></LoadingSpin>
         ) : (
           <>

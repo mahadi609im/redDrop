@@ -25,11 +25,9 @@ const DonorHome = () => {
   const axiosSecure = useAxiosSecure();
 
   const { data: requests = [], refetch } = useQuery({
-    queryKey: ['myParcels', user?.email],
+    queryKey: ['myDonationRequests', user?.email],
     queryFn: async () => {
-      const res = await axiosSecure.get(
-        `/donationRequests?email=${user.email}`
-      );
+      const res = await axiosSecure.get(`/donationRequests/my`);
       console.log(res.data);
       return res.data;
     },

@@ -7,10 +7,37 @@ const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
 const MyDonationEdit = () => {
   const navigate = useNavigate();
+  const { id } = useParams();
+  const requestData = useLoaderData();
+  const axiosSecure = useAxiosSecure();
+
   const [districts, setDistricts] = useState([]);
   const [upazilas, setUpazilas] = useState([]);
 
-  // Load districts & upazilas (you can replace with actual JSON)
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+    reset,
+    setValue,
+  } = useForm({
+    defaultValues: {
+      recipientName: requestData.recipientName || '',
+      hospitalName: requestData.hospitalName || '',
+      district: requestData.district || '',
+      upazila: requestData.upazila || '',
+      fullAddress: requestData.fullAddress || '',
+      bloodGroup: requestData.bloodGroup || '',
+      donationDate: requestData.donationDate || '',
+      donationTime: requestData.donationTime || '',
+      requestMessage: requestData.requestMessage || '',
+    },
+  });
+
+  const watchedDistrict = watch('district');
+
+  // Load district & upazila JSON data
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -25,56 +52,70 @@ const MyDonationEdit = () => {
         console.error('Error loading JSON files:', error);
       }
     };
-
     loadData();
   }, []);
 
-  const district = districts.map(d => d.name);
-
-  const requestData = useLoaderData();
-  const axiosSecure = useAxiosSecure();
-
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-    reset,
-  } = useForm({
-    defaultValues: requestData,
-  });
-
-  const donorUpazilas = watch('district');
-
   // Filter upazilas based on selected district
-  const upazilaByDistricts = district => {
-    const districtObj = districts.find(d => d.name === district);
-    const districtId = districtObj?.id;
-    const districtUpazilas = upazilas.filter(d => d.district_id === districtId);
-    const upazila = districtUpazilas.map(u => u.name);
-    return upazila;
+  const filteredUpazilas = () => {
+    if (!watchedDistrict) return [];
+    const districtObj = districts.find(d => d.name === watchedDistrict);
+    if (!districtObj) return [];
+    return upazilas
+      .filter(u => u.district_id === districtObj.id)
+      .map(u => u.name);
   };
 
-  const { id } = useParams();
-  console.log(id);
+  // Auto-fill upazila when page loads
+  useEffect(() => {
+    if (requestData.upazila) {
+      setValue('upazila', requestData.upazila);
+    }
+  }, [requestData.upazila, setValue]);
 
+  // Reset upazila if district changes
+  useEffect(() => {
+    if (watchedDistrict && watchedDistrict !== requestData.district) {
+      setValue('upazila', '');
+    }
+  }, [watchedDistrict, requestData.district, setValue]);
+
+  // Form submit handler
   const handleEditDonationRequests = async data => {
     try {
-      const res = await axiosSecure.patch(`/donationRequests/${id}`, data);
-      console.log(res.data);
+      const allowedFields = [
+        'recipientName',
+        'hospitalName',
+        'district',
+        'upazila',
+        'fullAddress',
+        'bloodGroup',
+        'donationDate',
+        'donationTime',
+        'requestMessage',
+      ];
+      const filteredData = {};
+      allowedFields.forEach(f => {
+        if (data[f] !== undefined) filteredData[f] = data[f];
+      });
+
+      const res = await axiosSecure.patch(
+        `/donationRequests/${id}`,
+        filteredData
+      );
+
       if (res.data.modifiedCount > 0) {
-        alert('Donation request updated successfully!');
-        reset();
+        alert('✅ Donation request updated successfully!');
+        reset(res.data);
         navigate('/dashboard/my-donation-requests');
-        console.log(res.data);
       } else {
-        alert('No changes detected.');
+        alert(
+          '⚠️ No changes detected or you are not allowed to update this request.'
+        );
       }
     } catch (err) {
       console.error(err);
-      alert('Something went wrong while updating.');
+      alert('❌ Something went wrong while updating.');
     }
-    console.log(data);
   };
 
   return (
@@ -129,13 +170,16 @@ const MyDonationEdit = () => {
             </label>
             <select
               {...register('district', { required: true })}
-              defaultValue="Pick a district"
-              className="select w-full px-4 py-3 rounded-xl bg-red-300 dark:bg-red-200 border border-gray-300 dark:border-red-800 text-gray-900 dark:text-gray-700 focus:outline-none focus:border-red-500"
+              value={watch('district')}
+              onChange={e => setValue('district', e.target.value)}
+              className="w-full px-4 py-3 rounded-xl bg-red-300 dark:bg-red-200 border border-gray-300 dark:border-red-800 text-gray-900 dark:text-gray-700 focus:outline-none focus:border-red-500"
             >
-              <option disabled={true}>Pick a district</option>
-              {district.map((d, i) => (
-                <option key={i} value={d}>
-                  {d}
+              <option disabled value="">
+                Pick a district
+              </option>
+              {districts.map(d => (
+                <option key={d.id} value={d.name}>
+                  {d.name}
                 </option>
               ))}
             </select>
@@ -144,25 +188,28 @@ const MyDonationEdit = () => {
             )}
           </div>
 
-          {/* upazila */}
+          {/* Upazila */}
           <div>
             <label className="block mb-1 font-medium text-gray-700">
-              upazila
+              Upazila
             </label>
             <select
               {...register('upazila', { required: true })}
-              defaultValue="Pick a upazila"
-              className="select w-full px-4 py-3 rounded-xl bg-red-300 dark:bg-red-200 border border-gray-300 dark:border-red-800 text-gray-900 dark:text-gray-700 focus:outline-none focus:border-red-500"
+              value={watch('upazila')}
+              onChange={e => setValue('upazila', e.target.value)}
+              className="w-full px-4 py-3 rounded-xl bg-red-300 dark:bg-red-200 border border-gray-300 dark:border-red-800 text-gray-900 dark:text-gray-700 focus:outline-none focus:border-red-500"
             >
-              <option disabled={true}>Pick a upazila</option>
-              {upazilaByDistricts(donorUpazilas).map((d, i) => (
-                <option key={i} value={d}>
-                  {d}
+              <option disabled value="">
+                Pick an upazila
+              </option>
+              {filteredUpazilas().map(u => (
+                <option key={u} value={u}>
+                  {u}
                 </option>
               ))}
             </select>
-            {errors.district && (
-              <p className="text-red-500 text-sm mt-1">District is required</p>
+            {errors.upazila && (
+              <p className="text-red-500 text-sm mt-1">Upazila is required</p>
             )}
           </div>
 

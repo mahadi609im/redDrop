@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router';
 import Navbar from '../../Components/Navbar/Navbar';
 import Footer from '../../Components/Footer/Footer';
+import Loading from '../../Components/Loading/Loading';
 
 const HomeLayout = () => {
   const isLoading = false;
@@ -12,7 +13,7 @@ const HomeLayout = () => {
           <Navbar />
         </header>
         <div className="flex flex-col min-h-screen h-full">
-          <h3>Loading..</h3>
+          <Loading></Loading>
         </div>
         <footer className="mt-20">
           <Footer />

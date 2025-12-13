@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { Link, useLocation, useNavigate } from 'react-router';
 import { AuthContext } from '../../context/AuthContext';
 import Loading from '../../Components/Loading/Loading';
+import { toast } from 'react-toastify';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -17,14 +18,16 @@ const Login = () => {
   } = useForm();
 
   const onSubmit = data => {
+    setLoading(true); // যদি তুমি loading state use করো
     loginUser(data.email, data.password)
       .then(userCredential => {
         console.log('Logged in user:', userCredential.user);
+        toast.success('Login successful!'); // success toast
         navigate(location?.state || '/'); // Redirect after login
       })
       .catch(err => {
         console.log(err.message);
-        alert(err.message); // simple error handling
+        toast.error(err.message); // error toast
         setLoading(false);
       });
   };

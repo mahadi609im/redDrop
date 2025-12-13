@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { useLoaderData, useNavigate, useParams } from 'react-router';
+import {
+  useLoaderData,
+  useLocation,
+  useNavigate,
+  useParams,
+} from 'react-router';
 import { useForm } from 'react-hook-form';
 import useAxiosSecure from '../../../../hooks/useAxiosSecure';
+import Swal from 'sweetalert2';
 
 const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
@@ -34,6 +40,10 @@ const MyDonationEdit = () => {
       requestMessage: requestData.requestMessage || '',
     },
   });
+
+  const location = useLocation();
+
+  console.log(location);
 
   const watchedDistrict = watch('district');
 
@@ -104,13 +114,24 @@ const MyDonationEdit = () => {
       );
 
       if (res.data.modifiedCount > 0) {
-        alert('✅ Donation request updated successfully!');
+        await Swal.fire({
+          icon: 'success',
+          title: 'Updated!',
+          text: 'Donation request updated successfully.',
+          confirmButtonColor: '#dc2626', // red theme
+          timer: 1800,
+          showConfirmButton: false,
+        });
+
         reset(res.data);
-        navigate('/dashboard/my-donation-requests');
+        navigate(location?.state || '/dashboard/my-donation-requests');
       } else {
-        alert(
-          '⚠️ No changes detected or you are not allowed to update this request.'
-        );
+        Swal.fire({
+          icon: 'warning',
+          title: 'No Changes',
+          text: 'No changes detected or you are not allowed to update this request.',
+          confirmButtonColor: '#dc2626',
+        });
       }
     } catch (err) {
       console.error(err);
@@ -137,7 +158,7 @@ const MyDonationEdit = () => {
             <input
               type="text"
               {...register('recipientName', { required: true })}
-              className="w-full px-4 py-3 rounded-xl bg-red-300 dark:bg-red-500/10 border border-gray-300 dark:border-red-800/50 text-gray-900 dark:text-gray-500 focus:outline-none focus:border-red-500"
+              className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-red-800/50 text-slate-400 focus:outline-none focus:border-red-500"
             />
             {errors.recipientName && (
               <p className="text-red-500 text-sm mt-1">
@@ -154,7 +175,7 @@ const MyDonationEdit = () => {
             <input
               type="text"
               {...register('hospitalName', { required: true })}
-              className="w-full px-4 py-3 rounded-xl bg-red-300 dark:bg-red-500/10 border border-gray-300 dark:border-red-800/50 text-gray-900 dark:text-gray-500 focus:outline-none focus:border-red-500"
+              className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-red-800/50 text-slate-400 focus:outline-none focus:border-red-500"
             />
             {errors.hospitalName && (
               <p className="text-red-500 text-sm mt-1">
@@ -172,7 +193,7 @@ const MyDonationEdit = () => {
               {...register('district', { required: true })}
               value={watch('district')}
               onChange={e => setValue('district', e.target.value)}
-              className="w-full px-4 py-3 rounded-xl bg-red-300 dark:bg-red-200 border border-gray-300 dark:border-red-800 text-gray-900 dark:text-gray-700 focus:outline-none focus:border-red-500"
+              className="w-full px-4 py-3 rounded-xl  border border-gray-300 dark:border-red-800/50 text-gray-900 dark:text-slate-400 focus:outline-none focus:border-red-500"
             >
               <option disabled value="">
                 Pick a district
@@ -197,7 +218,7 @@ const MyDonationEdit = () => {
               {...register('upazila', { required: true })}
               value={watch('upazila')}
               onChange={e => setValue('upazila', e.target.value)}
-              className="w-full px-4 py-3 rounded-xl bg-red-300 dark:bg-red-200 border border-gray-300 dark:border-red-800 text-gray-900 dark:text-gray-700 focus:outline-none focus:border-red-500"
+              className="w-full px-4 py-3 rounded-xl  border border-gray-300 dark:border-red-800/50 text-gray-900 dark:text-slate-400 focus:outline-none focus:border-red-500"
             >
               <option disabled value="">
                 Pick an upazila
@@ -221,7 +242,7 @@ const MyDonationEdit = () => {
             <input
               type="text"
               {...register('fullAddress', { required: true })}
-              className="w-full px-4 py-3 rounded-xl bg-red-300 dark:bg-red-500/10 border border-gray-300 dark:border-red-800/50 text-gray-900 dark:text-gray-500 focus:outline-none focus:border-red-500"
+              className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-red-800/50 text-slate-400 focus:outline-none focus:border-red-500"
             />
             {errors.fullAddress && (
               <p className="text-red-500 text-sm mt-1">
@@ -237,7 +258,7 @@ const MyDonationEdit = () => {
             </label>
             <select
               {...register('bloodGroup', { required: true })}
-              className="w-full px-4 py-3 rounded-xl bg-red-300 dark:bg-red-500/10 border border-gray-300 dark:border-red-800/50 text-gray-900 dark:text-gray-500 focus:outline-none focus:border-red-500"
+              className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-red-800/50 text-slate-400 focus:outline-none focus:border-red-500"
             >
               <option value="">Select Blood Group</option>
               {bloodGroups.map(bg => (
@@ -261,7 +282,7 @@ const MyDonationEdit = () => {
             <input
               type="date"
               {...register('donationDate', { required: true })}
-              className="w-full px-4 py-3 rounded-xl bg-red-300 dark:bg-red-500/10 border border-gray-300 dark:border-red-800/50 text-gray-900 dark:text-gray-500 focus:outline-none focus:border-red-500"
+              className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-red-800/50 text-slate-400 focus:outline-none focus:border-red-500"
             />
             {errors.donationDate && (
               <p className="text-red-500 text-sm mt-1">
@@ -278,7 +299,7 @@ const MyDonationEdit = () => {
             <input
               type="time"
               {...register('donationTime', { required: true })}
-              className="w-full px-4 py-3 rounded-xl bg-red-300 dark:bg-red-500/10 border border-gray-300 dark:border-red-800/50 text-gray-900 dark:text-gray-500 focus:outline-none focus:border-red-500"
+              className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-red-800/50 text-slate-400 focus:outline-none focus:border-red-500"
             />
             {errors.donationTime && (
               <p className="text-red-500 text-sm mt-1">
@@ -295,7 +316,7 @@ const MyDonationEdit = () => {
             <textarea
               {...register('requestMessage', { required: true })}
               rows={4}
-              className="w-full px-4 py-3 rounded-xl bg-red-300 dark:bg-red-500/10 border border-gray-300 dark:border-red-800/50 text-gray-900 dark:text-gray-500 focus:outline-none focus:border-red-500"
+              className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-red-800/50 text-slate-400 focus:outline-none focus:border-red-500"
             />
             {errors.requestMessage && (
               <p className="text-red-500 text-sm mt-1">

@@ -103,7 +103,7 @@ const BloodRequests = () => {
                         {req.donationDate}
                       </td>
                       <td className="px-4 md:px-6 py-3 text-gray-700 dark:text-gray-300 whitespace-nowrap">
-                        {req.status}
+                        {req.donationTime}
                       </td>
                       <td className="px-4 md:px-6 py-3 text-center whitespace-nowrap">
                         <button

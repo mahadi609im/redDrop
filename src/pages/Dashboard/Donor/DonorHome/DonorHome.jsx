@@ -1,4 +1,4 @@
-import { useNavigate, Link } from 'react-router';
+import { useNavigate, Link, useLocation } from 'react-router';
 import { FaCheck, FaTimes, FaEdit, FaTrash, FaEye } from 'react-icons/fa';
 import useAxiosSecure from '../../../../hooks/useAxiosSecure';
 import { useQuery } from '@tanstack/react-query';
@@ -23,6 +23,8 @@ const DonorHome = () => {
   const { user } = useContext(AuthContext);
 
   const axiosSecure = useAxiosSecure();
+  const location = useLocation();
+  console.log(location);
 
   const { data: requests = [], refetch } = useQuery({
     queryKey: ['myDonationRequests', user?.email],
@@ -59,6 +61,54 @@ const DonorHome = () => {
     });
   };
 
+  const handleStatusChange = async (id, newStatus) => {
+    // 1️⃣ Confirm modal
+    const confirm = await Swal.fire({
+      title: 'Are you sure?',
+      text: `Do you want to change status to "${newStatus}"?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, change it!',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+    });
+
+    // ❌ User cancelled
+    if (!confirm.isConfirmed) return;
+
+    try {
+      // 2️⃣ API call
+      const res = await axiosSecure.patch(`/donationRequests/${id}/status`, {
+        status: newStatus,
+      });
+
+      // 3️⃣ Success feedback
+      if (res.data.modifiedCount > 0) {
+        refetch();
+        Swal.fire({
+          icon: 'success',
+          title: 'Updated!',
+          text: `Status changed to "${newStatus}"`,
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      } else {
+        Swal.fire({
+          icon: 'warning',
+          title: 'No changes',
+          text: 'Status could not be updated.',
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error!',
+        text: 'Something went wrong',
+      });
+    }
+  };
   // Limit to maximum 3 recent requests
   const recentRequests = requests.slice(0, 3);
   const { loading } = use(AuthContext);
@@ -141,12 +191,18 @@ const DonorHome = () => {
                         {req.status === 'inprogress' && (
                           <>
                             <button
+                              onClick={() =>
+                                handleStatusChange(req._id, 'done')
+                              }
                               className="p-2 rounded-full border border-green-700 bg-green-700/30 text-green-700 shadow hover:bg-green-700/50 transition"
                               title="Mark Done"
                             >
                               <FaCheck />
                             </button>
                             <button
+                              onClick={() =>
+                                handleStatusChange(req._id, 'canceled')
+                              }
                               className="p-2 rounded-full border border-red-700 bg-red-700/30 text-red-700 shadow hover:bg-red-700/50 transition"
                               title="Mark Canceled"
                             >
@@ -154,18 +210,14 @@ const DonorHome = () => {
                             </button>
                           </>
                         )}
-
-                        {/* Edit button only for pending or inprogress */}
-                        {(req.status === 'pending' ||
-                          req.status === 'inprogress') && (
-                          <Link
-                            to={`/dashboard/edit-donation/${req.id}`}
-                            className="p-2 rounded-full border border-yellow-600 bg-yellow-600/30 text-yellow-600 shadow hover:bg-yellow-600/50 transition"
-                            title="Edit Request"
-                          >
-                            <FaEdit />
-                          </Link>
-                        )}
+                        <Link
+                          state={location?.pathname}
+                          to={`/dashboard/edit-donation/${req._id}`}
+                          className="p-2 rounded-full border border-yellow-600 bg-yellow-600/30 text-yellow-600 shadow hover:bg-yellow-600/50 transition"
+                          title="Edit Request"
+                        >
+                          <FaEdit />
+                        </Link>
 
                         {/* Delete button for all statuses */}
                         <button

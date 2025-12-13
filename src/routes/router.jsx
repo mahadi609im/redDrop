@@ -26,7 +26,9 @@ import MyDonationEdit from '../pages/Dashboard/Donor/MyDonationEdit/MyDonationEd
 import PrivateRoute from '../Components/PrivateRoute/PrivateRoute';
 import AdminPrivateRoute from '../Components/PrivateRoute/AdminPrivateRoute';
 import VAPrivate from '../Components/PrivateRoute/VAPrivate';
+import SearchedUserDetails from '../pages/SearchedUserDetails/SearchedUserDetails';
 import DAPrivate from '../Components/PrivateRoute/DAPrivate';
+import GiveFund from '../pages/GiveFund/GiveFund';
 
 const router = createBrowserRouter([
   {
@@ -50,6 +52,14 @@ const router = createBrowserRouter([
         element: <SearchPage />,
       },
       {
+        path: '/searchedUser-details/:searchedEmail',
+        element: (
+          <PrivateRoute>
+            <SearchedUserDetails></SearchedUserDetails>
+          </PrivateRoute>
+        ),
+      },
+      {
         path: '/blood-requests',
         element: <BloodRequests />,
       },
@@ -58,6 +68,14 @@ const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <DonationRequestDetails></DonationRequestDetails>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: '/give-fund',
+        element: (
+          <PrivateRoute>
+            <GiveFund></GiveFund>
           </PrivateRoute>
         ),
       },
@@ -100,9 +118,9 @@ const router = createBrowserRouter([
       {
         path: 'donation-details/:id',
         element: (
-          <PrivateRoute>
+          <DAPrivate>
             <MyDonationDetails></MyDonationDetails>
-          </PrivateRoute>
+          </DAPrivate>
         ),
         loader: ({ params }) =>
           fetch(`http://localhost:3000/donationRequests/${params.id}`),
@@ -119,11 +137,7 @@ const router = createBrowserRouter([
       },
       {
         path: 'create-donation-request',
-        element: (
-          <DAPrivate>
-            <CreateDonationRequest />
-          </DAPrivate>
-        ),
+        element: <CreateDonationRequest />,
       },
 
       // Admin only pages

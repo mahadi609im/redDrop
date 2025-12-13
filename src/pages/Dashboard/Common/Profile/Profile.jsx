@@ -3,7 +3,8 @@ import { useForm } from 'react-hook-form';
 import { AuthContext } from '../../../../context/AuthContext';
 import useAxiosSecure from '../../../../hooks/useAxiosSecure';
 import { useQuery } from '@tanstack/react-query';
-import { FiEdit3, FiSave } from 'react-icons/fi';
+import { FiEdit3, FiSave, FiXCircle } from 'react-icons/fi';
+import useUserRole from '../../../../hooks/useUserRole';
 
 const Profile = () => {
   const [editMode, setEditMode] = useState(false);
@@ -14,6 +15,7 @@ const Profile = () => {
   const [photoPreview, setPhotoPreview] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
+  const { statusData } = useUserRole();
 
   const {
     register,
@@ -153,13 +155,13 @@ const Profile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-red-50 to-rose-100 flex items-center justify-center px-4 py-10">
+    <div className="min-h-screen bg-linear-to-br from-rose-50 via-red-50 to-rose-100 flex items-center justify-center px-4 py-10">
       <div className="relative w-full max-w-3xl">
-        <div className="absolute -inset-1 bg-gradient-to-r from-rose-400/40 via-red-500/40 to-amber-400/40 blur-3xl -z-10 opacity-70" />
+        <div className="absolute -inset-1 bg-linear-to-r from-rose-400/40 via-red-500/40 to-amber-400/40 blur-3xl -z-10 opacity-70" />
 
         <div className="bg-white/80 backdrop-blur-xl border border-rose-100/80 rounded-2xl shadow-xl overflow-hidden">
           {/* Header */}
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 px-6 py-5 border-b border-rose-100 bg-gradient-to-r from-rose-600 to-red-600">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 px-6 py-5 border-b border-rose-100 bg-linear-to-r from-rose-600 to-red-600">
             <div>
               <p className="text-xs uppercase tracking-[0.2em] text-rose-100/80">
                 Account
@@ -167,68 +169,81 @@ const Profile = () => {
               <h2 className="text-2xl md:text-3xl font-semibold text-white">
                 My Profile
               </h2>
-              <p className="text-xs md:text-sm text-rose-100/90 mt-1">
-                Update your personal and donation information
-              </p>
+              {statusData === 'active' ? (
+                <p className="text-xs md:text-sm text-rose-100/90 mt-1">
+                  Update your personal and donation information
+                </p>
+              ) : (
+                <p className="text-xs md:text-sm text-rose-100/90 mt-1">
+                  Your profile is blocked. You cannot update it.
+                </p>
+              )}
             </div>
-
             <div className="flex items-center gap-3">
-              {editMode && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setEditMode(false);
-                    setProfilePhoto(null);
-                    setPhotoPreview(null);
-                    reset({
-                      name: userInfo.displayName,
-                      email: userInfo.email,
-                      district: userInfo.district,
-                      upazila: userInfo.upazila,
-                      bloodGroup: userInfo.bloodGroup,
-                    });
-                  }}
-                  className="px-4 py-2 rounded-full text-sm font-medium border border-white/40 text-rose-50 bg-white/10 hover:bg-white/20 transition"
-                  disabled={isSubmitting}
-                >
-                  Cancel
-                </button>
-              )}
-              {/* EDIT BUTTON (Only when NOT in editMode) */}
-              {!editMode && (
-                <button
-                  type="button"
-                  onClick={() => setEditMode(true)}
-                  className="px-5 py-2.5 rounded-full text-sm font-semibold shadow-md transition flex items-center gap-2
-               bg-white text-rose-700 hover:bg-rose-50"
-                >
-                  <FiEdit3 className="w-4 h-4" />
-                  Edit Profile
-                </button>
-              )}
-
-              {/* SAVE BUTTON (Only when IN editMode) */}
-              {editMode && (
-                <button
-                  type="submit"
-                  form="profileForm"
-                  disabled={isSubmitting}
-                  className={`px-5 py-2.5 rounded-full text-sm font-semibold shadow-md transition flex items-center gap-2
-               bg-green-500 text-white hover:bg-emerald-400
-               ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
-                >
-                  {isSubmitting ? (
-                    <>
-                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      Saving...
-                    </>
-                  ) : (
-                    <>
-                      <FiSave className="w-4 h-4" />
-                      Save Changes
-                    </>
+              {statusData === 'active' ? (
+                <>
+                  {editMode && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setEditMode(false);
+                        setProfilePhoto(null);
+                        setPhotoPreview(null);
+                        reset({
+                          name: userInfo.displayName,
+                          email: userInfo.email,
+                          district: userInfo.district,
+                          upazila: userInfo.upazila,
+                          bloodGroup: userInfo.bloodGroup,
+                        });
+                      }}
+                      className="px-4 py-2 rounded-full text-sm font-medium border border-white/40 text-rose-50 bg-white/10 hover:bg-white/20 transition"
+                      disabled={isSubmitting}
+                    >
+                      Cancel
+                    </button>
                   )}
-                </button>
+                  {/* EDIT BUTTON */}
+                  {!editMode && (
+                    <button
+                      type="button"
+                      onClick={() => setEditMode(true)}
+                      className="px-5 py-2.5 rounded-full text-sm font-semibold shadow-md transition flex items-center gap-2
+           bg-white text-rose-700 hover:bg-rose-50"
+                    >
+                      <FiEdit3 className="w-4 h-4" />
+                      Edit Profile
+                    </button>
+                  )}
+
+                  {/* SAVE BUTTON */}
+                  {editMode && (
+                    <button
+                      type="submit"
+                      form="profileForm"
+                      disabled={isSubmitting}
+                      className={`px-5 py-2.5 rounded-full text-sm font-semibold shadow-md transition flex items-center gap-2
+           bg-green-500 text-white hover:bg-emerald-400
+           ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                          Saving...
+                        </>
+                      ) : (
+                        <>
+                          <FiSave className="w-4 h-4" />
+                          Save Changes
+                        </>
+                      )}
+                    </button>
+                  )}
+                </>
+              ) : (
+                <div className="flex items-center gap-2 px-4 py-2 rounded-full text-base font-medium bg-red-600 text-white">
+                  <FiXCircle className="w-8 h-8" />
+                </div>
               )}
             </div>
           </div>
@@ -237,7 +252,7 @@ const Profile = () => {
           <div className="px-6 pt-6 pb-2">
             <div className="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8">
               <div className="relative">
-                <div className="w-28 h-28 rounded-2xl bg-gradient-to-br from-rose-100 to-rose-200 border border-rose-100 shadow-lg flex items-center justify-center overflow-hidden">
+                <div className="w-28 h-28 rounded-2xl bg-linear-to-br from-rose-100 to-rose-200 border border-rose-100 shadow-lg flex items-center justify-center overflow-hidden">
                   <img
                     src={photoPreview || userInfo?.photoURL}
                     alt="avatar"
@@ -256,7 +271,7 @@ const Profile = () => {
                     />
                     <label
                       htmlFor="profilePhoto"
-                      className="cursor-pointer bg-gradient-to-r from-red-600 to-rose-600 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-lg hover:shadow-xl transition-all flex items-center gap-1"
+                      className="cursor-pointer bg-linear-to-r from-red-600 to-rose-600 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-lg hover:shadow-xl transition-all flex items-center gap-1"
                     >
                       📷 Change
                     </label>
@@ -264,7 +279,7 @@ const Profile = () => {
                 ) : (
                   <>
                     {userInfo.bloodGroup && (
-                      <div className="absolute -bottom-2 -right-2 px-3 py-1.5 bg-gradient-to-r from-red-600 to-rose-600 text-white text-xs font-semibold rounded-full shadow-lg flex items-center gap-1">
+                      <div className="absolute -bottom-2 -right-2 px-3 py-1.5 bg-linear-to-r from-red-600 to-rose-600 text-white text-xs font-semibold rounded-full shadow-lg flex items-center gap-1">
                         <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-white/15">
                           🩸
                         </span>
@@ -470,12 +485,23 @@ const Profile = () => {
           </form>
 
           <div className="px-6 pb-4 pt-3 bg-rose-50/60 border-t border-rose-100 flex flex-wrap gap-3 justify-between">
-            <div className="flex items-center gap-2 text-xs text-rose-600 font-medium">
-              <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-rose-600 text-white text-[10px]">
-                ✓
+            <div
+              className={`flex items-center gap-2 text-xs font-medium ${
+                statusData === 'active' ? 'text-green-600' : 'text-red-600'
+              }`}
+            >
+              <span
+                className={`inline-flex h-5 w-5 items-center justify-center rounded-full text-[10px] ${
+                  statusData === 'active'
+                    ? 'bg-green-600 text-white'
+                    : 'bg-red-600 text-white'
+                }`}
+              >
+                {statusData === 'active' ? '✓' : '✕'}
               </span>
-              Profile verified
+              {statusData === 'active' ? 'Active user' : 'Blocked user'}
             </div>
+
             <div className="flex items-center gap-2 text-xs text-rose-600/80">
               <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-white text-rose-500 border border-rose-200 text-[11px]">
                 🩺

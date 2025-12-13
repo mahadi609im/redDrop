@@ -2,6 +2,7 @@ import { Outlet } from 'react-router';
 import Navbar from '../../Components/Navbar/Navbar';
 import Footer from '../../Components/Footer/Footer';
 import Loading from '../../Components/Loading/Loading';
+import { Bounce, ToastContainer } from 'react-toastify';
 
 const HomeLayout = () => {
   const isLoading = false;
@@ -33,6 +34,19 @@ const HomeLayout = () => {
       <footer>
         <Footer />
       </footer>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Bounce}
+      />
     </div>
   );
 };

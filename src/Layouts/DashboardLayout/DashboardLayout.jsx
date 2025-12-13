@@ -2,19 +2,20 @@ import { Link, NavLink, Outlet } from 'react-router';
 import { FaHome, FaUsers } from 'react-icons/fa';
 import { BiSolidDonateHeart } from 'react-icons/bi';
 import logo from '../../assets/blood-logo.png';
-import { MdBloodtype } from 'react-icons/md';
 import { PiMapPinPlusFill } from 'react-icons/pi';
 import { LuDroplets } from 'react-icons/lu';
 import useUserRole from '../../hooks/useUserRole';
 import Loading from '../../Components/Loading/Loading';
 import { useContext } from 'react';
 import { AuthContext } from '../../context/AuthContext';
+import { Bounce, ToastContainer } from 'react-toastify';
 
 const DashBoardLayout = () => {
-  const { role, isLoading } = useUserRole();
+  const { role, isLoading, statusData, statusLoading } = useUserRole();
+  console.log(role, statusData);
 
   const { loading } = useContext(AuthContext);
-  if (loading || isLoading) {
+  if (loading || isLoading || statusLoading) {
     return <Loading></Loading>;
   }
 
@@ -53,9 +54,23 @@ const DashBoardLayout = () => {
           </span>
         </NavLink>
       </li>
+      {statusData === 'active' && (
+        <li>
+          <NavLink
+            to="/dashboard/create-donation-request"
+            className="is-drawer-close:tooltip is-drawer-close:tooltip-right flex items-center"
+            data-tip="Create Donation"
+          >
+            <PiMapPinPlusFill className="my-1.5 inline-block size-5 font-bold text-red-600 -rotate-180" />
+            <span className="is-drawer-close:hidden ml-2 text-red-700 font-medium">
+              Create Donation
+            </span>
+          </NavLink>
+        </li>
+      )}
 
       {/* Donor Links */}
-      {(role === 'admin' || role === 'donor') && (
+      {(role === 'admin' || (role === 'donor' && statusData == 'active')) && (
         <>
           <li>
             <NavLink
@@ -66,19 +81,6 @@ const DashBoardLayout = () => {
               <BiSolidDonateHeart className="my-1.5 inline-block size-5 font-bold text-red-600" />
               <span className="is-drawer-close:hidden ml-2 text-red-700 font-medium">
                 My Donations
-              </span>
-            </NavLink>
-          </li>
-
-          <li>
-            <NavLink
-              to="/dashboard/create-donation-request"
-              className="is-drawer-close:tooltip is-drawer-close:tooltip-right flex items-center"
-              data-tip="Create Donation"
-            >
-              <PiMapPinPlusFill className="my-1.5 inline-block size-5 font-bold text-red-600 -rotate-180" />
-              <span className="is-drawer-close:hidden ml-2 text-red-700 font-medium">
-                Create Donation
               </span>
             </NavLink>
           </li>
@@ -121,11 +123,11 @@ const DashBoardLayout = () => {
           <NavLink
             to="/dashboard/all-blood-requests"
             className="is-drawer-close:tooltip is-drawer-close:tooltip-right flex items-center"
-            data-tip="Blood Requests"
+            data-tip="All Blood Donation"
           >
-            <MdBloodtype className="my-1.5 inline-block size-5 font-bold text-red-600" />
+            <LuDroplets className="my-1.5 inline-block size-5 font-bold text-red-600" />
             <span className="is-drawer-close:hidden ml-2 text-red-700 font-medium">
-              Blood Requests
+              All Blood Donation
             </span>
           </NavLink>
         </li>
@@ -178,6 +180,19 @@ const DashBoardLayout = () => {
           <ul className="menu w-full grow space-y-3 p-3">{links}</ul>
         </div>
       </div>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Bounce}
+      />
     </div>
   );
 };

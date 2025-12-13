@@ -6,12 +6,14 @@ import { AuthContext } from '../../context/AuthContext';
 import axios from 'axios';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 import Loading from '../../Components/Loading/Loading';
+import { toast } from 'react-toastify';
 
 const Register = () => {
   const [districts, setDistricts] = useState([]);
   const [upazilas, setUpazilas] = useState([]);
   const [selectedDistrict, setSelectedDistrict] = useState('');
-  const { registerUser, updateUserProfile } = useContext(AuthContext);
+  const { registerUser, updateUserProfile, setLoading } =
+    useContext(AuthContext);
   const navigate = useNavigate('/');
 
   const [showPassword, setShowPassword] = useState(false);
@@ -57,41 +59,60 @@ const Register = () => {
           import.meta.env.VITE_IMAGE_HOST
         }`;
 
-        axios.post(image_api_key, formData).then(res => {
-          const photoURL = res.data.data.url;
+        axios
+          .post(image_api_key, formData)
+          .then(res => {
+            const photoURL = res.data.data.url;
 
-          // Create user in the db
+            // Create user in the db
+            const userInfo = {
+              email: data.email,
+              displayName: data.name,
+              photoURL: photoURL,
+              bloodGroup: data.bloodGroup,
+              district: data.district,
+              upazila: data.upazila,
+            };
 
-          const userInfo = {
-            email: data.email,
-            displayName: data.name,
-            photoURL: photoURL,
-            bloodGroup: data.bloodGroup,
-            district: data.district,
-            upazila: data.upazila,
-          };
+            axiosSecure
+              .post('/users', userInfo)
+              .then(res => {
+                if (res.data.insertedId) {
+                  console.log(res.data);
+                  toast.success('Registration successful!');
+                }
+              })
+              .catch(err => {
+                console.log(err);
+                toast.error('Failed to save user in database.');
+              });
 
-          axiosSecure.post('/users', userInfo).then(res => {
-            if (res.data.insertedId) {
-              console.log(res.data);
-            }
+            // update user profile
+            const updateProfile = {
+              displayName: data.name,
+              photoURL: photoURL,
+            };
+
+            updateUserProfile(updateProfile)
+              .then(result => {
+                console.log(result);
+                navigate('/');
+              })
+              .catch(error => {
+                console.log(error);
+                toast.error('Failed to update profile.');
+              });
+          })
+          .catch(err => {
+            console.log(err);
+            toast.error('Image upload failed.');
           });
-
-          // update user profile  here
-          const updateProfile = {
-            displayName: data.name,
-            photoURL: photoURL,
-          };
-
-          updateUserProfile(updateProfile)
-            .then(result => {
-              console.log(result);
-              navigate('/');
-            })
-            .catch(error => console.log(error));
-        });
       })
-      .catch(error => console.log(error));
+      .catch(error => {
+        console.log(error);
+        setLoading(false);
+        toast.error(error.message || 'Registration failed.');
+      });
   };
 
   const { loading } = use(AuthContext);

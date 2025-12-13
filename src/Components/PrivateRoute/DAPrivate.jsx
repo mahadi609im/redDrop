@@ -6,11 +6,15 @@ import { AuthContext } from '../../context/AuthContext';
 
 const DAPrivate = ({ children }) => {
   const { loading } = useContext(AuthContext);
-  const { role, isLoading } = useUserRole();
+  const { role, isLoading, statusData, statusLoading } = useUserRole();
 
-  if (loading || isLoading) return <Loading />;
+  if (loading || isLoading || statusLoading) return <Loading />;
 
-  return role === 'donor' || role === 'admin' ? children : <Forbidden />;
+  return (role === 'donor' && statusData === 'active') || role === 'admin' ? (
+    children
+  ) : (
+    <Forbidden />
+  );
 };
 
 export default DAPrivate;

@@ -252,8 +252,7 @@ const AllUsers = () => {
                               </>
                             )}
 
-                          {/* Non-admin actions */}
-                          {user.role !== 'admin' && (
+                          {user.role === 'donor' && (
                             <>
                               {user.status === 'active' ? (
                                 <button
@@ -276,7 +275,12 @@ const AllUsers = () => {
                                   ✅
                                 </button>
                               )}
+                            </>
+                          )}
 
+                          {/* Non-admin actions */}
+                          {user.role !== 'admin' && (
+                            <>
                               {user.role === 'donor' &&
                                 user.status === 'active' && (
                                   <button

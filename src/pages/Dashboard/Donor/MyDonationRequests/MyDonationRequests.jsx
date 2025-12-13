@@ -5,7 +5,6 @@ import { AuthContext } from '../../../../context/AuthContext';
 import useAxiosSecure from '../../../../hooks/useAxiosSecure';
 import { useQuery } from '@tanstack/react-query';
 import Swal from 'sweetalert2';
-import Loading from '../../../../Components/Loading/Loading';
 import LoadingSpin from '../../../../Components/Loading/LoadingSpin';
 
 const MyDonationRequests = () => {
@@ -68,17 +67,51 @@ const MyDonationRequests = () => {
   };
 
   const handleStatusChange = async (id, newStatus) => {
+    // 1️⃣ Confirm modal
+    const confirm = await Swal.fire({
+      title: 'Are you sure?',
+      text: `Do you want to change status to "${newStatus}"?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, change it!',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+    });
+
+    // ❌ User cancelled
+    if (!confirm.isConfirmed) return;
+
     try {
+      // 2️⃣ API call
       const res = await axiosSecure.patch(`/donationRequests/${id}/status`, {
         status: newStatus,
       });
-      if (res.data.modifiedCount) {
+
+      // 3️⃣ Success feedback
+      if (res.data.modifiedCount > 0) {
         refetch();
-        Swal.fire('Updated!', `Status changed to ${newStatus}`, 'success');
+        Swal.fire({
+          icon: 'success',
+          title: 'Updated!',
+          text: `Status changed to "${newStatus}"`,
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      } else {
+        Swal.fire({
+          icon: 'warning',
+          title: 'No changes',
+          text: 'Status could not be updated.',
+        });
       }
     } catch (err) {
       console.error(err);
-      Swal.fire('Error!', 'Something went wrong', 'error');
+      Swal.fire({
+        icon: 'error',
+        title: 'Error!',
+        text: 'Something went wrong',
+      });
     }
   };
 

@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { NavLink, Link } from 'react-router';
 import logo from '../../assets/blood-logo.png';
 import { AuthContext } from '../../context/AuthContext';
+import { toast } from 'react-toastify';
 
 const Navbar = () => {
   const { user, logoutUser } = useContext(AuthContext);
@@ -38,17 +39,19 @@ const Navbar = () => {
   // };
 
   const handleLogout = () => {
-    logoutUser()
-      .then(() => {
-        alert('logout successfully');
-      })
-      .catch(err => console.log(err));
+    toast.success('Logged out successfully!');
+    return logoutUser()
+      .then(() => {})
+      .catch(() => {
+        toast.error('Failed to logout. Try again.');
+      });
   };
 
   const publicLinks = [
     { name: 'Home', path: '/' },
     { name: 'Search Donors', path: '/search' },
     { name: 'Blood Requests', path: '/blood-requests' },
+    { name: 'Give Fund', path: '/give-fund' },
   ];
 
   return (

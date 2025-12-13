@@ -198,7 +198,7 @@ const SearchPage = () => {
               <tbody>
                 {results.map(req => (
                   <tr
-                    key={req.id}
+                    key={req._id}
                     className="border-b border-red-500/10 hover:bg-red-50/60 dark:hover:bg-red-900/20 transition-all"
                   >
                     <td className="px-4 md:px-6 py-3 font-semibold text-red-700 dark:text-red-300 whitespace-nowrap">
@@ -238,7 +238,9 @@ const SearchPage = () => {
 
                     <td className="px-4 md:px-6 py-3 text-center whitespace-nowrap">
                       <button
-                        onClick={() => navigate(`/blood-details/${req.id}`)}
+                        onClick={() =>
+                          navigate(`/searchedUser-details/${req.email}`)
+                        }
                         className="
                 px-4 md:px-5 py-2 bg-red-600 text-white rounded-lg font-semibold
                 shadow-[0_4px_16px_rgba(255,0,0,0.25)]

@@ -17,7 +17,7 @@ const GiveFund = () => {
   };
 
   return (
-    <section className="min-h-screen py-12 sm:py-16 px-4 sm:px-6 md:px-16 relative overflow-hidden bg-gradient-to-br from-red-50 via-pink-50 to-white dark:from-[#1a0a0a] dark:via-[#150c0c] dark:to-[#0d0b0b]">
+    <section className="min-h-screen py-12 sm:py-16 px-4 sm:px-6 md:px-16 relative overflow-hidden bg-linear-to-br from-red-50 via-pink-50 to-white dark:from-[#1a0a0a] dark:via-[#150c0c] dark:to-[#0d0b0b]">
       {/* Enhanced Glow Effects */}
       <div className="absolute top-20 left-10 w-48 h-48 sm:w-72 sm:h-72 bg-red-500/20 rounded-full blur-[80px] sm:blur-[120px] animate-pulse"></div>
       <div
@@ -33,7 +33,7 @@ const GiveFund = () => {
             ❤️ SAVE LIVES TODAY
           </p>
         </div>
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-3 sm:mb-5 px-4 bg-gradient-to-r from-red-600 via-red-500 to-pink-600 bg-clip-text text-transparent drop-shadow-sm leading-tight">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-3 sm:mb-5 px-4 bg-linear-to-r from-red-600 via-red-500 to-pink-600 bg-clip-text text-transparent drop-shadow-sm leading-tight">
           Support Blood Emergency Fund
         </h1>
         <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto text-sm sm:text-base md:text-lg leading-relaxed px-4">
@@ -75,7 +75,7 @@ const GiveFund = () => {
         <div className="bg-white/90 dark:bg-[#1a1a1a]/80 backdrop-blur-2xl border border-red-100 dark:border-red-900/30 rounded-[20px] sm:rounded-[28px] p-3 sm:p-4 md:p-10 shadow-[0_8px_32px_rgba(255,0,0,0.12)] hover:shadow-[0_12px_48px_rgba(255,0,0,0.18)] transition-all duration-500 mx-2 sm:mx-0">
           {/* Description Block */}
           <div className="mb-6 sm:mb-8 text-center">
-            <div className="inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-red-500 to-pink-600 rounded-lg sm:rounded-xl mb-4 sm:mb-5 shadow-lg">
+            <div className="inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 bg-linear-to-br from-red-500 to-pink-600 rounded-lg sm:rounded-xl mb-4 sm:mb-5 shadow-lg">
               <svg
                 className="w-6 h-6 sm:w-7 sm:h-7 text-white"
                 fill="currentColor"
@@ -110,7 +110,7 @@ const GiveFund = () => {
                   placeholder="0"
                   value={amount}
                   onChange={e => setAmount(e.target.value)}
-                  className="w-full pl-10 sm:pl-12 pr-16 sm:pr-18 py-4 sm:py-5 text-2xl sm:text-3xl font-bold text-center bg-gradient-to-br from-white via-red-50/30 to-white dark:from-[#2a2a2a] dark:via-[#2a2a2a] dark:to-[#2a2a2a] border-2 sm:border-3 border-red-300 dark:border-red-700/50 rounded-xl sm:rounded-2xl focus:outline-none focus:border-red-500 focus:ring-4 focus:ring-red-500/20 transition-all duration-300 shadow-lg group-hover:shadow-xl group-hover:border-red-400 text-gray-900 dark:text-white"
+                  className="w-full pl-10 sm:pl-12 pr-16 sm:pr-18 py-4 sm:py-5 text-2xl sm:text-3xl font-bold text-center bg-linear-to-br from-white via-red-50/30 to-white dark:from-[#2a2a2a] dark:via-[#2a2a2a] dark:to-[#2a2a2a] border-2 sm:border-3 border-red-300 dark:border-red-700/50 rounded-xl sm:rounded-2xl focus:outline-none focus:border-red-500 focus:ring-4 focus:ring-red-500/20 transition-all duration-300 shadow-lg group-hover:shadow-xl group-hover:border-red-400 text-gray-900 dark:text-white"
                 />
                 <span className="absolute right-4 sm:right-5 top-1/2 -translate-y-1/2 text-xs sm:text-sm text-gray-500 dark:text-gray-400 font-semibold bg-red-100 dark:bg-red-900/30 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md sm:rounded-lg">
                   USD
@@ -127,7 +127,7 @@ const GiveFund = () => {
                   onClick={() => setAmount(val.toString())}
                   className={`py-2.5 sm:py-3 px-2 sm:px-3 rounded-lg sm:rounded-xl font-bold text-xs sm:text-sm transition-all duration-300 border-2 shadow-md hover:scale-105 active:scale-95 ${
                     amount === val.toString()
-                      ? 'bg-gradient-to-br from-red-700 via-red-600 to-red-500 text-white border border-red-600/40 shadow-[0_2px_10px_rgba(220,38,38,0.25)]scale-105'
+                      ? 'bg-linear-to-br from-red-700 via-red-600 to-red-500 text-white border border-red-600/40 shadow-[0_2px_10px_rgba(220,38,38,0.25)]scale-105'
                       : 'bg-white dark:bg-[#2a2a2a] border-red-200 dark:border-red-800/40 hover:border-red-400 hover:shadow-[0_4px_16px_rgba(255,0,0,0.15)] text-gray-800 dark:text-gray-200'
                   }`}
                 >
@@ -141,7 +141,7 @@ const GiveFund = () => {
               <button
                 onClick={handleFund}
                 disabled={!amount || isProcessing}
-                className={`px-10 sm:px-14 py-3.5 sm:py-4 bg-gradient-to-br from-red-800 via-red-600 to-red-500
+                className={`px-10 sm:px-14 py-3.5 sm:py-4 bg-linear-to-br from-red-800 via-red-600 to-red-500
                text-white text-base sm:text-lg font-bold rounded-lg sm:rounded-xl shadow-[0_8px_24px_rgba(220,38,38,0.4)] hover:shadow-[0_12px_32px_rgba(220,38,38,0.5)] hover:scale-105 active:scale-95 transition-all duration-300 ease-out w-full sm:w-auto sm:min-w-[260px] flex items-center justify-center gap-2 sm:gap-2.5 ${
                  !amount || isProcessing
                    ? 'opacity-50 cursor-not-allowed shadow-none hover:scale-100'
@@ -178,7 +178,7 @@ const GiveFund = () => {
             <div className="flex items-center justify-center gap-3 sm:gap-5 pt-4 sm:pt-5 flex-wrap px-2">
               <div className="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs text-gray-600 dark:text-gray-400">
                 <svg
-                  className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-500 flex-shrink-0"
+                  className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-500 shrink-0"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >
@@ -194,7 +194,7 @@ const GiveFund = () => {
               </div>
               <div className="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs text-gray-600 dark:text-gray-400">
                 <svg
-                  className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-500 flex-shrink-0"
+                  className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-500 shrink-0"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >

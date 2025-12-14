@@ -55,23 +55,19 @@ const DashBoardLayout = () => {
         </NavLink>
       </li>
       {statusData === 'active' && (
-        <li>
-          <NavLink
-            to="/dashboard/create-donation-request"
-            className="is-drawer-close:tooltip is-drawer-close:tooltip-right flex items-center"
-            data-tip="Create Donation"
-          >
-            <PiMapPinPlusFill className="my-1.5 inline-block size-5 font-bold text-red-600 -rotate-180" />
-            <span className="is-drawer-close:hidden ml-2 text-red-700 font-medium">
-              Create Donation
-            </span>
-          </NavLink>
-        </li>
-      )}
-
-      {/* Donor Links */}
-      {(role === 'admin' || (role === 'donor' && statusData == 'active')) && (
         <>
+          <li>
+            <NavLink
+              to="/dashboard/create-donation-request"
+              className="is-drawer-close:tooltip is-drawer-close:tooltip-right flex items-center"
+              data-tip="Create Donation"
+            >
+              <PiMapPinPlusFill className="my-1.5 inline-block size-5 font-bold text-red-600 -rotate-180" />
+              <span className="is-drawer-close:hidden ml-2 text-red-700 font-medium">
+                Create Donation
+              </span>
+            </NavLink>
+          </li>
           <li>
             <NavLink
               to="/dashboard/my-donation-requests"

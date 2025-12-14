@@ -1,16 +1,61 @@
-# React + Vite
+# redDrop
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Purpose
 
-Currently, two official plugins are available:
+redDrop is a user-friendly Blood Donation Application designed to connect blood
+donors with recipients efficiently. It allows donors to register, manage their
+donation requests, and search for recipients based on blood group and location.
+Admins and volunteers can manage requests and users, ensuring a smooth and
+secure donation process.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Live URL
 
-## React Compiler
+[https://your-live-site-link.com](https://your-live-site-link.com)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Key Features
 
-## Expanding the ESLint configuration
+- **User Roles & Permissions**: Donor, Volunteer, Admin with role-based access
+  control.
+- **User Authentication**: Registration and login using email & password.
+- **Profile Management**: Users can view and update their profile information.
+- **Donation Requests**: Create, view, edit, delete, and manage blood donation
+  requests.
+- **Search Donors**: Find donors by blood group, district, and upazila.
+- **Dashboard**:
+  - Donor Dashboard: View recent requests, manage personal donation requests.
+  - Volunteer Dashboard: Update donation status and view all requests.
+  - Admin Dashboard: Manage all users and donation requests, view statistics.
+- **Funding Integration**: Users can donate funds using Stripe payment method.
+- **Pagination & Filtering**: Efficient navigation of donation requests and user
+  data.
+- **Responsive Design**: Optimized for mobile, tablet, and desktop views.
+- **Secure Configuration**: Firebase and MongoDB credentials stored using
+  environment variables.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## NPM Packages Used
+
+### Frontend
+
+- `react`
+- `react-dom`
+- `react-router-dom`
+- `axios`
+- `react-hook-form`
+- `firebase`
+- `framer-motion` (optional for animations)
+- `sweetalert2` (for modals/alerts)
+
+### Backend
+
+- `express`
+- `mongoose`
+- `cors`
+- `jsonwebtoken`
+- `dotenv`
+- `bcryptjs`
+- `stripe` (for funding/payment integration)
+
+## Deployment
+
+- **Frontend**: Deployed on Netlify
+- **Backend**: Deployed on Vercel

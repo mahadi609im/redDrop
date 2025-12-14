@@ -137,17 +137,17 @@ const router = createBrowserRouter([
       {
         path: 'my-donation-requests',
         element: (
-          <DAPrivate>
+          <PrivateRoute>
             <MyDonationRequests />
-          </DAPrivate>
+          </PrivateRoute>
         ),
       },
       {
         path: 'donation-details/:id',
         element: (
-          <DAPrivate>
+          <PrivateRoute>
             <MyDonationDetails></MyDonationDetails>
-          </DAPrivate>
+          </PrivateRoute>
         ),
         loader: ({ params }) =>
           fetch(`http://localhost:3000/donationRequests/${params.id}`),
@@ -155,16 +155,20 @@ const router = createBrowserRouter([
       {
         path: 'edit-donation/:id',
         element: (
-          <DAPrivate>
+          <PrivateRoute>
             <MyDonationEdit></MyDonationEdit>
-          </DAPrivate>
+          </PrivateRoute>
         ),
         loader: ({ params }) =>
           fetch(`http://localhost:3000/donationRequests/${params.id}`),
       },
       {
         path: 'create-donation-request',
-        element: <CreateDonationRequest />,
+        element: (
+          <PrivateRoute>
+            <CreateDonationRequest />
+          </PrivateRoute>
+        ),
       },
 
       // Admin only pages

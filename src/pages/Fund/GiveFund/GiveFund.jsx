@@ -1,20 +1,42 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
+import Loading from '../../../Components/Loading/Loading';
+import { AuthContext } from '../../../context/AuthContext';
+import useAxiosSecure from '../../../hooks/useAxiosSecure';
 
 const GiveFund = () => {
   const [amount, setAmount] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
+  const axiosSecure = useAxiosSecure();
+
+  const { user, loading } = useContext(AuthContext);
 
   const handleFund = async () => {
     if (!amount || amount <= 0) return;
+
     setIsProcessing(true);
-    // Stripe integration here
-    setTimeout(() => {
+
+    try {
+      const fundInfo = {
+        amount: amount,
+        email: user.email,
+        displayName: user.displayName,
+      };
+
+      const res = await axiosSecure.post('/create-checkout-session', fundInfo);
+
+      // Stripe checkout page এ redirect
+      window.location.href = res.data.url;
+    } catch (error) {
+      console.error(error);
+      alert('fund failed. Please try again.');
+    } finally {
       setIsProcessing(false);
-      alert(
-        `$${amount} donation processed successfully! Thank you for saving lives.`
-      );
-    }, 1500);
+    }
   };
+
+  if (loading) {
+    return <Loading></Loading>;
+  }
 
   return (
     <section className="min-h-screen py-12 sm:py-16 px-4 sm:px-6 md:px-16 relative overflow-hidden bg-linear-to-br from-red-50 via-pink-50 to-white dark:from-[#1a0a0a] dark:via-[#150c0c] dark:to-[#0d0b0b]">

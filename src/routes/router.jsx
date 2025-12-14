@@ -28,7 +28,10 @@ import AdminPrivateRoute from '../Components/PrivateRoute/AdminPrivateRoute';
 import VAPrivate from '../Components/PrivateRoute/VAPrivate';
 import SearchedUserDetails from '../pages/SearchedUserDetails/SearchedUserDetails';
 import DAPrivate from '../Components/PrivateRoute/DAPrivate';
-import GiveFund from '../pages/GiveFund/GiveFund';
+import GiveFund from '../pages/Fund/GiveFund/GiveFund';
+import FundingPage from '../pages/Fund/Funding/Funding';
+import FundSuccess from '../pages/Fund/FundSuccess/FundSuccess';
+import FundCancel from '../pages/Fund/FundCancel/FundCancel';
 
 const router = createBrowserRouter([
   {
@@ -72,10 +75,34 @@ const router = createBrowserRouter([
         ),
       },
       {
+        path: '/funds',
+        element: (
+          <PrivateRoute>
+            <FundingPage></FundingPage>
+          </PrivateRoute>
+        ),
+      },
+      {
         path: '/give-fund',
         element: (
           <PrivateRoute>
             <GiveFund></GiveFund>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: '/fund-success',
+        element: (
+          <PrivateRoute>
+            <FundSuccess></FundSuccess>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: '/fund-cancelled',
+        element: (
+          <PrivateRoute>
+            <FundCancel></FundCancel>
           </PrivateRoute>
         ),
       },

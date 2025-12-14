@@ -32,13 +32,24 @@ const BloodRequests = () => {
       <div className="absolute top-0 left-10 w-40 h-40 bg-red-500/20 blur-3xl rounded-full"></div>
       <div className="absolute bottom-0 right-10 w-56 h-56 bg-red-700/10 blur-3xl rounded-full"></div>
 
-      {/* Header */}
-      <div className="relative z-10 text-center mb-14">
-        <h1 className="text-3xl md:text-5xl font-bold text-red-700 dark:text-red-400">
+      {/* Beautiful Header */}
+      <div className="relative z-10 text-center mb-10 sm:mb-14 animate-fadeIn">
+        {/* Badge */}
+        <div className="inline-block mb-4 sm:mb-5 px-4 sm:px-5 py-1.5 bg-red-100 dark:bg-red-900/30 rounded-full border border-red-200 dark:border-red-800/50">
+          <p className="text-xs font-semibold text-red-600 dark:text-red-400 tracking-wide flex items-center justify-center gap-2">
+            🚨 URGENT REQUESTS
+          </p>
+        </div>
+
+        {/* Main Title */}
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-4 sm:mb-5 px-4 bg-linear-to-r from-red-700 via-red-600 to-red-500 bg-clip-text text-transparent drop-shadow-sm leading-tight">
           Pending Blood Requests
         </h1>
-        <p className="text-gray-700 dark:text-gray-300 max-w-xl mx-auto mt-3">
-          Only showing requests that are currently pending.
+
+        {/* Description */}
+        <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto text-sm sm:text-base md:text-lg leading-relaxed px-4 mb-0">
+          Only showing requests that are currently pending and need your help
+          immediately.
         </p>
       </div>
 

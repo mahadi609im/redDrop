@@ -3,16 +3,23 @@ import { FaMoneyBillWave, FaUsers } from 'react-icons/fa';
 import { FaHandHoldingDroplet } from 'react-icons/fa6';
 import useAxiosSecure from '../../../../hooks/useAxiosSecure';
 import { useQuery } from '@tanstack/react-query';
+import Loading from '../../../../Components/Loading/Loading';
 
 const VolunteerHome = () => {
   // Example stats, later fetch from API
-  const stats = {
-    totalFunds: 8420,
-  };
+  const { data: totalFunds = { totalAmount: 0 }, isLoading: totalAmountLoad } =
+    useQuery({
+      queryKey: ['totalFunds'],
+      queryFn: async () => {
+        const res = await axiosSecure.get('/funds/total');
+        console.log('Total Funds:', res.data);
+        return res.data.totalAmount;
+      },
+    });
 
   const axiosSecure = useAxiosSecure();
 
-  const { data: totalRequests = [] } = useQuery({
+  const { data: totalRequests = [], totalRequestLoad } = useQuery({
     queryKey: ['donationRequests'],
     queryFn: async () => {
       const res = await axiosSecure.get(`/donationRequests`);
@@ -20,13 +27,17 @@ const VolunteerHome = () => {
     },
   });
 
-  const { data: allUsers = [] } = useQuery({
+  const { data: allUsers = [], allUsersLoad } = useQuery({
     queryKey: ['allUsers'],
     queryFn: async () => {
       const res = await axiosSecure.get(`/users`);
       return res.data;
     },
   });
+
+  if (allUsersLoad || totalAmountLoad || totalRequestLoad) {
+    return <Loading></Loading>;
+  }
 
   return (
     <div className="min-h-screen bg-linear-to-b from-red-50 to-white dark:from-[#1a0c0c] dark:to-[#0d0b0b] p-6 md:p-10  overflow-hidden flex flex-col justify-center rounded-2xl">
@@ -63,7 +74,7 @@ const VolunteerHome = () => {
             <div>
               <h3 className="text-gray-500 dark:text-gray-400">Total Funds</h3>
               <p className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
-                ${stats.totalFunds}
+                ${totalFunds}
               </p>
             </div>
           </div>

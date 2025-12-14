@@ -51,7 +51,7 @@ const Navbar = () => {
     { name: 'Home', path: '/' },
     { name: 'Search Donors', path: '/search' },
     { name: 'Blood Requests', path: '/blood-requests' },
-    { name: 'Give Fund', path: '/give-fund' },
+    { name: 'Funds', path: '/funds' },
   ];
 
   return (

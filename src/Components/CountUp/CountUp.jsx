@@ -7,7 +7,7 @@ const CountUp = ({ value }) => {
 
   useEffect(() => {
     const controls = animate(count, value, {
-      duration: 1.5,
+      duration: 2,
       ease: 'easeOut',
     });
 

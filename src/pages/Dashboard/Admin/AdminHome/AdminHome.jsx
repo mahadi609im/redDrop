@@ -40,7 +40,7 @@ const AdminHome = () => {
     return <Loading></Loading>;
   }
   return (
-    <div className="min-h-screen bg-linear-to-b from-red-50 to-white dark:from-[#1a0c0c] dark:to-[#0d0b0b] p-6 md:p-10  overflow-hidden flex flex-col justify-center rounded-2xl">
+    <div className="min-h-screen bg-linear-to-b from-red-50 to-white dark:from-[#1a0c0c] dark:to-[#0d0b0b] p-6 md:p-10 py-20  overflow-hidden flex flex-col justify-center rounded-2xl">
       {/* Welcome Section */}
       <div className=" text-center mb-14">
         <h1 className="text-4xl md:text-5xl font-bold text-red-700 ">
@@ -52,7 +52,7 @@ const AdminHome = () => {
       </div>
 
       {/* Statistics Cards */}
-      <div className="relative grid z-10 grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+      <div className="relative grid z-10 grid-cols-1 md:grid-cols-3 gap-8 w-full md:max-w-6xl mx-auto">
         {/* Total Users */}
         <div className="bg-white/80 dark:bg-gray-900/70  border border-red-200/20 dark:border-gray-700/20 rounded-3xl p-8 shadow-lg hover:shadow-xl transition relative overflow-hidden">
           <div className="flex items-center space-x-4">

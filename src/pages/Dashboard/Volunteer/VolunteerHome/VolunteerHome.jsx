@@ -42,7 +42,7 @@ const VolunteerHome = () => {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-b from-red-50 to-white dark:from-[#1a0c0c] dark:to-[#0d0b0b] p-6 md:p-10  overflow-hidden flex flex-col justify-center rounded-2xl">
+    <div className="min-h-screen bg-linear-to-b from-red-50 to-white dark:from-[#1a0c0c] dark:to-[#0d0b0b] px-6 md:px-10 py-20  overflow-hidden flex flex-col justify-center rounded-2xl">
       {/* Welcome Section */}
       <div className=" text-center mb-14">
         <h1 className="text-4xl md:text-5xl font-bold text-red-700 ">

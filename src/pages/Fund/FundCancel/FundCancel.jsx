@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 
 const FundCancel = () => {
   return (
-    <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-50 via-rose-50 to-pink-50 dark:from-[#1a0808] dark:via-[#150a0a] dark:to-[#0d0606] px-4 sm:px-6 relative overflow-hidden py-20">
+    <section className="min-h-screen flex items-center justify-center bg-linear-to-br from-red-50 via-rose-50 to-pink-50 dark:from-[#1a0808] dark:via-[#150a0a] dark:to-[#0d0606] px-4 sm:px-6 relative overflow-hidden py-20">
       {/* Enhanced Multiple Glow Effects */}
       <div className="absolute top-20 left-10 w-64 h-64 sm:w-96 sm:h-96 bg-red-500/25 rounded-full blur-[120px] animate-pulse"></div>
       <div
@@ -17,9 +17,9 @@ const FundCancel = () => {
 
       <div className="relative z-10 max-w-2xl w-full animate-fadeIn">
         {/* Main Card */}
-        <div className="bg-white/95 dark:bg-[#1a1a1a]/90 backdrop-blur-2xl rounded-[32px] p-6 sm:p-10 md:p-12 shadow-[0_20px_60px_rgba(220,38,38,0.3)] border border-red-100/50 dark:border-red-900/30 text-center relative overflow-hidden">
+        <div className="bg-white/95 dark:bg-[#1a1a1a]/90 backdrop-blur-2xl rounded-4xl p-6 sm:p-10 md:p-12 shadow-[0_20px_60px_rgba(220,38,38,0.3)] border border-red-100/50 dark:border-red-900/30 text-center relative overflow-hidden">
           {/* Decorative Top Border */}
-          <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-red-600 via-rose-500 to-pink-500"></div>
+          <div className="absolute top-0 left-0 right-0 h-2 bg-linear-to-r from-red-600 via-rose-500 to-pink-500"></div>
 
           {/* Cancel Icon with Pulse Animation */}
           <div className="relative inline-flex mb-6 sm:mb-8">
@@ -28,7 +28,7 @@ const FundCancel = () => {
             <div className="absolute inset-0 rounded-full bg-red-500/30 animate-pulse"></div>
 
             {/* Main Icon */}
-            <div className="relative w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-red-600 via-red-500 to-rose-600 flex items-center justify-center shadow-[0_10px_30px_rgba(220,38,38,0.4)] animate-shake">
+            <div className="relative w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-linear-to-br from-red-600 via-red-500 to-rose-600 flex items-center justify-center shadow-[0_10px_30px_rgba(220,38,38,0.4)] animate-shake">
               <svg
                 className="w-10 h-10 sm:w-14 sm:h-14 text-white drop-shadow-lg"
                 fill="none"
@@ -46,7 +46,7 @@ const FundCancel = () => {
           </div>
 
           {/* Title */}
-          <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold mb-4 sm:mb-5 bg-gradient-to-r from-red-700 via-red-600 to-rose-600 bg-clip-text text-transparent leading-tight">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold mb-4 sm:mb-5 bg-linear-to-r from-red-700 via-red-600 to-rose-600 bg-clip-text text-transparent leading-tight">
             Fund Cancelled
           </h1>
 
@@ -59,10 +59,10 @@ const FundCancel = () => {
           </p>
 
           {/* Info Card */}
-          <div className="bg-gradient-to-br from-red-50 to-rose-50 dark:from-red-900/20 dark:to-rose-900/20 border border-red-200/60 dark:border-red-800/40 rounded-2xl p-5 sm:p-6 mb-6 sm:mb-8 space-y-3">
+          <div className="bg-linear-to-br from-red-50 to-rose-50 dark:from-red-900/20 dark:to-rose-900/20 border border-red-200/60 dark:border-red-800/40 rounded-2xl p-5 sm:p-6 mb-6 sm:mb-8 space-y-3">
             <div className="flex items-start gap-3 text-left">
               <svg
-                className="w-6 h-6 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5"
+                className="w-6 h-6 text-red-600 dark:text-red-400 shrink-0 mt-0.5"
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >
@@ -92,7 +92,7 @@ const FundCancel = () => {
             <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-300">
               <li className="flex items-start gap-2">
                 <svg
-                  className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5"
+                  className="w-5 h-5 text-red-600 shrink-0 mt-0.5"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >
@@ -108,7 +108,7 @@ const FundCancel = () => {
               </li>
               <li className="flex items-start gap-2">
                 <svg
-                  className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5"
+                  className="w-5 h-5 text-red-600 shrink-0 mt-0.5"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >
@@ -122,7 +122,7 @@ const FundCancel = () => {
               </li>
               <li className="flex items-start gap-2">
                 <svg
-                  className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5"
+                  className="w-5 h-5 text-red-600 shrink-0 mt-0.5"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >
@@ -142,7 +142,7 @@ const FundCancel = () => {
             <Link
               to="/give-fund"
               className="flex-1 group px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl font-bold text-base sm:text-lg
-              bg-gradient-to-r from-red-700 via-red-600 to-red-500
+              bg-linear-to-r from-red-700 via-red-600 to-red-500
               text-white
               shadow-[0_8px_20px_rgba(220,38,38,0.3)]
               hover:shadow-[0_12px_30px_rgba(220,38,38,0.4)]

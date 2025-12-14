@@ -51,6 +51,12 @@ const Navbar = () => {
     { name: 'Home', path: '/' },
     { name: 'Search Donors', path: '/search' },
     { name: 'Blood Requests', path: '/blood-requests' },
+  ];
+
+  const privateLinks = [
+    { name: 'Home', path: '/' },
+    { name: 'Search Donors', path: '/search' },
+    { name: 'Blood Requests', path: '/blood-requests' },
     { name: 'Funds', path: '/funds' },
   ];
 
@@ -79,20 +85,41 @@ const Navbar = () => {
             tabIndex={0}
             className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
           >
-            {publicLinks.map((link, idx) => (
-              <li key={idx}>
-                <NavLink
-                  to={link.path}
-                  className={({ isActive }) =>
-                    isActive
-                      ? 'bg-primary text-white rounded-md px-3 py-2 font-semibold'
-                      : 'hover:bg-primary hover:text-white rounded-md px-3 py-2 transition'
-                  }
-                >
-                  {link.name}
-                </NavLink>
-              </li>
-            ))}
+            {!user ? (
+              <>
+                {publicLinks.map((link, idx) => (
+                  <li key={idx}>
+                    <NavLink
+                      to={link.path}
+                      className={({ isActive }) =>
+                        isActive
+                          ? 'bg-primary text-white rounded-md px-3 py-2 font-semibold'
+                          : 'hover:bg-primary hover:text-white rounded-md px-3 py-2 transition'
+                      }
+                    >
+                      {link.name}
+                    </NavLink>
+                  </li>
+                ))}
+              </>
+            ) : (
+              <>
+                {privateLinks.map((link, idx) => (
+                  <li key={idx}>
+                    <NavLink
+                      to={link.path}
+                      className={({ isActive }) =>
+                        isActive
+                          ? 'bg-primary text-white rounded-md px-3 py-2 font-semibold'
+                          : 'hover:bg-primary hover:text-white rounded-md px-3 py-2 transition'
+                      }
+                    >
+                      {link.name}
+                    </NavLink>
+                  </li>
+                ))}
+              </>
+            )}
           </ul>
         </div>
 
@@ -106,20 +133,41 @@ const Navbar = () => {
       {/* Navbar Center - Public Links */}
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal space-x-4">
-          {publicLinks.map((link, idx) => (
-            <li key={idx}>
-              <NavLink
-                to={link.path}
-                className={({ isActive }) =>
-                  isActive
-                    ? 'bg-primary text-white rounded-md px-3 py-2 font-semibold'
-                    : 'hover:bg-primary hover:text-white rounded-md px-3 py-2 transition'
-                }
-              >
-                {link.name}
-              </NavLink>
-            </li>
-          ))}
+          {!user ? (
+            <>
+              {publicLinks.map((link, idx) => (
+                <li key={idx}>
+                  <NavLink
+                    to={link.path}
+                    className={({ isActive }) =>
+                      isActive
+                        ? 'bg-primary text-white rounded-md px-3 py-2 font-semibold'
+                        : 'hover:bg-primary hover:text-white rounded-md px-3 py-2 transition'
+                    }
+                  >
+                    {link.name}
+                  </NavLink>
+                </li>
+              ))}
+            </>
+          ) : (
+            <>
+              {privateLinks.map((link, idx) => (
+                <li key={idx}>
+                  <NavLink
+                    to={link.path}
+                    className={({ isActive }) =>
+                      isActive
+                        ? 'bg-primary text-white rounded-md px-3 py-2 font-semibold'
+                        : 'hover:bg-primary hover:text-white rounded-md px-3 py-2 transition'
+                    }
+                  >
+                    {link.name}
+                  </NavLink>
+                </li>
+              ))}
+            </>
+          )}
         </ul>
       </div>
 

@@ -4,6 +4,8 @@ import { FaHandHoldingDroplet } from 'react-icons/fa6';
 import useAxiosSecure from '../../../../hooks/useAxiosSecure';
 import { useQuery } from '@tanstack/react-query';
 import Loading from '../../../../Components/Loading/Loading';
+import CountUp from '../../../../Components/CountUp/CountUp';
+import DonationChart from '../../../../Components/DonationChart/DonationChart';
 
 const VolunteerHome = () => {
   // Example stats, later fetch from API
@@ -60,7 +62,7 @@ const VolunteerHome = () => {
             <div>
               <h3 className="text-gray-500 dark:text-gray-400">Total Users</h3>
               <p className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
-                {allUsers.length}
+                <CountUp value={allUsers.length} />
               </p>
             </div>
           </div>
@@ -74,7 +76,7 @@ const VolunteerHome = () => {
             <div>
               <h3 className="text-gray-500 dark:text-gray-400">Total Funds</h3>
               <p className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
-                ${totalFunds}
+                $<CountUp value={totalFunds} />
               </p>
             </div>
           </div>
@@ -90,7 +92,7 @@ const VolunteerHome = () => {
                 Total Requests
               </h3>
               <p className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
-                {totalRequests.length}
+                <CountUp value={totalRequests.length} />
               </p>
             </div>
           </div>
@@ -98,6 +100,7 @@ const VolunteerHome = () => {
           <div className="absolute -top-10 -left-10 w-24 h-24 bg-red-400/20 rounded-full blur-2xl animate-pulse"></div>
         </div>
       </div>
+      <DonationChart donationRequests={totalRequests} />
     </div>
   );
 };

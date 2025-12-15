@@ -159,7 +159,9 @@ const router = createBrowserRouter([
           </ActiveUserPrivate>
         ),
         loader: ({ params }) =>
-          fetch(`http://localhost:3000/donationRequests/${params.id}`),
+          fetch(
+            `https://red-drop-server-tawny.vercel.app/donationRequests/${params.id}`
+          ),
       },
       {
         path: 'edit-donation/:id',
@@ -171,7 +173,9 @@ const router = createBrowserRouter([
           </ActiveUserPrivate>
         ),
         loader: ({ params }) =>
-          fetch(`http://localhost:3000/donationRequests/${params.id}`),
+          fetch(
+            `https://red-drop-server-tawny.vercel.app/donationRequests/${params.id}`
+          ),
       },
       {
         path: 'create-donation-request',

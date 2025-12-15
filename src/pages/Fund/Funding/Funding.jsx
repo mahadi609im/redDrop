@@ -130,9 +130,6 @@ const FundingPage = () => {
                     Amount
                   </th>
                   <th className="px-4 md:px-6 py-3 font-semibold whitespace-nowrap">
-                    Transaction ID
-                  </th>
-                  <th className="px-4 md:px-6 py-3 font-semibold whitespace-nowrap">
                     Date
                   </th>
                 </tr>
@@ -151,9 +148,6 @@ const FundingPage = () => {
                     </td>
                     <td className="px-4 md:px-6 py-3 text-gray-700 dark:text-gray-300 whitespace-nowrap">
                       ${fund.amount}
-                    </td>
-                    <td className="px-4 md:px-6 py-3 text-gray-700 dark:text-gray-300 whitespace-nowrap">
-                      {fund.transactionId}
                     </td>
                     <td className="px-4 md:px-6 py-3 text-gray-700 dark:text-gray-300 whitespace-nowrap">
                       {new Date(fund.fundAt).toLocaleDateString()}

@@ -3,12 +3,15 @@ import { NavLink, Link } from 'react-router';
 import logo from '../../assets/blood-logo.png';
 import { AuthContext } from '../../context/AuthContext';
 import { toast } from 'react-toastify';
+import useUserRole from '../../hooks/useUserRole';
+import Loading from '../Loading/Loading';
 
 const Navbar = () => {
   const { user, logoutUser } = useContext(AuthContext);
 
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const { statusLoading, statusData } = useUserRole();
 
   // Close dropdown if clicked outside
   useEffect(() => {
@@ -59,6 +62,10 @@ const Navbar = () => {
     { name: 'Blood Requests', path: '/blood-requests' },
     { name: 'Funds', path: '/funds' },
   ];
+
+  if (statusLoading) {
+    return <Loading></Loading>;
+  }
 
   return (
     <div className="navbar bg-base-100 shadow-lg py-4 px-4 md:px-10">
@@ -176,18 +183,60 @@ const Navbar = () => {
         {/* Auth / User Dropdown */}
         {user ? (
           <div className="relative" ref={dropdownRef}>
-            <button
-              onClick={() => setOpen(!open)}
-              className="btn btn-ghost btn-circle avatar"
-            >
-              <div className="w-10 rounded-full border-2 border-primary">
-                <img
-                  src={user?.photoURL}
-                  alt="User Avatar"
-                  referrerPolicy="no-referrer"
-                />
-              </div>
-            </button>
+            {statusData === 'active' ? (
+              <button
+                onClick={() => setOpen(!open)}
+                className="btn btn-ghost btn-circle avatar"
+              >
+                <div className="w-10 rounded-full border-2 border-green-500">
+                  <img
+                    src={user?.photoURL}
+                    alt="User Avatar"
+                    referrerPolicy="no-referrer"
+                  />
+                </div>
+              </button>
+            ) : (
+              <button
+                onClick={() => setOpen(!open)}
+                className="btn btn-ghost btn-circle avatar relative"
+              >
+                <div
+                  className={`w-10 rounded-full border-2 relative
+                  ${
+                    statusData === 'blocked'
+                      ? 'border-red-500'
+                      : 'border-primary'
+                  }
+                  `}
+                >
+                  <img
+                    src={user?.photoURL}
+                    alt="User Avatar"
+                    referrerPolicy="no-referrer"
+                    className="rounded-full"
+                  />
+
+                  {/* ❗ Error Icon (Bottom Right) */}
+                  {statusData === 'blocked' && (
+                    <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-0.5 shadow">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="w-4 h-4 text-red-500"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-4a1 1 0 00-1 1v3a1 1 0 002 0V7a1 1 0 00-1-1zm0 7a1.25 1.25 0 100-2.5A1.25 1.25 0 0010 13z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </div>
+                  )}
+                </div>
+              </button>
+            )}
 
             {open && (
               <ul className="absolute right-0 mt-2 w-48 p-2 shadow-lg rounded-xl backdrop-blur-md bg-white/90 border border-gray-200 z-50 menu menu-compact ">

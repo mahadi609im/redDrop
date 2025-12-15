@@ -93,7 +93,7 @@ const ContactSection = () => {
 
             {/* Submit Button */}
             <button
-              className="
+              className=" py-6 rounded-full
       btn w-full bg-primary text-primary-content text-lg 
       hover:bg-red-600 transition-all duration-300
     "

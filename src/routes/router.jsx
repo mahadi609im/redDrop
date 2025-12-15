@@ -32,6 +32,7 @@ import GiveFund from '../pages/Fund/GiveFund/GiveFund';
 import FundingPage from '../pages/Fund/Funding/Funding';
 import FundSuccess from '../pages/Fund/FundSuccess/FundSuccess';
 import FundCancel from '../pages/Fund/FundCancel/FundCancel';
+import ActiveUserPrivate from '../Components/PrivateRoute/ActiveUserPrivate';
 
 const router = createBrowserRouter([
   {
@@ -77,9 +78,11 @@ const router = createBrowserRouter([
       {
         path: '/funds',
         element: (
-          <PrivateRoute>
-            <FundingPage></FundingPage>
-          </PrivateRoute>
+          <ActiveUserPrivate>
+            <PrivateRoute>
+              <FundingPage></FundingPage>
+            </PrivateRoute>
+          </ActiveUserPrivate>
         ),
       },
       {
@@ -93,9 +96,11 @@ const router = createBrowserRouter([
       {
         path: '/fund-success',
         element: (
-          <PrivateRoute>
-            <FundSuccess></FundSuccess>
-          </PrivateRoute>
+          <ActiveUserPrivate>
+            <PrivateRoute>
+              <FundSuccess></FundSuccess>
+            </PrivateRoute>
+          </ActiveUserPrivate>
         ),
       },
       {
@@ -137,17 +142,21 @@ const router = createBrowserRouter([
       {
         path: 'my-donation-requests',
         element: (
-          <PrivateRoute>
-            <MyDonationRequests />
-          </PrivateRoute>
+          <ActiveUserPrivate>
+            <PrivateRoute>
+              <MyDonationRequests />
+            </PrivateRoute>
+          </ActiveUserPrivate>
         ),
       },
       {
         path: 'donation-details/:id',
         element: (
-          <PrivateRoute>
-            <MyDonationDetails></MyDonationDetails>
-          </PrivateRoute>
+          <ActiveUserPrivate>
+            <PrivateRoute>
+              <MyDonationDetails></MyDonationDetails>
+            </PrivateRoute>
+          </ActiveUserPrivate>
         ),
         loader: ({ params }) =>
           fetch(`http://localhost:3000/donationRequests/${params.id}`),
@@ -155,9 +164,11 @@ const router = createBrowserRouter([
       {
         path: 'edit-donation/:id',
         element: (
-          <PrivateRoute>
-            <MyDonationEdit></MyDonationEdit>
-          </PrivateRoute>
+          <ActiveUserPrivate>
+            <PrivateRoute>
+              <MyDonationEdit></MyDonationEdit>
+            </PrivateRoute>
+          </ActiveUserPrivate>
         ),
         loader: ({ params }) =>
           fetch(`http://localhost:3000/donationRequests/${params.id}`),
@@ -165,9 +176,11 @@ const router = createBrowserRouter([
       {
         path: 'create-donation-request',
         element: (
-          <PrivateRoute>
-            <CreateDonationRequest />
-          </PrivateRoute>
+          <ActiveUserPrivate>
+            <PrivateRoute>
+              <CreateDonationRequest />
+            </PrivateRoute>
+          </ActiveUserPrivate>
         ),
       },
 

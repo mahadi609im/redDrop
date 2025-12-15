@@ -95,7 +95,7 @@ const BloodRequests = () => {
                 <tbody>
                   {pendingRequests.map(req => (
                     <tr
-                      key={req.id}
+                      key={req._id}
                       className="border-b border-red-500/10 hover:bg-red-50/60 dark:hover:bg-red-900/20 transition-all"
                     >
                       <td className="px-4 md:px-6 py-3 font-semibold text-red-700 dark:text-red-300 whitespace-nowrap">

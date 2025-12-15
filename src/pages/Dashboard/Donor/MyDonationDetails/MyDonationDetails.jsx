@@ -36,26 +36,26 @@ const MyDonationDetails = () => {
   };
 
   return (
-    <section className="min-h-screen py-16 px-6 md:px-20 bg-red-50 dark:bg-[#120909] relative rounded-2xl">
+    <section className="min-h-screen py-16 px-3 md:px-20 bg-red-50 dark:bg-[#120909] relative rounded-2xl">
       {isLoading ? (
         <LoadingSpin></LoadingSpin>
       ) : (
         <>
-          <div className="max-w-5xl mx-auto bg-white/80 dark:bg-[#1a1a1a]/80 backdrop-blur-xl rounded-3xl p-10 shadow-xl border border-red-500/20">
+          <div className="max-w-5xl mx-auto bg-white/80 dark:bg-[#1a1a1a]/80 backdrop-blur-xl rounded-3xl px-4 py-6 md:p-10 shadow-xl border border-red-500/20">
             <button
               onClick={() => navigate(-1)}
               className=" text-red-200/50 shadow hover:text-red-200 cursor-pointer hover:scale-125 transition"
             >
               <FaArrowLeft size={20} />
             </button>
-            <h1 className="text-3xl md:text-4xl font-bold text-red-700 dark:text-red-400">
+            <h1 className="text-2xl md:text-4xl font-bold text-red-700 dark:text-red-400 mb-3 mt-4">
               Donation Request Details
             </h1>
 
             <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-6 items-stretch">
               {/* Left Column */}
-              <div className="space-y-4 text-gray-700 dark:text-gray-300 bg-white/70 dark:bg-[#1a1a1a]/70 p-6 rounded-2xl shadow-sm">
-                {status === 'inprogress' && requestData.donor && (
+              <div className="space-y-4 text-gray-700 dark:text-gray-300 bg-white/70 dark:bg-[#1a1a1a]/70 md:p-6 rounded-2xl shadow-sm">
+                {requestData.status === 'inprogress' && requestData.donor && (
                   <>
                     <p>
                       <span className="font-semibold text-red-600">
@@ -107,7 +107,7 @@ const MyDonationDetails = () => {
               </div>
 
               {/* Right Column */}
-              <div className="space-y-4 text-gray-700 dark:text-gray-300 bg-white/70 dark:bg-[#1a1a1a]/70 p-6 rounded-2xl shadow-sm">
+              <div className="space-y-4 text-gray-700 dark:text-gray-300 bg-white/70 dark:bg-[#1a1a1a]/70 md:p-6 rounded-2xl shadow-sm">
                 <p>
                   <span className="font-semibold text-red-600">
                     Blood Group:
@@ -138,8 +138,8 @@ const MyDonationDetails = () => {
                 </p>
                 <p className="space-x-2">
                   <span className="font-semibold text-red-600">Status:</span>{' '}
-                  <span className={`${statusColor[status]}`}>
-                    {status.toUpperCase()}
+                  <span className={`${statusColor[requestData.status]}`}>
+                    {requestData.status.toUpperCase()}
                   </span>
                 </p>
               </div>

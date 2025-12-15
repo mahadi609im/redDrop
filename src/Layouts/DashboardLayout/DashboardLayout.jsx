@@ -166,7 +166,7 @@ const DashBoardLayout = () => {
 
       <div className="drawer-content">
         {/* Navbar */}
-        <nav className="navbar w-full bg-white shadow-md border-b border-red-200 sticky top-0 z-50 px-8">
+        <nav className="navbar w-full bg-white shadow-md border-b border-red-200 sticky top-0 z-50 px-4 md:px-8">
           {/* LEFT SIDE */}
           <div className="navbar-start flex items-center gap-2">
             <label
@@ -282,7 +282,7 @@ const DashBoardLayout = () => {
         </nav>
 
         {/* Page content */}
-        <div className="py-8 px-8 mb-20 min-h-screen rounded-4xl">
+        <div className="px-4 md:px-8 py-10 min-h-screen rounded-4xl">
           <Outlet></Outlet>
         </div>
       </div>

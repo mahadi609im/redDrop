@@ -152,7 +152,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-rose-50 via-red-50 to-rose-100 flex items-center justify-center px-4 py-10">
+    <div className="min-h-screen bg-linear-to-br from-rose-50 via-red-50 to-rose-100 flex items-center justify-center md:px-4 py-10">
       <div className="relative w-full max-w-3xl">
         <div className="absolute -inset-1 bg-linear-to-r from-rose-400/40 via-red-500/40 to-amber-400/40 blur-3xl -z-10 opacity-70" />
 

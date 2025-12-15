@@ -138,9 +138,9 @@ const MyDonationEdit = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-20 px-6 md:px-20 bg-linear-to-b from-red-50 to-white dark:from-[#150c0c] dark:to-[#0d0b0b]">
-      <div className="max-w-3xl bg-white/60 dark:bg-[#1a1a1a]/70 backdrop-blur-2xl p-8 rounded-3xl shadow-2xl border border-red-400/30 w-full">
-        <h1 className="text-3xl md:text-4xl font-extrabold text-red-700 mb-6 text-center">
+    <div className="min-h-screen flex items-center justify-center py-20 px-4 md:px-20 bg-linear-to-b from-red-50 to-white dark:from-[#150c0c] dark:to-[#0d0b0b]">
+      <div className="max-w-3xl bg-white/60 dark:bg-[#1a1a1a]/70 backdrop-blur-2xl  py-8 px-4 md:p-8 rounded-3xl shadow-2xl border border-red-400/30 w-full">
+        <h1 className="text-2xl md:text-4xl font-extrabold text-red-700 mb-6 text-center">
           Edit Donation Request
         </h1>
 
@@ -327,14 +327,14 @@ const MyDonationEdit = () => {
           <div className="md:col-span-2 text-center mt-4 flex gap-4 justify-center">
             <button
               type="submit"
-              className="px-6 py-3 bg-red-600 text-white font-semibold rounded-xl hover:bg-red-700 transition"
+              className="px-6 py-3 text-sm md:text-base bg-red-600 text-white font-semibold rounded-xl hover:bg-red-700 transition"
             >
               Update Request
             </button>
             <button
               type="button"
               onClick={() => navigate('/dashboard')}
-              className="px-6 py-3 bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-200 font-semibold rounded-xl hover:bg-gray-400 dark:hover:bg-gray-600 transition"
+              className="px-6 py-3 text-sm md:text-base bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-200 font-semibold rounded-xl hover:bg-gray-400 dark:hover:bg-gray-600 transition"
             >
               Cancel
             </button>

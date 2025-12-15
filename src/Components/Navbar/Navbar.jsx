@@ -30,17 +30,6 @@ const Navbar = () => {
     document.documentElement.setAttribute('data-theme', savedTheme);
   }, []);
 
-  // const handleThemeToggle = () => {
-  //   const currentTheme = document.documentElement.getAttribute('data-theme');
-  //   if (currentTheme === 'dark') {
-  //     document.documentElement.setAttribute('data-theme', 'light');
-  //     localStorage.setItem('theme', 'light');
-  //   } else {
-  //     document.documentElement.setAttribute('data-theme', 'dark');
-  //     localStorage.setItem('theme', 'dark');
-  //   }
-  // };
-
   const handleLogout = () => {
     toast.success('Logged out successfully!');
     return logoutUser()
@@ -108,6 +97,30 @@ const Navbar = () => {
                     </NavLink>
                   </li>
                 ))}
+                <li>
+                  <NavLink
+                    to={'/login'}
+                    className={({ isActive }) =>
+                      isActive
+                        ? 'bg-primary text-white rounded-md px-3 py-2 font-semibold'
+                        : 'hover:bg-primary hover:text-white rounded-md px-3 py-2 transition'
+                    }
+                  >
+                    Login
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to={'/register'}
+                    className={({ isActive }) =>
+                      isActive
+                        ? 'bg-primary text-white rounded-md px-3 py-2 font-semibold'
+                        : 'hover:bg-primary hover:text-white rounded-md px-3 py-2 transition'
+                    }
+                  >
+                    Register
+                  </NavLink>
+                </li>
               </>
             ) : (
               <>
@@ -275,16 +288,24 @@ const Navbar = () => {
           <ul className="menu menu-horizontal space-x-2 hidden lg:flex">
             <li>
               <NavLink
-                to="/login"
-                className="hover:bg-primary hover:text-white rounded-md px-3 py-2 transition"
+                to={'/login'}
+                className={({ isActive }) =>
+                  isActive
+                    ? 'text-primary rounded-md px-3 py-2 font-semibold'
+                    : 'hover:bg-primary hover:text-white rounded-md px-3 py-2 transition'
+                }
               >
                 Login
               </NavLink>
             </li>
             <li>
               <NavLink
-                to="/register"
-                className="hover:bg-primary hover:text-white rounded-md px-3 py-2 transition"
+                to={'/register'}
+                className={({ isActive }) =>
+                  isActive
+                    ? ' text-primary rounded-md px-3 py-2 font-semibold'
+                    : 'hover:bg-primary hover:text-white rounded-md px-3 py-2 transition'
+                }
               >
                 Register
               </NavLink>

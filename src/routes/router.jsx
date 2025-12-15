@@ -27,7 +27,6 @@ import PrivateRoute from '../Components/PrivateRoute/PrivateRoute';
 import AdminPrivateRoute from '../Components/PrivateRoute/AdminPrivateRoute';
 import VAPrivate from '../Components/PrivateRoute/VAPrivate';
 import SearchedUserDetails from '../pages/SearchedUserDetails/SearchedUserDetails';
-import DAPrivate from '../Components/PrivateRoute/DAPrivate';
 import GiveFund from '../pages/Fund/GiveFund/GiveFund';
 import FundingPage from '../pages/Fund/Funding/Funding';
 import FundSuccess from '../pages/Fund/FundSuccess/FundSuccess';

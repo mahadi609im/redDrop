@@ -28,7 +28,7 @@ const MyDonationRequests = () => {
 
   // Pagination setup
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
   const filteredRequests =
     filterStatus === 'all'
       ? requests
@@ -274,57 +274,56 @@ const MyDonationRequests = () => {
                 No donation requests found.
               </div>
             )}
-
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="flex justify-center gap-2 p-4">
-                {/* Prev Button */}
-                <button
-                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                  disabled={currentPage === 1} // 🔹 Disable on first page
-                  className={`px-3 py-1 rounded ${
-                    currentPage === 1
-                      ? 'bg-gray-200 cursor-not-allowed'
-                      : 'bg-gray-300 hover:bg-gray-400'
-                  }`}
-                >
-                  Prev
-                </button>
-
-                {/* Page Numbers */}
-                {[...Array(totalPages)].map((_, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setCurrentPage(idx + 1)}
-                    className={`px-3 py-1 rounded ${
-                      currentPage === idx + 1
-                        ? 'bg-red-600 text-white'
-                        : 'bg-gray-200 hover:bg-gray-300'
-                    }`}
-                  >
-                    {idx + 1}
-                  </button>
-                ))}
-
-                {/* Next Button */}
-                <button
-                  onClick={() =>
-                    setCurrentPage(prev => Math.min(prev + 1, totalPages))
-                  }
-                  disabled={currentPage === totalPages} // 🔹 Disable on last page
-                  className={`px-3 py-1 rounded ${
-                    currentPage === totalPages
-                      ? 'bg-gray-200 cursor-not-allowed'
-                      : 'bg-gray-300 hover:bg-gray-400'
-                  }`}
-                >
-                  Next
-                </button>
-              </div>
-            )}
           </>
         )}
       </div>
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex justify-center gap-2 p-4">
+          {/* Prev Button */}
+          <button
+            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1} // 🔹 Disable on first page
+            className={`px-3 py-1 rounded ${
+              currentPage === 1
+                ? 'bg-gray-200 cursor-not-allowed'
+                : 'bg-gray-300 hover:bg-gray-400'
+            }`}
+          >
+            Prev
+          </button>
+
+          {/* Page Numbers */}
+          {[...Array(totalPages)].map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => setCurrentPage(idx + 1)}
+              className={`px-3 py-1 rounded ${
+                currentPage === idx + 1
+                  ? 'bg-red-600 text-white'
+                  : 'bg-gray-200 hover:bg-gray-300'
+              }`}
+            >
+              {idx + 1}
+            </button>
+          ))}
+
+          {/* Next Button */}
+          <button
+            onClick={() =>
+              setCurrentPage(prev => Math.min(prev + 1, totalPages))
+            }
+            disabled={currentPage === totalPages} // 🔹 Disable on last page
+            className={`px-3 py-1 rounded ${
+              currentPage === totalPages
+                ? 'bg-gray-200 cursor-not-allowed'
+                : 'bg-gray-300 hover:bg-gray-400'
+            }`}
+          >
+            Next
+          </button>
+        </div>
+      )}
     </section>
   );
 };

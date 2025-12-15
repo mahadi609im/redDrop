@@ -68,7 +68,7 @@ const CreateDonationRequest = () => {
           timer: 2000,
           showConfirmButton: false,
         });
-        navigate('/my-donation-requests');
+        navigate('/dashboard/my-donation-requests');
       }
     });
   };

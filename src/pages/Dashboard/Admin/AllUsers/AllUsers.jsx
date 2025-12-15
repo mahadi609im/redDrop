@@ -94,7 +94,7 @@ const AllUsers = () => {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-b from-red-50 to-white dark:from-[#1a0c0c] dark:to-[#0d0b0b] py-20 px-4 md:px-10 rounded-2xl">
+    <div className="min-h-screen bg-linear-to-b from-red-50 to-white dark:from-[#1a0c0c] dark:to-[#0d0b0b] py-20 px-4 md:px-10 rounded-2xl w-full">
       {/* Header */}
       <div className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-bold text-red-700 dark:text-red-400 flex justify-center items-center gap-2">
@@ -140,7 +140,7 @@ const AllUsers = () => {
           </div>
 
           {/* Users Table */}
-          <div className="mx-auto bg-white/90 dark:bg-[#1a1a1a]/80 border border-red-500/10 rounded-3xl shadow-[0_0_25px_rgba(255,0,0,0.08)] overflow-x-auto scrollbar-thin scrollbar-thumb-red-400/60 hover:scrollbar-thumb-red-600 scrollbar-track-transparent">
+          <div className="w-full mx-auto bg-white/90 dark:bg-[#1a1a1a]/80 border border-red-500/10 rounded-3xl shadow-[0_0_25px_rgba(255,0,0,0.08)] overflow-x-auto scrollbar-thin scrollbar-thumb-red-400/60 hover:scrollbar-thumb-red-600 scrollbar-track-transparent">
             {displayedUsers.length > 0 ? (
               <table className="w-full table-auto border-collapse overflow-hidden">
                 <thead>
@@ -229,7 +229,7 @@ const AllUsers = () => {
 
                       {/* Actions */}
                       <td className="py-1 px-1">
-                        <div className="flex items-center justify-center gap-2 flex-wrap">
+                        <div className="flex items-center justify-center gap-2">
                           {user.role === 'admin' &&
                             user.status === 'active' && (
                               <>
@@ -340,22 +340,51 @@ const AllUsers = () => {
             )}
           </div>
 
-          {/* ✅ Pagination UI */}
+          {/* Pagination */}
           {totalPages > 1 && (
-            <div className="flex justify-center mt-8 gap-2 flex-wrap">
-              {[...Array(totalPages).keys()].map(num => (
+            <div className="flex justify-center gap-2 p-4">
+              {/* Prev Button */}
+              <button
+                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1} // 🔹 Disable on first page
+                className={`px-3 py-1 rounded ${
+                  currentPage === 1
+                    ? 'bg-gray-200 cursor-not-allowed'
+                    : 'bg-gray-300 hover:bg-gray-400'
+                }`}
+              >
+                Prev
+              </button>
+
+              {/* Page Numbers */}
+              {[...Array(totalPages)].map((_, idx) => (
                 <button
-                  key={num}
-                  onClick={() => setCurrentPage(num + 1)}
-                  className={`px-4 py-2 rounded-lg font-semibold ${
-                    currentPage === num + 1
+                  key={idx}
+                  onClick={() => setCurrentPage(idx + 1)}
+                  className={`px-3 py-1 rounded ${
+                    currentPage === idx + 1
                       ? 'bg-red-600 text-white'
-                      : 'bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200'
+                      : 'bg-gray-200 hover:bg-gray-300'
                   }`}
                 >
-                  {num + 1}
+                  {idx + 1}
                 </button>
               ))}
+
+              {/* Next Button */}
+              <button
+                onClick={() =>
+                  setCurrentPage(prev => Math.min(prev + 1, totalPages))
+                }
+                disabled={currentPage === totalPages} // 🔹 Disable on last page
+                className={`px-3 py-1 rounded ${
+                  currentPage === totalPages
+                    ? 'bg-gray-200 cursor-not-allowed'
+                    : 'bg-gray-300 hover:bg-gray-400'
+                }`}
+              >
+                Next
+              </button>
             </div>
           )}
         </>

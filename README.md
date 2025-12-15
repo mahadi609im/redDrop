@@ -11,7 +11,7 @@ secure donation process.
 ## Live URL
 
 [Live link(client-firebase)](https://reddrop-685b1.web.app/)
-[Live link(client-netlify)](https://red-drop-blood-donation-maha690im.netlify.app/)
+[Live link(client-netlify)](https://reddrop-609im.netlify.app/)
 
 ## Key Features
 

@@ -205,15 +205,15 @@ const DonationChart = ({ donationRequests = [] }) => {
 
         {/* Summary */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4">
-          <div className="bg-red-500 text-white p-3 rounded-xl flex flex-col items-center shadow-md">
+          <div className="border border-red-500 bg-red-500/10 text-white p-3 rounded-xl flex flex-col items-center shadow-md">
             <p className="text-xs sm:text-sm font-medium">Total Requests</p>
             <h3 className="text-xl sm:text-2xl font-bold">{totalRequests}</h3>
           </div>
-          <div className="bg-green-500 text-white p-3 rounded-xl flex flex-col items-center shadow-md">
+          <div className="border border-green-500 bg-green-500/10 text-white p-3 rounded-xl flex flex-col items-center shadow-md">
             <p className="text-xs sm:text-sm font-medium">Completed</p>
             <h3 className="text-xl sm:text-2xl font-bold">{totalCompleted}</h3>
           </div>
-          <div className="bg-blue-500 text-white p-3 rounded-xl flex flex-col items-center shadow-md">
+          <div className="border border-blue-500 bg-blue-500/10 text-white p-3 rounded-xl flex flex-col items-center shadow-md">
             <p className="text-xs sm:text-sm font-medium">Success Rate</p>
             <h3 className="text-xl sm:text-2xl font-bold">{successRate}%</h3>
           </div>

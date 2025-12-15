@@ -6,12 +6,42 @@ import { PiMapPinPlusFill } from 'react-icons/pi';
 import { LuDroplets } from 'react-icons/lu';
 import useUserRole from '../../hooks/useUserRole';
 import Loading from '../../Components/Loading/Loading';
-import { useContext } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { AuthContext } from '../../context/AuthContext';
-import { Bounce, ToastContainer } from 'react-toastify';
+import { Bounce, toast, ToastContainer } from 'react-toastify';
 
 const DashBoardLayout = () => {
   const { role, isLoading, statusData, statusLoading } = useUserRole();
+  const { user, logoutUser } = useContext(AuthContext);
+
+  const [open, setOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  // Close dropdown if clicked outside
+  useEffect(() => {
+    const handleClickOutside = e => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // 🔆 Load saved theme
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+  }, []);
+
+  const handleLogout = () => {
+    toast.success('Logged out successfully!');
+    return logoutUser()
+      .then(() => {})
+      .catch(() => {
+        toast.error('Failed to logout. Try again.');
+      });
+  };
 
   const { loading } = useContext(AuthContext);
   if (loading || isLoading || statusLoading) {
@@ -136,30 +166,119 @@ const DashBoardLayout = () => {
 
       <div className="drawer-content">
         {/* Navbar */}
-        <nav className="navbar w-full bg-white shadow-md border-b border-red-200 sticky top-0 left-0 z-50">
-          <label
-            htmlFor="my-drawer-4"
-            aria-label="open sidebar"
-            className="btn btn-square btn-ghost text-red-600"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              strokeLinejoin="round"
-              strokeLinecap="round"
-              strokeWidth="2"
-              fill="none"
-              stroke="currentColor"
-              className="my-1.5 inline-block size-5"
+        <nav className="navbar w-full bg-white shadow-md border-b border-red-200 sticky top-0 z-50 px-8">
+          {/* LEFT SIDE */}
+          <div className="navbar-start flex items-center gap-2">
+            <label
+              htmlFor="my-drawer-4"
+              aria-label="open sidebar"
+              className="btn btn-square btn-ghost text-red-600"
             >
-              <path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"></path>
-              <path d="M9 4v16"></path>
-              <path d="M14 10l2 2l-2 2"></path>
-            </svg>
-          </label>
-          <h3 className="px-4 font-bold text-2xl text-red-600 tracking-wide drop-shadow-sm">
-            Dashboard
-          </h3>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                strokeLinejoin="round"
+                strokeLinecap="round"
+                strokeWidth="2"
+                fill="none"
+                stroke="currentColor"
+                className="size-5"
+              >
+                <path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" />
+                <path d="M9 4v16" />
+                <path d="M14 10l2 2l-2 2" />
+              </svg>
+            </label>
+
+            <h3 className="font-bold text-xl md:text-2xl text-red-600 tracking-wide">
+              Dashboard
+            </h3>
+          </div>
+
+          {/* RIGHT SIDE */}
+          <div className="navbar-end flex items-center gap-2 relative">
+            {/* ===== User Dropdown ===== */}
+            {user ? (
+              <div className="relative" ref={dropdownRef}>
+                <button
+                  onClick={() => setOpen(!open)}
+                  className="btn btn-ghost btn-circle avatar"
+                >
+                  <div
+                    className={`w-10 rounded-full border-2 relative
+              ${
+                statusData === 'active'
+                  ? 'border-green-500'
+                  : statusData === 'blocked'
+                  ? 'border-red-500'
+                  : 'border-primary'
+              }
+            `}
+                  >
+                    <img
+                      src={user?.photoURL}
+                      alt="User Avatar"
+                      referrerPolicy="no-referrer"
+                      className="rounded-full"
+                    />
+
+                    {/* ❗ Blocked Icon */}
+                    {statusData === 'blocked' && (
+                      <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-0.5 shadow">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="w-4 h-4 text-red-500"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-4a1 1 0 00-1 1v3a1 1 0 002 0V7a1 1 0 00-1-1zm0 7a1.25 1.25 0 100-2.5A1.25 1.25 0 0010 13z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+                </button>
+
+                {open && (
+                  <ul
+                    className="absolute right-0 mt-2 w-48 p-2 rounded-xl border z-50 shadow-lg
+                  bg-white/90 dark:bg-gray-900/80 backdrop-blur-md
+                  border-gray-200 dark:border-gray-700 menu text-white"
+                  >
+                    <li>
+                      <Link
+                        to="/dashboard/profile"
+                        onClick={() => setOpen(false)}
+                        className="font-medium px-3 py-2 rounded-md hover:bg-red-600 hover:text-white dark:hover:bg-red-500 transition"
+                      >
+                        Profile
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="/dashboard"
+                        onClick={() => setOpen(false)}
+                        className="font-medium px-3 py-2 rounded-md hover:bg-red-600 hover:text-white dark:hover:bg-red-500 transition"
+                      >
+                        Dashboard
+                      </Link>
+                    </li>
+                    <li>
+                      <button
+                        onClick={handleLogout}
+                        className="w-full text-left font-medium px-3 py-2 rounded-md hover:bg-red-600 hover:text-white dark:hover:bg-red-500 transition"
+                      >
+                        Logout
+                      </button>
+                    </li>
+                  </ul>
+                )}
+              </div>
+            ) : null}
+          </div>
         </nav>
 
         {/* Page content */}

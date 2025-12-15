@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
 import useAxiosSecure from '../../../../hooks/useAxiosSecure';
 import { AuthContext } from '../../../../context/AuthContext';
+import { useNavigate } from 'react-router';
 
 // Example logged-in user
 const loggedInUser = {
@@ -21,6 +22,7 @@ const CreateDonationRequest = () => {
   const [selectedDistrict, setSelectedDistrict] = useState('');
   const axiosSecure = useAxiosSecure();
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   // Load JSON data
   useEffect(() => {
@@ -66,6 +68,7 @@ const CreateDonationRequest = () => {
           timer: 2000,
           showConfirmButton: false,
         });
+        navigate('/my-donation-requests');
       }
     });
   };

@@ -70,6 +70,26 @@ const DashBoardLayout = () => {
         </NavLink>
       </li>
 
+      {/* Logo */}
+      <li>
+        <NavLink
+          to="/"
+          className="is-drawer-close:tooltip is-drawer-close:tooltip-right flex md:hidden items-center transition-all duration-300 hover:shadow-sm"
+        >
+          <div className="flex items-center justify-center overflow-hidden">
+            <img
+              src={logo}
+              alt="RedDrop Logo"
+              className="w-6 h-6 object-contain"
+            />
+          </div>
+
+          <span className="is-drawer-close:hidden text-base text-red-700 font-bold tracking-wide">
+            RedDrop
+          </span>
+        </NavLink>
+      </li>
+
       {/* Dashboard Home (Common) */}
       <li>
         <NavLink

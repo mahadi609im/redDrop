@@ -24,13 +24,11 @@ const DonorHome = () => {
 
   const axiosSecure = useAxiosSecure();
   const location = useLocation();
-  console.log(location);
 
   const { data: requests = [], refetch } = useQuery({
     queryKey: ['myDonationRequests', user?.email],
     queryFn: async () => {
       const res = await axiosSecure.get(`/donationRequests/my`);
-      console.log(res.data);
       return res.data;
     },
   });
@@ -47,7 +45,6 @@ const DonorHome = () => {
     }).then(result => {
       if (result.isConfirmed) {
         axiosSecure.delete(`/donationRequests/${id}`).then(res => {
-          console.log(res.data);
           if (res.data.deletedCount) {
             refetch();
             Swal.fire({
@@ -101,7 +98,6 @@ const DonorHome = () => {
         });
       }
     } catch (err) {
-      console.error(err);
       Swal.fire({
         icon: 'error',
         title: 'Error!',

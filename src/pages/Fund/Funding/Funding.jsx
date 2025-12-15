@@ -15,7 +15,6 @@ const FundingPage = () => {
     queryKey: ['funds'],
     queryFn: async () => {
       const res = await axiosSecure.get('/funds');
-      console.log(res.data);
       return res.data;
     },
   });

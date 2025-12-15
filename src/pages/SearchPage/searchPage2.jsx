@@ -55,7 +55,6 @@ const SearchPage2 = () => {
       // Get district name from id if backend expects name
       const selectedDistrictName =
         districts.find(d => d.id === data.district)?.name || '';
-      console.log(data.bloodGroup, selectedDistrictName, data.upazila);
 
       const response = await axiosSecure.get('/donors', {
         params: {
@@ -68,7 +67,7 @@ const SearchPage2 = () => {
       setResults(response.data);
       setSearched(true);
     } catch (error) {
-      console.error('Error fetching donors:', error);
+      alert('Error fetching donors:', error);
       setResults([]);
       setSearched(true);
     }

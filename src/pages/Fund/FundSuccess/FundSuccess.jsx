@@ -12,8 +12,6 @@ const FundSuccess = () => {
   const [fund, setFund] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  console.log(fund);
-
   useEffect(() => {
     if (!sessionId) return;
 
@@ -24,7 +22,7 @@ const FundSuccess = () => {
           setFund(res.data.fundInfo || res.data);
         }
       })
-      .catch(err => console.error(err))
+      .catch(err => alert(err.message))
       .finally(() => setLoading(false));
   }, [sessionId, axiosSecure]);
 

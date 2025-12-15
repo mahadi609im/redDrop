@@ -49,7 +49,6 @@ const Register = () => {
       return;
     }
     const profilePhoto = data.profilePhoto[0];
-    console.log(data);
 
     registerUser(data.email, data.password)
       .then(() => {
@@ -78,12 +77,11 @@ const Register = () => {
               .post('/users', userInfo)
               .then(res => {
                 if (res.data.insertedId) {
-                  console.log(res.data);
                   toast.success('Registration successful!');
                 }
               })
               .catch(err => {
-                console.log(err);
+                alert(err.message);
                 toast.error('Failed to save user in database.');
               });
 
@@ -94,22 +92,18 @@ const Register = () => {
             };
 
             updateUserProfile(updateProfile)
-              .then(result => {
-                console.log(result);
+              .then(() => {
                 navigate('/');
               })
-              .catch(error => {
-                console.log(error);
+              .catch(() => {
                 toast.error('Failed to update profile.');
               });
           })
-          .catch(err => {
-            console.log(err);
+          .catch(() => {
             toast.error('Image upload failed.');
           });
       })
       .catch(error => {
-        console.log(error);
         setLoading(false);
         toast.error(error.message || 'Registration failed.');
       });

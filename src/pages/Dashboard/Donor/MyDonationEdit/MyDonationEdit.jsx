@@ -43,8 +43,6 @@ const MyDonationEdit = () => {
 
   const location = useLocation();
 
-  console.log(location);
-
   const watchedDistrict = watch('district');
 
   // Load district & upazila JSON data

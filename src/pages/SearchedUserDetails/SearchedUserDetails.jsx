@@ -30,7 +30,6 @@ const SearchedUserDetails = () => {
   });
 
   if (isLoading) return <Loading />;
-  console.log(searchedUserData?.email);
 
   if (error || !searchedUserData) {
     return (

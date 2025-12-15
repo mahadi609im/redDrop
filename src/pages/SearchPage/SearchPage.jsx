@@ -31,10 +31,9 @@ const SearchPage = () => {
         },
       });
       setResults(res.data);
-      console.log(res.data);
       setSearched(true);
     } catch (err) {
-      console.error(err);
+      alert(err);
       setResults([]);
     } finally {
       setLoadingResults(false);

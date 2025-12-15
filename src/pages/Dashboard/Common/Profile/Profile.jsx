@@ -91,7 +91,6 @@ const Profile = () => {
 
   const handleUpdateProfile = async data => {
     setIsSubmitting(true);
-    console.log('forms DAta', data);
 
     try {
       let photoURL = userInfo.photoURL; // existing photo
@@ -124,8 +123,6 @@ const Profile = () => {
         bloodGroup: data.bloodGroup,
         photoURL: photoURL,
       };
-
-      console.log('update Data', updateData);
 
       const response = await axiosSecure.patch('/users/profile', updateData);
 

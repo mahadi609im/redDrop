@@ -13,7 +13,6 @@ const BloodRequests = () => {
     queryKey: ['pendingDonationRequests'],
     queryFn: async () => {
       const res = await axiosSecure.get(`/donationRequests/pending`);
-      console.log(res.data);
       return res.data;
     },
   });

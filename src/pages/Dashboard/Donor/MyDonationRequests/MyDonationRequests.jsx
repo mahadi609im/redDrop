@@ -52,7 +52,6 @@ const MyDonationRequests = () => {
     }).then(result => {
       if (result.isConfirmed) {
         axiosSecure.delete(`/donationRequests/${id}`).then(res => {
-          console.log(res.data);
           if (res.data.deletedCount) {
             refetch();
             Swal.fire({
@@ -106,7 +105,6 @@ const MyDonationRequests = () => {
         });
       }
     } catch (err) {
-      console.error(err);
       Swal.fire({
         icon: 'error',
         title: 'Error!',

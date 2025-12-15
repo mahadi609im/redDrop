@@ -9,7 +9,6 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { loginUser, setLoading } = useContext(AuthContext);
-  console.log(location);
 
   const {
     register,
@@ -20,13 +19,12 @@ const Login = () => {
   const onSubmit = data => {
     setLoading(true); // যদি তুমি loading state use করো
     loginUser(data.email, data.password)
-      .then(userCredential => {
-        console.log('Logged in user:', userCredential.user);
+      .then(() => {
         toast.success('Login successful!'); // success toast
         navigate(location?.state || '/'); // Redirect after login
       })
       .catch(err => {
-        console.log(err.message);
+        alert(err);
         toast.error(err.message); // error toast
         setLoading(false);
       });

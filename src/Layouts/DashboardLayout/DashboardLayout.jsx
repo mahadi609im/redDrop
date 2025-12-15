@@ -12,7 +12,6 @@ import { Bounce, ToastContainer } from 'react-toastify';
 
 const DashBoardLayout = () => {
   const { role, isLoading, statusData, statusLoading } = useUserRole();
-  console.log(role, statusData);
 
   const { loading } = useContext(AuthContext);
   if (loading || isLoading || statusLoading) {

@@ -25,7 +25,6 @@ const DonationRequestDetails = () => {
     queryKey: ['singleRequest', id],
     queryFn: async () => {
       const res = await axiosSecure.get(`/donationRequests/${id}`);
-      console.log(res.data);
       return res.data;
     },
     enabled: !!id,

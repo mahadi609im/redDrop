@@ -14,7 +14,6 @@ const VolunteerHome = () => {
       queryKey: ['totalFunds'],
       queryFn: async () => {
         const res = await axiosSecure.get('/funds/total');
-        console.log('Total Funds:', res.data);
         return res.data.totalAmount;
       },
     });

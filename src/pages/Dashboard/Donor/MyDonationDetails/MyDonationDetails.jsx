@@ -10,7 +10,6 @@ const MyDonationDetails = () => {
   const axiosSecure = useAxiosSecure();
 
   const { id } = useParams();
-  console.log(id);
 
   const {
     data: requestData = {},
@@ -20,7 +19,6 @@ const MyDonationDetails = () => {
     queryKey: ['singleRequest', id],
     queryFn: async () => {
       const res = await axiosSecure.get(`/donationRequests/${id}`);
-      console.log(res.data);
       return res.data;
     },
     enabled: !!id,

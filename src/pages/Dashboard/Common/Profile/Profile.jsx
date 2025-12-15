@@ -5,6 +5,7 @@ import useAxiosSecure from '../../../../hooks/useAxiosSecure';
 import { useQuery } from '@tanstack/react-query';
 import { FiEdit3, FiSave, FiXCircle } from 'react-icons/fi';
 import useUserRole from '../../../../hooks/useUserRole';
+import Loading from '../../../../Components/Loading/Loading';
 
 const Profile = () => {
   const [editMode, setEditMode] = useState(false);
@@ -41,7 +42,11 @@ const Profile = () => {
       .then(data => setUpazilas(data));
   }, []);
 
-  const { data: userInfo = {}, refetch } = useQuery({
+  const {
+    data: userInfo = {},
+    refetch,
+    isLoading,
+  } = useQuery({
     queryKey: ['currentUser', user?.email],
     queryFn: async () => {
       if (!user?.email) return null;
@@ -150,6 +155,10 @@ const Profile = () => {
       setIsSubmitting(false);
     }
   };
+
+  if (isLoading) {
+    return <Loading></Loading>;
+  }
 
   return (
     <div className="min-h-screen bg-linear-to-br from-rose-50 via-red-50 to-rose-100 flex items-center justify-center md:px-4 py-10">

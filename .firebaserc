@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "default": "reddrop-685b1",
+    "prod": "reddrop-685b1"
+  },
+  "targets": {},
+  "etags": {}
+}

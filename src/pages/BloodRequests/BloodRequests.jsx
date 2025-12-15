@@ -9,7 +9,7 @@ const BloodRequests = () => {
   const navigate = useNavigate();
   const axiosSecure = useAxiosSecure();
 
-  const { data: requests = [] } = useQuery({
+  const { data: requests = [], isLoading } = useQuery({
     queryKey: ['pendingDonationRequests'],
     queryFn: async () => {
       const res = await axiosSecure.get(`/donationRequests/pending`);
@@ -53,7 +53,7 @@ const BloodRequests = () => {
       </div>
 
       {/* Requests List - TABLE VIEW */}
-      {loading ? (
+      {loading || isLoading ? (
         <LoadingSpin></LoadingSpin>
       ) : (
         <>

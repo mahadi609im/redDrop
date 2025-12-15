@@ -11,7 +11,7 @@ const Navbar = () => {
 
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
-  const { statusLoading, statusData } = useUserRole();
+  const { statusData } = useUserRole();
 
   // Close dropdown if clicked outside
   useEffect(() => {
@@ -51,10 +51,6 @@ const Navbar = () => {
     { name: 'Blood Requests', path: '/blood-requests' },
     { name: 'Funds', path: '/funds' },
   ];
-
-  if (statusLoading) {
-    return <Loading></Loading>;
-  }
 
   return (
     <div className="navbar bg-base-100 shadow-lg py-4 px-4 md:px-10">

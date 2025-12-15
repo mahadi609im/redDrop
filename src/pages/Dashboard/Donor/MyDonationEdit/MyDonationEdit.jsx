@@ -15,6 +15,7 @@ const MyDonationEdit = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const requestData = useLoaderData();
+  console.log(requestData);
   const axiosSecure = useAxiosSecure();
 
   const [districts, setDistricts] = useState([]);

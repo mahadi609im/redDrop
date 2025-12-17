@@ -9,14 +9,13 @@ const useUserRole = () => {
 
   const { data, isLoading } = useQuery({
     queryKey: ['user-role', user?.email],
-    enabled: !!user?.email, // user না থাকলে query চলবে না
+    enabled: !!user?.email,
     queryFn: async () => {
       const res = await axiosSecure.get(`/users/${user.email}/role`);
-      return res.data; // { role: "admin" }
+      return res.data;
     },
   });
 
-  // Status query
   const { data: statusDataObj, isLoading: statusLoading } = useQuery({
     queryKey: ['user-status', user?.email],
     enabled: !!user?.email,
@@ -26,7 +25,6 @@ const useUserRole = () => {
     },
   });
 
-  // DEFAULT fallback
   const role = data?.role || 'donor';
   const statusData = statusDataObj?.status;
 

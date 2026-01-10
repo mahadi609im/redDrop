@@ -59,7 +59,7 @@ const SearchedUserDetails = () => {
       <div className="max-w-4xl mx-auto">
         {/* Back Button */}
         <Link
-          to="/search"
+          to="/donors"
           className="flex items-center gap-2 text-red-600 hover:text-red-700 font-semibold mb-12 transition-colors"
         >
           <FaArrowLeft className="w-5 h-5" /> Back to Users

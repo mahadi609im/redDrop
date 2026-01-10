@@ -127,7 +127,7 @@ const MyDonationRequests = () => {
       </div>
 
       {/* Filter */}
-      <div className="w-full max-w-7xl mx-auto flex justify-end gap-3 mb-4">
+      <div className="w-full mx-auto flex justify-end gap-3 mb-4">
         <select
           className="border border-red-500 rounded-md px-3 py-2 text-gray-700 focus:outline-none"
           value={filterStatus}
@@ -145,7 +145,7 @@ const MyDonationRequests = () => {
       </div>
 
       {/* Table */}
-      <div className="w-full max-w-7xl mx-auto overflow-x-auto bg-white border border-red-500/20 rounded-3xl shadow-[0_0_25px_rgba(255,0,0,0.08)]">
+      <div className="w-full mx-auto overflow-x-auto bg-white border border-red-500/20 rounded-3xl shadow-[0_0_25px_rgba(255,0,0,0.08)]">
         {loading || isLoading ? (
           <LoadingSpin></LoadingSpin>
         ) : (

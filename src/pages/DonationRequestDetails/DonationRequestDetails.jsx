@@ -64,7 +64,7 @@ const DonationRequestDetails = () => {
       <div className="absolute top-1/3 right-0 w-40 h-40 bg-red-600/20 rounded-full blur-2xl animate-pulse"></div>
 
       {/* Main Card */}
-      <div className="relative z-10 max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10 items-center">
+      <div className="relative z-10  mx-auto grid grid-cols-1 md:grid-cols-3 gap-10 items-center">
         {/* Details */}
         <div className="bg-white/70 dark:bg-[#1a1a1a]/70 backdrop-blur-xl rounded-3xl p-10 shadow-[0_12px_30px_rgba(255,0,0,0.2)] border border-red-500/20 hover:shadow-[0_15px_40px_rgba(255,0,0,0.3)] transition-all duration-500 col-span-2">
           <button

@@ -30,3 +30,7 @@
   --color-error: #b71c1c; /* strong blood red for errors */
   --color-error-content: #ffffff;
 }
+
+.conCls {
+  @apply container mx-auto px-[3%] md:px-0;
+}

@@ -53,7 +53,7 @@ const VolunteerHome = () => {
       </div>
 
       {/* Statistics Cards */}
-      <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+      <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-8  mx-auto">
         {/* Total Users */}
         <div className="bg-white/80 dark:bg-gray-900/70 backdrop-blur-xl border border-red-200/20 dark:border-gray-700/20 rounded-3xl p-8 shadow-lg hover:shadow-xl transition relative overflow-hidden">
           <div className="flex items-center space-x-4">

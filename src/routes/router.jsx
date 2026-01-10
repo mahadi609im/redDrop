@@ -5,7 +5,6 @@ import HomeLayout from '../Layouts/HomeLayout/HomeLayout';
 import Home from '../pages/Home/Home';
 import Register from '../pages/Register/Register';
 import Login from '../pages/Login/Login';
-import SearchPage from '../pages/SearchPage/SearchPage';
 import BloodRequests from '../pages/BloodRequests/BloodRequests';
 
 // Dashboard layouts
@@ -32,6 +31,8 @@ import FundingPage from '../pages/Fund/Funding/Funding';
 import FundSuccess from '../pages/Fund/FundSuccess/FundSuccess';
 import FundCancel from '../pages/Fund/FundCancel/FundCancel';
 import ActiveUserPrivate from '../Components/PrivateRoute/ActiveUserPrivate';
+import HealthTips from '../pages/HealthTips/HealthTips ';
+import Donors from '../pages/Donors/Donors';
 
 const router = createBrowserRouter([
   {
@@ -51,8 +52,12 @@ const router = createBrowserRouter([
         element: <Login />,
       },
       {
-        path: '/search',
-        element: <SearchPage />,
+        path: '/donors',
+        element: <Donors />,
+      },
+      {
+        path: '/health-tips',
+        element: <HealthTips></HealthTips>,
       },
       {
         path: '/searchedUser-details/:searchedEmail',

@@ -10,7 +10,7 @@ const Footer = () => {
         <div className="w-72 h-72 bg-pink-600/20 rounded-full blur-[130px] absolute bottom-0 right-0"></div>
       </div>
 
-      <div className="relative max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 z-10">
+      <div className="relative  mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 z-10">
         {/* Brand */}
         <div>
           <div className="flex items-center">

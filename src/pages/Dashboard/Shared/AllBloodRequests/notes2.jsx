@@ -122,7 +122,7 @@ const AllBloodDonationRequests = () => {
       </div>
 
       {/* Table */}
-      <div className="max-w-7xl mx-auto bg-white/90 dark:bg-[#1a1a1a]/80 border border-red-500/10 rounded-3xl shadow-[0_0_25px_rgba(255,0,0,0.08)] overflow-x-auto scrollbar-thin scrollbar-thumb-red-400/60 hover:scrollbar-thumb-red-600 scrollbar-track-transparent">
+      <div className="mx-auto bg-white/90 dark:bg-[#1a1a1a]/80 border border-red-500/10 rounded-3xl shadow-[0_0_25px_rgba(255,0,0,0.08)] overflow-x-auto scrollbar-thin scrollbar-thumb-red-400/60 hover:scrollbar-thumb-red-600 scrollbar-track-transparent">
         <table className="w-full table-fixed border-collapse min-w-[1200px]">
           <thead>
             <tr className="bg-red-600 text-white">

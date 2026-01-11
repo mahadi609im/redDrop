@@ -4,7 +4,7 @@ import logo from '../../assets/blood-logo.png';
 const LoadingSpin = () => {
   return (
     <div>
-      <div className="py-10 flex flex-col items-center justify-center">
+      <div className="py-10 flex flex-col items-center justify-center ">
         {/* Glowing Ring */}
         <div className="relative flex items-center justify-center">
           <div className="absolute w-28 h-28 rounded-full bg-red-600/20 blur-2xl animate-pulse"></div>

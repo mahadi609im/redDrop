@@ -1,7 +1,26 @@
-import React from 'react';
+// import React, { useContext } from 'react';
+import { NavLink } from 'react-router';
 import logo from '../../assets/blood-logo.png';
+import { AuthContext } from '../../context/AuthContext';
+import { useContext } from 'react';
 
 const Footer = () => {
+  const { user } = useContext(AuthContext);
+
+  const publicLinks = [
+    { name: 'Home', path: '/' },
+    { name: 'Donors', path: '/donors' },
+    { name: 'Blood Requests', path: '/blood-requests' },
+    { name: 'Health Tips', path: '/health-tips' },
+  ];
+
+  const privateLinks = [
+    { name: 'Help Center', path: '/help-enter' },
+    { name: 'Privacy Policy', path: '/privacy-policy' },
+    { name: 'Donation proccess', path: '/donation-proccess' },
+    { name: 'Report an Issue', path: '/report-an-issue' },
+  ];
+
   return (
     <footer className="relative bg-[#110c0f] text-gray-300 py-14 px-6 overflow-hidden">
       {/* Glow Effects */}
@@ -36,18 +55,14 @@ const Footer = () => {
             Useful Links
           </h3>
           <ul className="space-y-2">
-            <li className="hover:text-red-500 transition-colors cursor-pointer">
-              Home
-            </li>
-            <li className="hover:text-red-500 transition-colors cursor-pointer">
-              About Us
-            </li>
-            <li className="hover:text-red-500 transition-colors cursor-pointer">
-              Donate Blood
-            </li>
-            <li className="hover:text-red-500 transition-colors cursor-pointer">
-              Find Donor
-            </li>
+            {publicLinks.map((link, idx) => (
+              <li
+                key={idx}
+                className="hover:text-red-500 transition-colors cursor-pointer"
+              >
+                <NavLink to={link.path}>{link.name}</NavLink>
+              </li>
+            ))}
           </ul>
         </div>
 
@@ -55,18 +70,14 @@ const Footer = () => {
         <div>
           <h3 className="text-lg font-semibold text-white mb-3">Support</h3>
           <ul className="space-y-2">
-            <li className="hover:text-red-500 transition-colors cursor-pointer">
-              FAQ
-            </li>
-            <li className="hover:text-red-500 transition-colors cursor-pointer">
-              Privacy Policy
-            </li>
-            <li className="hover:text-red-500 transition-colors cursor-pointer">
-              Terms & Conditions
-            </li>
-            <li className="hover:text-red-500 transition-colors cursor-pointer">
-              Safety Guidelines
-            </li>
+            {privateLinks.map((link, idx) => (
+              <li
+                key={idx}
+                className="hover:text-red-500 transition-colors cursor-pointer"
+              >
+                <NavLink to={link.path}>{link.name}</NavLink>
+              </li>
+            ))}
           </ul>
         </div>
 

@@ -33,6 +33,10 @@ import FundCancel from '../pages/Fund/FundCancel/FundCancel';
 import ActiveUserPrivate from '../Components/PrivateRoute/ActiveUserPrivate';
 import HealthTips from '../pages/HealthTips/HealthTips ';
 import Donors from '../pages/Donors/Donors';
+import HelpCenter from '../pages/HelpCenter/HelpCenter';
+import PrivacyPolicy from '../pages/PrivacyPolicy/PrivacyPolicy';
+import DonationProcess from '../pages/DonationProcess/DonationProcess';
+import ReportAnIssue from '../pages/ReportAnIssue/ReportAnIssue';
 
 const router = createBrowserRouter([
   {
@@ -57,7 +61,23 @@ const router = createBrowserRouter([
       },
       {
         path: '/health-tips',
-        element: <HealthTips></HealthTips>,
+        element: <HealthTips />,
+      },
+      {
+        path: '/help-enter',
+        element: <HelpCenter></HelpCenter>,
+      },
+      {
+        path: '/privacy-policy',
+        element: <PrivacyPolicy></PrivacyPolicy>,
+      },
+      {
+        path: '/donation-proccess',
+        element: <DonationProcess></DonationProcess>,
+      },
+      {
+        path: '/report-an-issue',
+        element: <ReportAnIssue></ReportAnIssue>,
       },
       {
         path: '/searchedUser-details/:searchedEmail',

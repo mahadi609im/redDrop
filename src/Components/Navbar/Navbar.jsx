@@ -4,16 +4,31 @@ import logo from '../../assets/blood-logo.png';
 import { AuthContext } from '../../context/AuthContext';
 import { toast } from 'react-toastify';
 import useUserRole from '../../hooks/useUserRole';
-import Loading from '../Loading/Loading';
+import { LuSun, LuMoon } from 'react-icons/lu';
 
 const Navbar = () => {
   const { user, logoutUser } = useContext(AuthContext);
-
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
   const { statusData } = useUserRole();
 
-  // Close dropdown if clicked outside
+  // --- Theme Logic ---
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(theme === 'light' ? 'dark' : 'light');
+  };
+
   useEffect(() => {
     const handleClickOutside = e => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -22,12 +37,6 @@ const Navbar = () => {
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  // 🔆 Load saved theme
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    document.documentElement.setAttribute('data-theme', savedTheme);
   }, []);
 
   const handleLogout = () => {
@@ -39,24 +48,26 @@ const Navbar = () => {
       });
   };
 
-  const publicLinks = [
-    { name: 'Home', path: '/' },
-    { name: 'Donors', path: '/donors' },
-    { name: 'Blood Requests', path: '/blood-requests' },
-    { name: 'Health Tips', path: '/health-tips' },
-  ];
-
-  const privateLinks = [
-    { name: 'Home', path: '/' },
-    { name: 'Donors', path: '/donors' },
-    { name: 'Blood Requests', path: '/blood-requests' },
-    { name: 'Funds', path: '/funds' },
-    { name: 'Health Tips', path: '/health-tips' },
-  ];
+  const navLinks = !user
+    ? [
+        { name: 'Home', path: '/' },
+        { name: 'Donors', path: '/donors' },
+        { name: 'Blood Requests', path: '/blood-requests' },
+        { name: 'Donation', path: '/donation-proccess' },
+        { name: 'Health Tips', path: '/health-tips' },
+      ]
+    : [
+        { name: 'Home', path: '/' },
+        { name: 'Donors', path: '/donors' },
+        { name: 'Blood Requests', path: '/blood-requests' },
+        { name: 'Donation', path: '/donation-proccess' },
+        { name: 'Funds', path: '/funds' },
+        { name: 'Health Tips', path: '/health-tips' },
+      ];
 
   return (
-    <div className="navbar bg-base-100/70 backdrop-blur-lg shadow-md py-4 px-4 md:px-10 fixed top-0 left-0 right-0 z-100 transition-all duration-300">
-      {/* Navbar Start - Logo + Mobile Menu */}
+    <div className="navbar bg-base-100/90 dark:bg-base-100/90 backdrop-blur-lg shadow-sm border-b border-base-300 dark:border-primary/10 py-3 px-4 md:px-10 fixed top-0 left-0 right-0 z-[100] transition-all duration-300">
+      {/* Navbar Start */}
       <div className="navbar-start">
         <div className="dropdown lg:hidden">
           <label tabIndex={0} className="btn btn-ghost btn-circle">
@@ -77,184 +88,112 @@ const Navbar = () => {
           </label>
           <ul
             tabIndex={0}
-            className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
+            className="menu menu-compact dropdown-content mt-3 p-2 shadow-2xl bg-base-100 border border-base-300 rounded-box w-64 z-[110]"
           >
-            {!user ? (
+            {navLinks.map((link, idx) => (
+              <li key={idx}>
+                <NavLink to={link.path}>{link.name}</NavLink>
+              </li>
+            ))}
+            {!user && (
               <>
-                {publicLinks.map((link, idx) => (
-                  <li key={idx}>
-                    <NavLink
-                      to={link.path}
-                      className={({ isActive }) =>
-                        isActive
-                          ? 'bg-primary text-white rounded-md px-3 py-2 font-semibold'
-                          : 'hover:bg-primary hover:text-white rounded-md px-3 py-2 transition'
-                      }
-                    >
-                      {link.name}
-                    </NavLink>
-                  </li>
-                ))}
-                <li>
-                  <NavLink
-                    to={'/login'}
-                    className={({ isActive }) =>
-                      isActive
-                        ? 'bg-primary text-white rounded-md px-3 py-2 font-semibold'
-                        : 'hover:bg-primary hover:text-white rounded-md px-3 py-2 transition'
-                    }
-                  >
-                    Login
-                  </NavLink>
+                <li className="mt-2 border-t border-base-300 pt-2">
+                  <NavLink to="/login">Login</NavLink>
                 </li>
                 <li>
-                  <NavLink
-                    to={'/register'}
-                    className={({ isActive }) =>
-                      isActive
-                        ? 'bg-primary text-white rounded-md px-3 py-2 font-semibold'
-                        : 'hover:bg-primary hover:text-white rounded-md px-3 py-2 transition'
-                    }
-                  >
-                    Register
-                  </NavLink>
+                  <NavLink to="/register">Register</NavLink>
                 </li>
-              </>
-            ) : (
-              <>
-                {privateLinks.map((link, idx) => (
-                  <li key={idx}>
-                    <NavLink
-                      to={link.path}
-                      className={({ isActive }) =>
-                        isActive
-                          ? 'bg-primary text-white rounded-md px-3 py-2 font-semibold'
-                          : 'hover:bg-primary hover:text-white rounded-md px-3 py-2 transition'
-                      }
-                    >
-                      {link.name}
-                    </NavLink>
-                  </li>
-                ))}
               </>
             )}
           </ul>
         </div>
 
-        {/* Logo */}
-        <Link to="/" className="flex items-center">
-          <img src={logo} alt="Blood Logo" className="w-10 h-10" />
-          <span className="font-bold text-xl text-primary">RedDrop</span>
+        <Link to="/" className="flex items-center group">
+          <img
+            src={logo}
+            alt="Blood Logo"
+            className="w-9 h-9 group-hover:scale-110 transition-transform"
+          />
+          <span className="font-black text-2xl text-primary ml-2 tracking-tight">
+            RedDrop
+          </span>
         </Link>
       </div>
 
-      {/* Navbar Center - Public Links */}
+      {/* Navbar Center */}
       <div className="navbar-center hidden lg:flex">
-        <ul className="menu menu-horizontal space-x-4">
-          {!user ? (
-            <>
-              {publicLinks.map((link, idx) => (
-                <li key={idx}>
-                  <NavLink
-                    to={link.path}
-                    className={({ isActive }) =>
-                      isActive
-                        ? 'bg-primary text-white rounded-md px-3 py-2 font-semibold'
-                        : 'hover:bg-primary hover:text-white rounded-md px-3 py-2 transition'
-                    }
-                  >
-                    {link.name}
-                  </NavLink>
-                </li>
-              ))}
-            </>
-          ) : (
-            <>
-              {privateLinks.map((link, idx) => (
-                <li key={idx}>
-                  <NavLink
-                    to={link.path}
-                    className={({ isActive }) =>
-                      isActive
-                        ? 'bg-primary text-white rounded-md px-3 py-2 font-semibold'
-                        : 'hover:bg-primary hover:text-white rounded-md px-3 py-2 transition'
-                    }
-                  >
-                    {link.name}
-                  </NavLink>
-                </li>
-              ))}
-            </>
-          )}
+        <ul className="menu menu-horizontal gap-1">
+          {navLinks.map((link, idx) => (
+            <li key={idx}>
+              <NavLink
+                to={link.path}
+                className={({ isActive }) =>
+                  `px-4 py-2 rounded-xl font-bold transition-all ${
+                    isActive
+                      ? 'bg-primary text-white shadow-md shadow-red-500/20'
+                      : 'hover:bg-primary/10 text-base-content/80 hover:text-primary'
+                  }`
+                }
+              >
+                {link.name}
+              </NavLink>
+            </li>
+          ))}
         </ul>
       </div>
 
-      {/* Navbar End - Auth + Theme Toggle */}
-      <div className="navbar-end flex items-center space-x-2 relative">
-        {/* Auth / User Dropdown */}
+      {/* Navbar End */}
+      <div className="navbar-end flex items-center gap-2">
+        {/* Theme Toggle Button: Logic Corrected */}
+        <button
+          onClick={toggleTheme}
+          className="btn btn-ghost btn-circle text-2xl transition-all duration-500 hover:bg-base-200"
+          title={
+            theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'
+          }
+        >
+          {theme === 'light' ? (
+            <LuMoon className="text-slate-700" />
+          ) : (
+            <LuSun className="text-yellow-400 animate-spin-slow" />
+          )}
+        </button>
+
         {user ? (
           <div className="relative" ref={dropdownRef}>
-            {statusData === 'active' ? (
-              <button
-                onClick={() => setOpen(!open)}
-                className="btn btn-ghost btn-circle avatar"
+            <button
+              onClick={() => setOpen(!open)}
+              className="btn btn-ghost btn-circle avatar border-2 border-transparent hover:border-primary transition-all"
+            >
+              <div
+                className={`w-10 rounded-full border-2 ${
+                  statusData === 'blocked'
+                    ? 'border-red-500'
+                    : 'border-green-500'
+                }`}
               >
-                <div className="w-10 rounded-full border-2 border-green-500">
-                  <img
-                    src={user?.photoURL}
-                    alt="User Avatar"
-                    referrerPolicy="no-referrer"
-                  />
-                </div>
-              </button>
-            ) : (
-              <button
-                onClick={() => setOpen(!open)}
-                className="btn btn-ghost btn-circle avatar relative"
-              >
-                <div
-                  className={`w-10 rounded-full border-2 relative
-                  ${
-                    statusData === 'blocked'
-                      ? 'border-red-500'
-                      : 'border-primary'
-                  }
-                  `}
-                >
-                  <img
-                    src={user?.photoURL}
-                    alt="User Avatar"
-                    referrerPolicy="no-referrer"
-                    className="rounded-full"
-                  />
-
-                  {/* ❗ Error Icon (Bottom Right) */}
-                  {statusData === 'blocked' && (
-                    <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-0.5 shadow">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="w-4 h-4 text-red-500"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-4a1 1 0 00-1 1v3a1 1 0 002 0V7a1 1 0 00-1-1zm0 7a1.25 1.25 0 100-2.5A1.25 1.25 0 0010 13z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    </div>
-                  )}
-                </div>
-              </button>
-            )}
+                <img
+                  src={user?.photoURL}
+                  alt="Avatar"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+            </button>
 
             {open && (
-              <ul className="absolute right-0 mt-2 w-48 p-2 shadow-lg rounded-xl backdrop-blur-md bg-white/90 border border-gray-200 z-50 menu menu-compact ">
-                <li>
+              <ul className="absolute right-0 mt-4 w-60 p-2 shadow-2xl rounded-2xl bg-base-100 border border-base-300 z-50 animate-fadeIn">
+                <li className="p-4 border-b border-base-300">
+                  <p className="text-[10px] uppercase tracking-widest font-bold text-gray-400">
+                    Signed in as
+                  </p>
+                  <p className="text-sm font-black truncate text-base-content">
+                    {user?.displayName}
+                  </p>
+                </li>
+                <li className="mt-2">
                   <Link
                     to="/dashboard/profile"
-                    className="font-medium px-3 py-2 rounded-md hover:bg-primary hover:text-white"
+                    className="flex p-3 hover:bg-primary/10 hover:text-primary rounded-xl font-semibold transition"
                     onClick={() => setOpen(false)}
                   >
                     Profile
@@ -263,18 +202,16 @@ const Navbar = () => {
                 <li>
                   <Link
                     to="/dashboard"
-                    className="font-medium px-3 py-2 rounded-md hover:bg-primary hover:text-white"
+                    className="flex p-3 hover:bg-primary/10 hover:text-primary rounded-xl font-semibold transition"
                     onClick={() => setOpen(false)}
                   >
                     Dashboard
                   </Link>
                 </li>
-                <li>
+                <li className="mt-2 pt-2 border-t border-base-300">
                   <button
-                    onClick={() => {
-                      handleLogout();
-                    }}
-                    className="w-full text-left font-medium px-3 py-2 rounded-md hover:bg-primary hover:text-white"
+                    onClick={handleLogout}
+                    className="w-full text-left p-3 text-red-500 hover:bg-red-50 rounded-xl transition font-black"
                   >
                     Logout
                   </button>
@@ -283,43 +220,18 @@ const Navbar = () => {
             )}
           </div>
         ) : (
-          <ul className="menu menu-horizontal space-x-2 hidden lg:flex">
-            <li>
-              <NavLink
-                to={'/login'}
-                className={({ isActive }) =>
-                  isActive
-                    ? 'text-primary rounded-md px-3 py-2 font-semibold'
-                    : 'hover:bg-primary hover:text-white rounded-md px-3 py-2 transition'
-                }
-              >
-                Login
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to={'/register'}
-                className={({ isActive }) =>
-                  isActive
-                    ? ' text-primary rounded-md px-3 py-2 font-semibold'
-                    : 'hover:bg-primary hover:text-white rounded-md px-3 py-2 transition'
-                }
-              >
-                Register
-              </NavLink>
-            </li>
-          </ul>
+          <div className="hidden sm:flex gap-2">
+            <Link to="/login" className="btn btn-ghost btn-sm font-bold">
+              Login
+            </Link>
+            <Link
+              to="/register"
+              className="btn btn-primary btn-sm text-white px-5 rounded-lg"
+            >
+              Register
+            </Link>
+          </div>
         )}
-
-        {/* Theme Toggle */}
-        <button
-          onClick={() => toast.warning('Coming soon!')}
-          className="btn btn-circle bg-primary hover:bg-red-700 text-white ml-2"
-        >
-          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M10 2a.75.75 0 01.75.75V4a.75.75 0 01-1.5 0V2.75A.75.75 0 0110 2zm0 14a.75.75 0 01.75.75V18a.75.75 0 01-1.5 0v-1.25A.75.75 0 0110 16zm8-6a.75.75 0 01.75.75H18a.75.75 0 010-1.5h1.25A.75.75 0 0118 10zm-14 0a.75.75 0 01.75.75H4a.75.75 0 010-1.5h1.25A.75.75 0 014 10zm11.657-5.657a.75.75 0 011.06 1.06l-.884.884a.75.75 0 11-1.06-1.06l.884-.884zm-9.9 9.9a.75.75 0 011.06 1.06l-.884.884a.75.75 0 11-1.06-1.06l.884-.884zm0-9.9l.884.884a.75.75 0 11-1.06 1.06l-.884-.884a.75.75 0 111.06-1.06zm9.9 9.9l.884.884a.75.75 0 11-1.06 1.06l-.884-.884a.75.75 0 111.06-1.06z" />
-          </svg>
-        </button>
       </div>
     </div>
   );

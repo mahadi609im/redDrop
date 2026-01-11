@@ -20,8 +20,14 @@ const VolunteerCTA = () => {
                   ],
                 }}
                 transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
-                className="absolute w-72 h-72 bg-red-50 border-2 border-red-100"
-              />
+                className="absolute w-72 h-72 bg-red-50 border-2 border-red-100 flex justify-center items-center"
+              >
+                <img
+                  src="https://i.ibb.co.com/KpvHb7wD/pngwing-com-1.png"
+                  alt="Donation"
+                  className="w-3/4 h-auto object-cover animate-pulse"
+                />
+              </motion.div>
 
               {/* Floating Action Cards */}
               <motion.div
@@ -99,7 +105,7 @@ const VolunteerCTA = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 className="flex items-center gap-3 mb-6"
               >
-                <span className="w-12 h-[2px] bg-red-600 rounded-full" />
+                <span className="w-12 h-0.5 bg-red-600 rounded-full" />
                 <span className="text-red-600 font-black text-xs uppercase tracking-[0.3em]">
                   Volunteer Network
                 </span>

@@ -1,13 +1,31 @@
-import React, { use } from 'react';
+import React, { use, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { AuthContext } from '../../context/AuthContext';
 import { useQuery } from '@tanstack/react-query';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 import LoadingSpin from '../../Components/Loading/LoadingSpin';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  MapPin,
+  Calendar,
+  Clock,
+  Droplets,
+  ArrowUpRight,
+  Search,
+  Filter,
+  X,
+} from 'lucide-react';
 
 const BloodRequests = () => {
   const navigate = useNavigate();
   const axiosSecure = useAxiosSecure();
+  const { loading } = use(AuthContext);
+
+  // Filter States
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedGroup, setSelectedGroup] = useState('All');
+
+  const bloodGroups = ['All', 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
   const { data: requests = [], isLoading } = useQuery({
     queryKey: ['pendingDonationRequests'],
@@ -17,125 +35,204 @@ const BloodRequests = () => {
     },
   });
 
-  const pendingRequests = requests.filter(req => req.status === 'pending');
+  // Filter Logic
+  const filteredRequests = requests.filter(req => {
+    const matchesSearch =
+      req.recipientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      req.district.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      req.hospitalName.toLowerCase().includes(searchTerm.toLowerCase());
 
-  const { loading } = use(AuthContext);
+    const matchesGroup =
+      selectedGroup === 'All' || req.bloodGroup === selectedGroup;
+
+    return req.status === 'pending' && matchesSearch && matchesGroup;
+  });
+
+  if (loading || isLoading) return <LoadingSpin />;
 
   return (
-    <section
-      className="min-h-screen py-20 px-6 md:px-20 relative 
-      bg-linear-to-b from-red-50 to-white 
-      dark:from-[#1a0c0c] dark:to-[#120909]"
-    >
-      {/* Soft floating circles */}
-      <div className="absolute top-0 left-10 w-40 h-40 bg-red-500/20 blur-3xl rounded-full"></div>
-      <div className="absolute bottom-0 right-10 w-56 h-56 bg-red-700/10 blur-3xl rounded-full"></div>
+    <section className="min-h-screen py-24 px-6 md:px-12 lg:px-20 bg-white relative overflow-hidden">
+      {/* Background Decor */}
+      <div className="absolute top-0 left-10 w-64 h-64 bg-red-500/5 blur-[120px] rounded-full -z-10"></div>
+      <div className="absolute bottom-0 right-10 w-96 h-96 bg-red-700/5 blur-[120px] rounded-full -z-10"></div>
 
-      {/* Beautiful Header */}
-      <div className="relative z-10 text-center mb-10 sm:mb-14 animate-fadeIn">
-        {/* Badge */}
-        <div className="inline-block mb-4 sm:mb-5 px-4 sm:px-5 py-1.5 bg-red-100 dark:bg-red-900/30 rounded-full border border-red-200 dark:border-red-800/50">
-          <p className="text-xs font-semibold text-red-600 dark:text-red-400 tracking-wide flex items-center justify-center gap-2">
-            🚨 URGENT REQUESTS
+      {/* --- Header --- */}
+      <div className="relative z-10 text-center mb-12 animate-fadeIn">
+        <div className="inline-block mb-4 px-4 py-1.5 bg-red-50 rounded-full border border-red-100">
+          <p className="text-[10px] font-black text-red-600 tracking-[0.2em] flex items-center justify-center gap-2">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-red-600"></span>
+            </span>
+            URGENT REQUESTS
           </p>
         </div>
-
-        {/* Main Title */}
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-4 sm:mb-5 px-4 bg-linear-to-r from-red-700 via-red-600 to-red-500 bg-clip-text text-transparent drop-shadow-sm leading-tight">
+        <h1 className="text-4xl md:text-6xl font-black mb-4 bg-linear-to-r from-red-700 to-red-500 bg-clip-text text-transparent tracking-tighter">
           Pending Blood Requests
         </h1>
-
-        {/* Description */}
-        <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto text-sm sm:text-base md:text-lg leading-relaxed px-4 mb-0">
-          Only showing requests that are currently pending and need your help
-          immediately.
-        </p>
       </div>
 
-      {/* Requests List - TABLE VIEW */}
-      {loading || isLoading ? (
-        <LoadingSpin></LoadingSpin>
-      ) : (
-        <>
-          <div className="relative z-10 max-w-6xl mx-auto mt-10 bg-white/80 dark:bg-[#1a1a1a]/70 backdrop-blur-xl border border-red-500/10 rounded-3xl shadow-[0_0_25px_rgba(255,0,0,0.08)] overflow-x-auto scrollbar-thin scrollbar-thumb-red-600/60 hover:scrollbar-thumb-red-600 scrollbar-track-transparent">
-            {pendingRequests.length === 0 && (
-              <div className="py-10">
-                <p className="text-center text-red-500 font-semibold text-lg">
-                  No Request found.
-                </p>
-              </div>
-            )}
-            {pendingRequests.length > 0 && (
-              <table className="min-w-full table-auto text-sm md:text-base">
-                {/* Table Head */}
-                <thead>
-                  <tr className="bg-red-600 text-white text-left">
-                    <th className="px-4 md:px-6 py-3 font-semibold whitespace-nowrap">
-                      Recipient
-                    </th>
-                    <th className="px-4 md:px-6 py-3 font-semibold whitespace-nowrap">
-                      Location
-                    </th>
-                    <th className="px-4 md:px-6 py-3 font-semibold whitespace-nowrap">
-                      Blood
-                    </th>
-                    <th className="px-4 md:px-6 py-3 font-semibold whitespace-nowrap">
-                      Date
-                    </th>
-                    <th className="px-4 md:px-6 py-3 font-semibold whitespace-nowrap">
-                      Time
-                    </th>
-                    <th className="px-4 md:px-6 py-3 font-semibold text-center whitespace-nowrap">
-                      Action
-                    </th>
-                  </tr>
-                </thead>
-
-                {/* Table Body */}
-                <tbody>
-                  {pendingRequests.map(req => (
-                    <tr
-                      key={req._id}
-                      className="border-b border-red-500/10 hover:bg-red-50/60 dark:hover:bg-red-900/20 transition-all"
-                    >
-                      <td className="px-4 md:px-6 py-3 font-semibold text-red-700 dark:text-red-300 whitespace-nowrap">
-                        {req.recipientName}
-                      </td>
-                      <td className="px-4 md:px-6 py-3 text-gray-700 dark:text-gray-300 whitespace-nowrap">
-                        {req.district}, {req.upazila}
-                      </td>
-                      <td className="px-4 md:px-6 py-3 whitespace-nowrap">
-                        <span className="px-3 py-1 bg-red-600 text-white rounded-full text-sm font-semibold shadow">
-                          {req.bloodGroup}
-                        </span>
-                      </td>
-                      <td className="px-4 md:px-6 py-3 text-gray-700 dark:text-gray-300 whitespace-nowrap">
-                        {req.donationDate}
-                      </td>
-                      <td className="px-4 md:px-6 py-3 text-gray-700 dark:text-gray-300 whitespace-nowrap">
-                        {req.donationTime}
-                      </td>
-                      <td className="px-4 md:px-6 py-3 text-center whitespace-nowrap">
-                        <button
-                          onClick={() => navigate(`/blood-details/${req._id}`)}
-                          className="
-                px-4 md:px-5 py-2 bg-red-600 text-white rounded-lg font-semibold
-                shadow-[0_4px_16px_rgba(255,0,0,0.25)]
-                hover:bg-red-700 hover:shadow-[0_6px_20px_rgba(255,0,0,0.35)]
-                active:scale-95 transition-all cursor-pointer
-              "
-                        >
-                          View
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+      {/* --- Search & Filter Bar --- */}
+      <div className="max-w-5xl mx-auto mb-16 space-y-6">
+        <div className="flex flex-col md:flex-row gap-4">
+          {/* Search Input */}
+          <div className="relative grow group">
+            <Search
+              className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-red-500 transition-colors"
+              size={20}
+            />
+            <input
+              type="text"
+              placeholder="Search by name, district or hospital..."
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+              className="w-full pl-14 pr-6 py-5 bg-gray-50 border border-gray-100 rounded-3xl focus:outline-none focus:ring-4 focus:ring-red-500/5 focus:bg-white transition-all font-medium text-gray-700 shadow-sm"
+            />
+            {searchTerm && (
+              <button
+                onClick={() => setSearchTerm('')}
+                className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500"
+              >
+                <X size={18} />
+              </button>
             )}
           </div>
-        </>
-      )}
+
+          {/* Desktop Blood Group Dropdown/Select */}
+          <div className="relative min-w-[180px]">
+            <Filter
+              className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400"
+              size={18}
+            />
+            <select
+              value={selectedGroup}
+              onChange={e => setSelectedGroup(e.target.value)}
+              className="w-full pl-12 pr-6 py-5 bg-gray-50 border border-gray-100 rounded-3xl focus:outline-none focus:ring-4 focus:ring-red-500/5 appearance-none font-bold text-gray-700 shadow-sm cursor-pointer"
+            >
+              {bloodGroups.map(bg => (
+                <option key={bg} value={bg}>
+                  {bg === 'All' ? 'All Groups' : bg}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* Quick Filter Chips */}
+        <div className="flex flex-wrap items-center justify-center gap-2">
+          <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mr-2">
+            Quick Filter:
+          </p>
+          {bloodGroups.map(bg => (
+            <button
+              key={bg}
+              onClick={() => setSelectedGroup(bg)}
+              className={`px-5 py-2 rounded-full text-xs font-black tracking-wider transition-all border ${
+                selectedGroup === bg
+                  ? 'bg-red-600 border-red-600 text-white shadow-lg shadow-red-200'
+                  : 'bg-white border-gray-100 text-gray-500 hover:border-red-200 hover:text-red-500'
+              }`}
+            >
+              {bg}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* --- GRID LIST --- */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <AnimatePresence mode="popLayout">
+          {filteredRequests.length === 0 ? (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="col-span-full text-center py-20 bg-gray-50 rounded-[2.5rem] border border-dashed border-gray-200"
+            >
+              <Droplets className="mx-auto text-gray-200 mb-3" size={40} />
+              <p className="text-gray-400 text-sm font-bold">
+                No matching requests found.
+              </p>
+            </motion.div>
+          ) : (
+            filteredRequests.map(req => (
+              <motion.div
+                layout
+                key={req._id}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.2 }}
+                className="group bg-white border border-gray-100 rounded-4xl p-6 shadow-sm hover:shadow-[0_20px_40px_-15px_rgba(220,38,38,0.15)] transition-all duration-500 flex flex-col h-full"
+              >
+                {/* Blood Group Display */}
+                <div className="relative h-40 w-full bg-gray-50 rounded-3xl mb-6 flex items-center justify-center overflow-hidden group-hover:bg-red-600 transition-colors duration-500 shadow-inner">
+                  <span className="absolute text-6xl font-black text-gray-100/50 group-hover:text-white/10 transition-colors">
+                    {req.bloodGroup}
+                  </span>
+                  <span className="relative z-10 text-5xl font-black text-red-600 group-hover:text-white transition-colors duration-500">
+                    {req.bloodGroup}
+                  </span>
+                </div>
+
+                {/* Info Section */}
+                <div className="grow">
+                  <h3 className="text-xl font-black text-gray-900 mb-2 truncate group-hover:text-red-600 transition-colors">
+                    {req.recipientName}
+                  </h3>
+                  <div className="flex items-center gap-2 text-gray-400 mb-6">
+                    <MapPin size={14} className="text-red-500" />
+                    <span className="text-xs font-bold uppercase tracking-wider">
+                      {req.district}
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4 border-t border-gray-50">
+                    <div className="space-y-1">
+                      <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1">
+                        <Calendar size={12} /> Date
+                      </p>
+                      <p className="text-xs font-bold text-gray-700">
+                        {req.donationDate}
+                      </p>
+                    </div>
+                    <div className="space-y-1 border-l border-gray-100 pl-4">
+                      <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1">
+                        <Clock size={12} /> Time
+                      </p>
+                      <p className="text-xs font-bold text-gray-700">
+                        {req.donationTime}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Footer Action */}
+                <div className="mt-6 flex items-center justify-between">
+                  <span className="text-[10px] font-black text-red-500 bg-red-50 px-3 py-1 rounded-full uppercase tracking-widest">
+                    Pending
+                  </span>
+                  <button
+                    onClick={() => navigate(`/blood-details/${req._id}`)}
+                    className="w-10 h-10 rounded-full bg-gray-900 text-white flex items-center justify-center group-hover:bg-red-600 transition-all group-hover:scale-110 shadow-lg shadow-gray-200 cursor-pointer"
+                  >
+                    <ArrowUpRight size={18} />
+                  </button>
+                </div>
+              </motion.div>
+            ))
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* Footer Status */}
+      <div className="mt-12 flex justify-center">
+        <div className="px-6 py-2 bg-white rounded-full border border-gray-100 shadow-sm flex items-center gap-3">
+          <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+          <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+            {filteredRequests.length} matching results
+          </span>
+        </div>
+      </div>
     </section>
   );
 };

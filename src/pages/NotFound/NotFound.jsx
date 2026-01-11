@@ -8,7 +8,7 @@ const NotFound = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col min-h-screen transition-all duration-500 bg-linear-to-b from-red-50 to-white dark:from-[#150c0c] dark:to-[#0d0b0b]">
+    <div className="flex flex-col min-h-screen transition-all duration-500 bg-linear-to-b from-red-50 to-white dark:from-[#150c0c] dark:to-[#0d0b0b] ">
       <header>
         <Navbar />
       </header>

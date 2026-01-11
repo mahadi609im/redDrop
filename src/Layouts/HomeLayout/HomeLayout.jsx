@@ -13,7 +13,7 @@ const HomeLayout = () => {
         <header>
           <Navbar />
         </header>
-        <div className="flex flex-col min-h-screen h-full">
+        <div className="flex flex-col min-h-screen h-full ">
           <Loading></Loading>
         </div>
         <footer className="mt-20">
@@ -28,7 +28,7 @@ const HomeLayout = () => {
       <header>
         <Navbar />
       </header>
-      <main className="flex-1 pt-20">
+      <main className="flex-1 ">
         <Outlet />
       </main>
       <footer>

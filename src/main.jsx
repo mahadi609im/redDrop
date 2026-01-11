@@ -10,13 +10,11 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById('root')).render(
-  <div className="pt-16 md:pt-[70px] lg:pt-20">
-    <StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <AuthContextProvider>
-          <RouterProvider router={router} />
-        </AuthContextProvider>
-      </QueryClientProvider>
-    </StrictMode>
-  </div>
+  <StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <AuthContextProvider>
+        <RouterProvider router={router} />
+      </AuthContextProvider>
+    </QueryClientProvider>
+  </StrictMode>
 );

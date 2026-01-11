@@ -4,11 +4,9 @@ import { useQuery } from '@tanstack/react-query';
 import Loading from '../../Components/Loading/Loading';
 import {
   FaArrowLeft,
-  FaPhone,
   FaEnvelope,
   FaMapMarkerAlt,
   FaCalendar,
-  FaUser,
 } from 'react-icons/fa';
 import { Link } from 'react-router';
 
@@ -33,19 +31,19 @@ const SearchedUserDetails = () => {
 
   if (error || !searchedUserData) {
     return (
-      <div className="min-h-screen bg-gray-50 py-12 px-4">
+      <div className="min-h-screen bg-base-100 py-12 px-4">
         <div className="max-w-4xl mx-auto">
           <Link
-            to="/dashboard/users"
-            className="flex items-center gap-2 text-red-600 hover:text-red-700 font-medium mb-8"
+            to="/donors"
+            className="flex items-center gap-2 text-primary hover:text-primary/80 font-medium mb-8"
           >
-            <FaArrowLeft /> Back to Users
+            <FaArrowLeft /> Back to Donors
           </Link>
-          <div className="bg-white rounded-xl shadow-lg p-12 text-center">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">
+          <div className="bg-base-200 rounded-xl shadow-lg p-12 text-center">
+            <h2 className="text-2xl font-bold text-base-content mb-4">
               User Not Found
             </h2>
-            <p className="text-gray-600">
+            <p className="text-base-content/70">
               No user found with this email address.
             </p>
           </div>
@@ -55,117 +53,139 @@ const SearchedUserDetails = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-red-50 py-12 px-4">
+    <div className="min-h-screen bg-base-100 py-12 px-4">
       <div className="max-w-4xl mx-auto">
         {/* Back Button */}
         <Link
           to="/donors"
-          className="flex items-center gap-2 text-red-600 hover:text-red-700 font-semibold mb-12 transition-colors"
+          className="flex items-center gap-2 text-primary hover:text-primary/80 font-semibold mb-12 transition-all"
         >
-          <FaArrowLeft className="w-5 h-5" /> Back to Users
+          <FaArrowLeft className="w-5 h-5" /> Back to Donors
         </Link>
 
-        <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-          {/* Header */}
-          <div className="bg-gradient-to-r from-red-600 to-red-700 p-8 text-white">
-            <div className="flex items-center gap-6">
-              <div className="w-24 h-24 bg-red-400/20 rounded-full flex items-center justify-center relative">
+        <div className="bg-base-200 rounded-2xl shadow-xl overflow-hidden border border-base-300">
+          {/* Header Section */}
+          <div className="bg-primary p-8 text-primary-content">
+            <div className="flex flex-col sm:flex-row items-center gap-6">
+              <div className="relative group">
                 <img
                   src={searchedUserData?.photoURL}
                   alt="avatar"
                   referrerPolicy="no-referrer"
-                  className="w-24 h-24 rounded-xl object-cover border-4 border-white shadow-md"
+                  className="w-32 h-32 rounded-2xl object-cover border-4 border-primary-content/30 shadow-2xl transition-transform group-hover:scale-105 duration-300"
                 />
-                <div className="absolute -bottom-2 -right-2 px-3 py-1.5 bg-linear-to-r from-red-300 to-rose-300 text-white text-xs font-semibold rounded-full shadow-lg flex items-center gap-1">
-                  <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-white/15">
-                    🩸
-                  </span>
-                  <span className="font-bold text-red-800">
-                    {searchedUserData?.bloodGroup}
-                  </span>
+                <div className="absolute -bottom-3 -right-3 px-4 py-2 bg-base-100 text-base-content text-sm font-black rounded-xl shadow-xl border border-primary/20 flex items-center gap-1">
+                  <span className="text-error">🩸</span>
+                  {searchedUserData?.bloodGroup}
                 </div>
+              </div>
+
+              <div className="text-center sm:text-left space-y-1">
+                <h1 className="text-4xl font-black tracking-tight">
+                  {searchedUserData.displayName || 'Anonymous User'}
+                </h1>
+                <div className="flex items-center justify-center sm:justify-start gap-3">
+                  <span className="badge badge-secondary badge-outline font-bold uppercase text-xs tracking-widest px-4">
+                    {searchedUserData.role || 'donor'}
+                  </span>
+                  <div className="flex items-center gap-2 text-primary-content/80 text-sm">
+                    <span className="relative flex h-3 w-3">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-3 w-3 bg-success"></span>
+                    </span>
+                    Verified Profile
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Details Content */}
+          <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Email Card */}
+            <div className="flex items-center gap-5 p-5 bg-base-100 rounded-2xl border border-base-300 shadow-sm hover:shadow-md transition-shadow">
+              <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                <FaEnvelope className="w-6 h-6 text-primary" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold">
-                  {searchedUserData.displayName || 'User'}
-                </h1>
-                <div className="flex gap-3 items-center">
-                  <p className="text-red-100">
-                    {searchedUserData.role || 'donor'}
-                  </p>
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                </div>
+                <p className="text-xs font-black text-base-content/40 uppercase tracking-widest">
+                  Email Address
+                </p>
+                <p className="text-base font-bold text-base-content break-all">
+                  {searchedUserData.email}
+                </p>
               </div>
             </div>
+
+            {/* Address Card */}
+            <div className="flex items-center gap-5 p-5 bg-base-100 rounded-2xl border border-base-300 shadow-sm hover:shadow-md transition-shadow">
+              <div className="w-12 h-12 bg-secondary/10 rounded-xl flex items-center justify-center">
+                <FaMapMarkerAlt className="w-6 h-6 text-secondary" />
+              </div>
+              <div>
+                <p className="text-xs font-black text-base-content/40 uppercase tracking-widest">
+                  Location
+                </p>
+                <p className="text-base font-bold text-base-content">
+                  {searchedUserData.district}, {searchedUserData.upazila}
+                </p>
+              </div>
+            </div>
+
+            {/* Joined Date */}
+            {searchedUserData.createdAt && (
+              <div className="flex items-center gap-5 p-5 bg-base-100 rounded-2xl border border-base-300 shadow-sm">
+                <div className="w-12 h-12 bg-info/10 rounded-xl flex items-center justify-center">
+                  <FaCalendar className="w-6 h-6 text-info" />
+                </div>
+                <div>
+                  <p className="text-xs font-black text-base-content/40 uppercase tracking-widest">
+                    Member Since
+                  </p>
+                  <p className="text-base font-bold text-base-content">
+                    {new Date(searchedUserData.createdAt).toLocaleDateString(
+                      'en-GB',
+                      {
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric',
+                      }
+                    )}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Last Login */}
+            {searchedUserData.lastLogin && (
+              <div className="flex items-center gap-5 p-5 bg-base-100 rounded-2xl border border-base-300 shadow-sm">
+                <div className="w-12 h-12 bg-success/10 rounded-xl flex items-center justify-center">
+                  <FaCalendar className="w-6 h-6 text-success" />
+                </div>
+                <div>
+                  <p className="text-xs font-black text-base-content/40 uppercase tracking-widest">
+                    Activity
+                  </p>
+                  <p className="text-base font-bold text-base-content">
+                    Last active:{' '}
+                    {new Date(searchedUserData.lastLogin).toLocaleDateString()}
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
 
-          {/* Details Grid */}
-          <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="space-y-6">
-              <div className="flex items-center gap-4 p-4 bg-red-50 rounded-xl">
-                <FaEnvelope className="w-6 h-6 text-red-600 flex-shrink-0" />
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Email</p>
-                  <p className="text-lg font-semibold text-gray-900">
-                    {searchedUserData.email}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
-                <FaMapMarkerAlt className="w-6 h-6 text-red-600 flex-shrink-0 mt-1" />
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Address</p>
-                  <p className="text-lg font-semibold text-gray-900">
-                    {searchedUserData.district},{searchedUserData.upazila}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-6">
-              {searchedUserData.createdAt && (
-                <div className="flex items-center gap-4 p-4 bg-blue-50 rounded-xl">
-                  <FaCalendar className="w-6 h-6 text-blue-600 flex-shrink-0" />
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">Joined</p>
-                    <p className="text-lg font-semibold text-gray-900">
-                      {new Date(
-                        searchedUserData.createdAt
-                      ).toLocaleDateString()}
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {searchedUserData.lastLogin && (
-                <div className="flex items-center gap-4 p-4 bg-green-50 rounded-xl">
-                  <FaCalendar className="w-6 h-6 text-green-600 flex-shrink-0" />
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">
-                      Last Login
-                    </p>
-                    <p className="text-lg font-semibold text-gray-900">
-                      {new Date(
-                        searchedUserData.lastLogin
-                      ).toLocaleDateString()}
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="px-8 pb-8 pt-4 border-t border-gray-100">
-            <div className="flex flex-col sm:flex-row gap-3 justify-end">
+          {/* Action Footer */}
+          <div className="px-8 py-6 bg-base-300/30 border-t border-base-300">
+            <div className="flex flex-col sm:flex-row gap-4 justify-between items-center">
+              <p className="text-sm text-base-content/60 font-medium">
+                Information provided by {searchedUserData.displayName}
+              </p>
               <a
                 href={`mailto:${searchedUserData.email}`}
-                target="_blank"
-                rel="noopener noreferrer" // নিরাপত্তা নিশ্চিত করার জন্য এটি যুক্ত করা হলো
-                className="px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-xl transition-all duration-200 flex items-center gap-2 shadow-lg hover:shadow-xl inline-block"
+                className="btn btn-primary px-8 rounded-xl font-bold shadow-lg shadow-primary/20 transition-all hover:scale-105"
               >
-                Send message
+                <FaEnvelope /> Send Message
               </a>
             </div>
           </div>

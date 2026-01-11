@@ -22,60 +22,43 @@ const FundSuccess = () => {
           setFund(res.data.fundInfo || res.data);
         }
       })
-      .catch(err => alert(err.message))
+      .catch(err => console.error(err.message))
       .finally(() => setLoading(false));
   }, [sessionId, axiosSecure]);
 
   const handleDownloadReceipt = () => {
     if (!fund) return;
-
     const doc = new jsPDF();
-
-    doc.setFontSize(16);
-    doc.text('RedDrop Blood Donation Fund Receipt', 20, 20);
+    doc.setFontSize(20);
+    doc.setTextColor(34, 197, 94); // Success Green
+    doc.text('RedDrop Donation Receipt', 20, 25);
 
     doc.setFontSize(12);
-    doc.text(`Name: ${fund.name}`, 20, 40);
-    doc.text(`Email: ${fund.email}`, 20, 50);
-    doc.text(`Amount: $${fund.amount}`, 20, 60);
-    doc.text(`Transaction ID: ${fund.transactionId}`, 20, 70);
-    doc.text(
-      `Date: ${new Date(fund.fundAt).toLocaleString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-      })}`,
-      20,
-      80
-    );
+    doc.setTextColor(0, 0, 0);
+    doc.text(`Contributor: ${fund.name}`, 20, 45);
+    doc.text(`Email: ${fund.email}`, 20, 55);
+    doc.text(`Amount Paid: $${fund.amount} USD`, 20, 65);
+    doc.text(`Transaction ID: ${fund.transactionId}`, 20, 75);
+    doc.text(`Date: ${new Date(fund.fundAt).toLocaleString()}`, 20, 85);
 
     doc.save(`RedDrop_Receipt_${fund.transactionId}.pdf`);
   };
 
-  if (loading) {
-    return <Loading></Loading>;
-  }
+  if (loading) return <Loading />;
 
   return (
-    <section className="min-h-screen flex items-center justify-center bg-linear-to-br from-red-50 via-pink-50 to-orange-50 dark:from-[#1a0808] dark:via-[#150a0a] dark:to-[#0d0606] px-4 sm:px-6 relative overflow-hidden py-20">
+    <section className="min-h-screen flex items-center justify-center bg-base-100 px-4 sm:px-6 relative overflow-hidden py-20 transition-colors duration-300">
+      {/* Background Glow matching the Success Theme */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-success/10 rounded-full blur-[120px]"></div>
+
       <div className="relative z-10 max-w-xl w-full animate-fadeIn">
-        {/* Main Card */}
-        <div className="bg-white/95 dark:bg-[#1a1a1a]/90 backdrop-blur-2xl rounded-4xl p-6 sm:p-10 md:p-12  text-center relative overflow-hidden">
-          {/* Decorative Top Border */}
-          <div className="absolute top-0 left-0 right-0 h-2 bg-linear-to-r from-green-600 via-emerald-500 to-teal-500"></div>
-
-          {/* Success Icon with Pulse Animation */}
-          <div className="relative inline-flex mb-6 sm:mb-8">
-            {/* Pulse Rings */}
-            <div className="absolute inset-0 rounded-full bg-green-500/20 animate-ping"></div>
-            <div className="absolute inset-0 rounded-full bg-green-500/30 animate-pulse"></div>
-
-            {/* Main Icon */}
-            <div className="relative w-20 h-20 sm:w-28 sm:h-28 rounded-full bg-linear-to-br from-green-600 via-green-500 to-emerald-600 flex items-center justify-center shadow-[0_10px_30px_rgba(34,197,94,0.4)] animate-bounce-slow">
+        <div className="bg-base-200/80 backdrop-blur-2xl border border-base-300 rounded-[3rem] p-8 sm:p-12 text-center shadow-2xl overflow-hidden">
+          {/* Success Indicator */}
+          <div className="relative inline-flex mb-10">
+            <div className="absolute inset-0 rounded-full bg-success/20 animate-ping"></div>
+            <div className="relative w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-success flex items-center justify-center shadow-xl shadow-success/30">
               <svg
-                className="w-10 h-10 sm:w-14 sm:h-14 text-white drop-shadow-lg"
+                className="w-12 h-12 sm:w-16 sm:h-16 text-success-content"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -83,89 +66,54 @@ const FundSuccess = () => {
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  strokeWidth={3.5}
+                  strokeWidth={4}
                   d="M5 13l4 4L19 7"
                 />
               </svg>
             </div>
           </div>
 
-          {/* Title */}
-          <h1 className="text-3xl sm:text-xl md:text-3xl font-extrabold mb-4 sm:mb-5 bg-linear-to-r from-green-700 via-green-600 to-emerald-600 bg-clip-text text-transparent leading-tight">
-            fund Successful!
+          <h1 className="text-3xl sm:text-4xl font-black mb-4 text-base-content tracking-tighter">
+            Donation <span className="text-success">Successful!</span>
           </h1>
 
-          {/* Message */}
-          <p className="text-gray-600 dark:text-gray-300 text-base sm:text-lg leading-relaxed mb-6 sm:mb-8 max-w-lg mx-auto px-4">
-            Thank you for your generous contribution of{' '}
-            <span className="font-bold text-green-600 dark:text-green-400">
-              ${fund?.amount}
-            </span>
-            . Your support will directly help save lives through emergency blood
-            services across Bangladesh.
+          <p className="text-base-content opacity-70 text-base sm:text-lg mb-8 px-4">
+            Thank you,{' '}
+            <span className="font-bold text-base-content">{fund?.name}</span>,
+            for your contribution of{' '}
+            <span className="font-black text-success">${fund?.amount}</span>.
+            Your support saves lives.
           </p>
 
-          {/* Transaction Details Card */}
-          <div className="bg-linear-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-200/60 dark:border-green-800/40 rounded-2xl p-5 sm:p-6 mb-6 sm:mb-8 space-y-3">
-            <div className="flex items-center justify-between text-sm sm:text-base">
-              <span className="text-gray-600 dark:text-gray-400 font-medium">
-                Transaction ID:
-              </span>
-              <span className="font-mono font-bold text-gray-900 dark:text-white">
-                {fund?.transactionId}
-              </span>
-            </div>
-            <div className="flex items-center justify-between text-sm sm:text-base">
-              <span className="text-gray-600 dark:text-gray-400 font-medium">
-                fund Method:
-              </span>
-              <div className="flex items-center gap-2">
-                <svg
-                  className="w-5 h-5 text-blue-600"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M20 8H4V6h16m0 12H4v-6h16m0-8H4c-1.11 0-2 .89-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2z" />
-                </svg>
-                <span className="font-semibold text-gray-900 dark:text-white">
-                  Stripe
-                </span>
-              </div>
-            </div>
-            <div className="flex items-center justify-between text-sm sm:text-base">
-              <span className="text-gray-600 dark:text-gray-400 font-medium">
-                Date & Time:
-              </span>
-              <span className="font-semibold text-gray-900 dark:text-white">
-                {fund?.fundAt
-                  ? new Date(fund.fundAt).toLocaleString('en-US', {
-                      month: 'short',
-                      day: 'numeric',
-                      year: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit',
+          {/* Detailed Receipt Information */}
+          <div className="bg-base-100 border border-base-300 rounded-3xl p-6 mb-10 space-y-4 text-left">
+            <DetailRow
+              label="Transaction ID"
+              value={fund?.transactionId}
+              isMono
+            />
+            <DetailRow label="Payment Method" value="Stripe Secure" icon="💳" />
+            <DetailRow
+              label="Timestamp"
+              value={
+                fund?.fundAt
+                  ? new Date(fund.fundAt).toLocaleString('en-GB', {
+                      dateStyle: 'medium',
+                      timeStyle: 'short',
                     })
-                  : '-'}
-              </span>
-            </div>
+                  : '-'
+              }
+            />
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6 sm:mb-8">
+          {/* Action Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
             <Link
               to="/"
-              className="flex-1 group px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl font-bold text-base sm:text-lg
-              bg-linear-to-r from-green-700 via-green-600 to-emerald-600
-              text-white
-              shadow-[0_8px_20px_rgba(34,197,94,0.3)]
-              hover:shadow-[0_12px_30px_rgba(34,197,94,0.4)]
-              hover:scale-105
-              active:scale-95
-              transition-all duration-300
-              inline-flex items-center justify-center gap-2"
+              className="px-8 py-4 bg-success text-success-content font-black rounded-2xl shadow-lg shadow-success/20 hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2 uppercase text-xs tracking-widest"
             >
               <svg
-                className="w-5 h-5"
+                className="w-4 h-4"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -173,96 +121,75 @@ const FundSuccess = () => {
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+                  strokeWidth={3}
+                  d="M3 12l9-9 9 9M5 10v10a2 2 0 002 2h10a2 2 0 002-2V10"
                 />
               </svg>
-              <span>Go Home</span>
+              Go Home
             </Link>
 
             <Link
               to="/funds"
-              className="flex-1 px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl font-bold text-base sm:text-lg
-              bg-white dark:bg-[#2a2a2a]
-              text-green-600 dark:text-green-400
-              border-2 border-green-300 dark:border-green-700/50
-              hover:bg-green-50 dark:hover:bg-green-900/20
-              hover:border-green-400 dark:hover:border-green-600
-              hover:scale-105
-              active:scale-95
-              transition-all duration-300
-              inline-flex items-center justify-center gap-2"
+              className="px-8 py-4 bg-base-300 text-base-content font-black rounded-2xl hover:bg-base-content/10 active:scale-95 transition-all flex items-center justify-center gap-2 uppercase text-xs tracking-widest"
             >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
-                />
-              </svg>
-              <span>Funds</span>
+              View All Funds
             </Link>
           </div>
 
-          {/* Download Receipt */}
-          <div className="pt-6 border-t border-green-200 dark:border-green-800/30">
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-              📧 Confirmation email sent to your inbox
-            </p>
-            <button
-              onClick={handleDownloadReceipt}
-              className="text-green-600 dark:text-green-400 font-bold text-sm hover:text-green-700 dark:hover:text-green-300 inline-flex items-center gap-2 group"
+          {/* Download Receipt Section */}
+          <button
+            onClick={handleDownloadReceipt}
+            className="group inline-flex items-center gap-2 text-success font-black text-sm uppercase tracking-wider hover:opacity-80 transition-opacity"
+          >
+            <svg
+              className="w-5 h-5 group-hover:translate-y-1 transition-transform"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
             >
-              <svg
-                className="w-5 h-5 group-hover:translate-y-0.5 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                />
-              </svg>
-              <span className="border-b-2 border-green-600 dark:border-green-400">
-                Download Receipt
-              </span>
-            </button>
-          </div>
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={3}
+                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              />
+            </svg>
+            <span className="border-b-2 border-success/30 group-hover:border-success transition-all">
+              Download PDF Receipt
+            </span>
+          </button>
 
-          {/* Footer */}
-          <div className="mt-8 pt-6 border-t border-green-200 dark:border-green-800/30">
-            <div className="flex items-center justify-center gap-2 text-xs text-gray-500 dark:text-gray-400">
-              <svg
-                className="w-4 h-4 text-green-600"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              <span className="font-semibold">RedDrop</span>
-              <span>·</span>
-              <span>Blood Donation Platform</span>
-              <span>·</span>
-              <span>🔒 Secure funds</span>
-            </div>
+          {/* Footer Logo/Brand */}
+          <div className="mt-12 pt-8 border-t border-base-300 flex items-center justify-center gap-3 opacity-30 grayscale">
+            <span className="font-black tracking-tighter text-xl text-base-content">
+              RedDrop
+            </span>
+            <div className="w-1.5 h-1.5 bg-base-content rounded-full"></div>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-base-content">
+              Official Receipt
+            </span>
           </div>
         </div>
       </div>
     </section>
   );
 };
+
+// Sub-component for clean detail rows
+const DetailRow = ({ label, value, isMono, icon }) => (
+  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+    <span className="text-[10px] font-black uppercase tracking-widest opacity-40">
+      {label}
+    </span>
+    <span
+      className={`text-sm font-bold text-base-content ${
+        isMono ? 'font-mono' : ''
+      }`}
+    >
+      {icon && <span className="mr-2">{icon}</span>}
+      {value}
+    </span>
+  </div>
+);
 
 export default FundSuccess;

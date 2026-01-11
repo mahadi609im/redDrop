@@ -60,7 +60,7 @@ const HealthTipsFAQ = () => {
   ];
 
   return (
-    <section className="py-24 bg-white overflow-hidden">
+    <section className="py-24 bg-base-100 overflow-hidden">
       <div className="conCls mx-auto px-6">
         {/* Centered Heading Section */}
         <div className="text-center relative mb-20">
@@ -79,7 +79,7 @@ const HealthTipsFAQ = () => {
             </span>
           </div>
 
-          <h2 className="text-5xl md:text-6xl font-black text-gray-900 leading-tight tracking-tighter">
+          <h2 className="text-5xl md:text-6xl font-black text-base-content leading-tight tracking-tighter">
             Essential{' '}
             <span className="text-red-600 relative inline-block">
               Health Tips
@@ -96,13 +96,13 @@ const HealthTipsFAQ = () => {
           {/* Left Column: Educational Tips */}
           <div className="space-y-8">
             {/* Tab Switcher */}
-            <div className="flex gap-2 p-1.5 bg-gray-100/80 backdrop-blur-sm rounded-2xl w-fit">
+            <div className="flex gap-2 p-1.5 bg-base-200/80 backdrop-blur-sm rounded-2xl w-fit">
               <button
                 onClick={() => setActiveTab('before')}
                 className={`px-8 py-3 rounded-xl text-sm font-bold transition-all duration-300 ${
                   activeTab === 'before'
-                    ? 'bg-white text-red-600 shadow-md scale-[1.02]'
-                    : 'text-gray-500 hover:text-gray-700'
+                    ? 'bg-base-100 text-primary shadow-md scale-[1.02]'
+                    : 'text-base-content/70 hover:text-base-content'
                 }`}
               >
                 Before Donation
@@ -111,8 +111,8 @@ const HealthTipsFAQ = () => {
                 onClick={() => setActiveTab('after')}
                 className={`px-8 py-3 rounded-xl text-sm font-bold transition-all duration-300 ${
                   activeTab === 'after'
-                    ? 'bg-white text-red-600 shadow-md scale-[1.02]'
-                    : 'text-gray-500 hover:text-gray-700'
+                    ? 'bg-base-100 text-primary shadow-md scale-[1.02]'
+                    : 'text-base-content/70 hover:text-base-content'
                 }`}
               >
                 After Donation
@@ -133,9 +133,9 @@ const HealthTipsFAQ = () => {
                     <motion.div
                       key={idx}
                       whileHover={{ x: 10 }}
-                      className="flex items-center gap-5 p-6 bg-white border border-gray-100 rounded-[2rem] shadow-sm hover:shadow-md hover:border-red-100 transition-all group"
+                      className="flex items-center gap-5 p-6 bg-base-100 border border-base-300 rounded-[2rem] shadow-sm hover:shadow-md hover:border-primary/20 transition-all group"
                     >
-                      <div className="w-12 h-12 bg-red-50 rounded-2xl flex items-center justify-center text-red-600 group-hover:bg-red-600 group-hover:text-white transition-all duration-500 shadow-inner">
+                      <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-content transition-all duration-500 shadow-inner">
                         {tip.icon}
                       </div>
                       <p className="text-gray-700 font-bold text-sm leading-relaxed">
@@ -152,7 +152,7 @@ const HealthTipsFAQ = () => {
           <div className="space-y-8">
             <div className="flex items-center gap-3">
               <div className="w-10 h-[2px] bg-red-600 rounded-full" />
-              <h3 className="text-xl font-black text-gray-900 uppercase tracking-tight">
+              <h3 className="text-xl font-black text-base-content uppercase tracking-tight">
                 Questions
               </h3>
             </div>
@@ -163,8 +163,8 @@ const HealthTipsFAQ = () => {
                   key={index}
                   className={`group border rounded-[2rem] transition-all duration-500 overflow-hidden ${
                     openFaq === index
-                      ? 'border-red-100 bg-red-50/30 shadow-lg'
-                      : 'border-gray-100 bg-white hover:border-red-50'
+                      ? 'border-primary/20 bg-primary/5 shadow-lg'
+                      : 'border-base-300 bg-base-100 hover:border-primary/10'
                   }`}
                 >
                   <button
@@ -181,8 +181,8 @@ const HealthTipsFAQ = () => {
                     <div
                       className={`shrink-0 w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-500 ${
                         openFaq === index
-                          ? 'bg-red-600 text-white rotate-180 shadow-lg shadow-red-200'
-                          : 'bg-gray-50 text-gray-400 group-hover:bg-red-50 group-hover:text-red-400'
+                          ? 'bg-primary text-primary-content rotate-180 shadow-lg shadow-primary/20'
+                          : 'bg-base-200 text-base-content/60 group-hover:bg-primary/10 group-hover:text-primary'
                       }`}
                     >
                       {openFaq === index ? (

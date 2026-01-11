@@ -1,6 +1,13 @@
-import React, { use, useContext, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { FaCheck, FaTimes, FaEdit, FaTrash, FaEye } from 'react-icons/fa';
+import {
+  FaCheck,
+  FaTimes,
+  FaEdit,
+  FaTrash,
+  FaEye,
+  FaFilter,
+} from 'react-icons/fa';
 import { AuthContext } from '../../../../context/AuthContext';
 import useAxiosSecure from '../../../../hooks/useAxiosSecure';
 import { useQuery } from '@tanstack/react-query';
@@ -10,8 +17,7 @@ import LoadingSpin from '../../../../Components/Loading/LoadingSpin';
 const MyDonationRequests = () => {
   const navigate = useNavigate();
   const [filterStatus, setFilterStatus] = useState('all');
-
-  const { user } = useContext(AuthContext);
+  const { user, loading: authLoading } = useContext(AuthContext);
   const axiosSecure = useAxiosSecure();
 
   const {
@@ -26,9 +32,9 @@ const MyDonationRequests = () => {
     },
   });
 
-  // Pagination setup
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+
   const filteredRequests =
     filterStatus === 'all'
       ? requests
@@ -42,23 +48,21 @@ const MyDonationRequests = () => {
 
   const handleRequestDelete = id => {
     Swal.fire({
-      title: 'Are you sure ?',
-      text: `Please confirm to delete this request`,
-      icon: 'question',
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Delete',
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#64748b',
+      confirmButtonText: 'Yes, delete it!',
+      background: 'var(--color-base-100)',
+      color: 'var(--color-base-content)',
     }).then(result => {
       if (result.isConfirmed) {
         axiosSecure.delete(`/donationRequests/${id}`).then(res => {
           if (res.data.deletedCount) {
             refetch();
-            Swal.fire({
-              title: 'Deleted!',
-              text: 'Your Request has been deleted.',
-              icon: 'success',
-            });
+            Swal.fire('Deleted!', 'Request has been deleted.', 'success');
           }
         });
       }
@@ -66,264 +70,259 @@ const MyDonationRequests = () => {
   };
 
   const handleStatusChange = async (id, newStatus) => {
-    // 1️⃣ Confirm modal
     const confirm = await Swal.fire({
-      title: 'Are you sure?',
-      text: `Do you want to change status to "${newStatus}"?`,
-      icon: 'warning',
+      title: 'Change Status?',
+      text: `Update status to ${newStatus}?`,
+      icon: 'info',
       showCancelButton: true,
-      confirmButtonText: 'Yes, change it!',
-      cancelButtonText: 'Cancel',
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
+      confirmButtonText: 'Confirm',
+      confirmButtonColor: '#ef4444',
     });
 
-    // ❌ User cancelled
     if (!confirm.isConfirmed) return;
 
     try {
-      // 2️⃣ API call
       const res = await axiosSecure.patch(`/donationRequests/${id}/status`, {
         status: newStatus,
       });
-
-      // 3️⃣ Success feedback
       if (res.data.modifiedCount > 0) {
         refetch();
         Swal.fire({
           icon: 'success',
           title: 'Updated!',
-          text: `Status changed to "${newStatus}"`,
           timer: 1500,
           showConfirmButton: false,
         });
-      } else {
-        Swal.fire({
-          icon: 'warning',
-          title: 'No changes',
-          text: 'Status could not be updated.',
-        });
       }
     } catch (err) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Error!',
-        text: 'Something went wrong',
-      });
+      Swal.fire({ icon: 'error', title: 'Error', text: 'Update failed' });
     }
   };
 
-  const { loading } = use(AuthContext);
+  if (authLoading || isLoading) return <LoadingSpin />;
 
   return (
-    <section className="min-h-screen bg-red-50 py-20">
-      <div className="text-center mb-10">
-        <h1 className="text-4xl md:text-5xl font-bold text-red-700">
-          My Donation Requests 🩸
-        </h1>
-        <p className="text-gray-700 max-w-xl mx-auto mt-3">
-          Here you can see all of your donation requests.
-        </p>
-      </div>
+    <section className="min-h-screen bg-base-200 py-10 px-4 md:px-10 transition-colors duration-300">
+      <div className="max-w-7xl mx-auto">
+        {/* Header Area */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+          <div>
+            <h1 className="text-4xl font-black text-base-content tracking-tight">
+              My Donation{' '}
+              <span className="text-primary underline decoration-primary/20">
+                Requests
+              </span>{' '}
+              🩸
+            </h1>
+            <p className="text-base-content/60 mt-2 font-medium">
+              Oversee and manage your active blood donation calls.
+            </p>
+          </div>
 
-      {/* Filter */}
-      <div className="w-full mx-auto flex justify-end gap-3 mb-4">
-        <select
-          className="border border-red-500 rounded-md px-3 py-2 text-gray-700 focus:outline-none"
-          value={filterStatus}
-          onChange={e => {
-            setFilterStatus(e.target.value);
-            setCurrentPage(1); // filter change e page reset
-          }}
-        >
-          <option value="all">All</option>
-          <option value="pending">Pending</option>
-          <option value="inprogress">In Progress</option>
-          <option value="done">Done</option>
-          <option value="canceled">Canceled</option>
-        </select>
-      </div>
+          {/* Filter Dropdown */}
+          <div className="flex items-center gap-3 bg-base-100 px-5 py-2.5 rounded-2xl shadow-sm border border-base-300">
+            <FaFilter className="text-primary/60" size={14} />
+            <select
+              className="bg-transparent text-sm font-bold text-base-content focus:outline-none cursor-pointer"
+              value={filterStatus}
+              onChange={e => {
+                setFilterStatus(e.target.value);
+                setCurrentPage(1);
+              }}
+            >
+              <option value="all">All Records</option>
+              <option value="pending">Pending</option>
+              <option value="inprogress">In Progress</option>
+              <option value="done">Done</option>
+              <option value="canceled">Canceled</option>
+            </select>
+          </div>
+        </div>
 
-      {/* Table */}
-      <div className="w-full mx-auto overflow-x-auto bg-white border border-red-500/20 rounded-3xl shadow-[0_0_25px_rgba(255,0,0,0.08)]">
-        {loading || isLoading ? (
-          <LoadingSpin></LoadingSpin>
-        ) : (
-          <>
-            {displayedRequests.length > 0 ? (
-              <table className="min-w-auto md:min-w-full table-auto text-sm">
-                <thead>
-                  <tr className="bg-red-600 text-white text-left">
-                    <th className="px-4 py-3 font-semibold">Recipient</th>
-                    <th className="px-4 py-3 font-semibold">Location</th>
-                    <th className="px-4 py-3 font-semibold">Blood</th>
-                    <th className="px-4 py-3 font-semibold">Date & Time</th>
-                    <th className="px-4 py-3 font-semibold">Status</th>
-                    <th className="px-4 py-3 font-semibold">Donor Info</th>
-                    <th className="px-4 py-3 font-semibold text-center">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {displayedRequests.map(req => (
+        {/* Table Container with Red Drop Shade */}
+        <div className="bg-base-100 rounded-3xl overflow-hidden border border-base-300 shadow-[0_8px_30px_rgb(239,68,68,0.06)] dark:shadow-[0_8px_30px_rgb(255,82,82,0.08)]">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-base-300/50 border-b border-base-300">
+                  <th className="px-6 py-5 text-xs font-black text-base-content/50 uppercase tracking-widest">
+                    Recipient
+                  </th>
+                  <th className="px-6 py-5 text-xs font-black text-base-content/50 uppercase tracking-widest">
+                    Location
+                  </th>
+                  <th className="px-6 py-5 text-xs font-black text-base-content/50 uppercase tracking-widest text-center">
+                    Group
+                  </th>
+                  <th className="px-6 py-5 text-xs font-black text-base-content/50 uppercase tracking-widest">
+                    Schedule
+                  </th>
+                  <th className="px-6 py-5 text-xs font-black text-base-content/50 uppercase tracking-widest">
+                    Status
+                  </th>
+                  <th className="px-6 py-5 text-xs font-black text-base-content/50 uppercase tracking-widest text-center">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-base-300">
+                {displayedRequests.length > 0 ? (
+                  displayedRequests.map(req => (
                     <tr
                       key={req._id}
-                      className="border-b border-red-500/10 hover:bg-red-50 transition-all"
+                      className="hover:bg-primary/[0.02] transition-colors group"
                     >
-                      <td className="px-4 py-3 font-semibold text-red-700 whitespace-nowrap">
-                        {req.recipientName}
+                      <td className="px-6 py-4">
+                        <p className="font-bold text-base-content group-hover:text-primary transition-colors">
+                          {req.recipientName}
+                        </p>
+                        <p className="text-[11px] font-medium text-base-content/40 uppercase tracking-tighter">
+                          {req.status === 'inprogress'
+                            ? `Donor: ${req.donor?.name}`
+                            : 'Awaiting Donor'}
+                        </p>
                       </td>
-                      <td className="px-4 py-3 text-gray-700 whitespace-nowrap">
-                        {req.district}, {req.upazila}
+                      <td className="px-6 py-4 text-sm text-base-content/70">
+                        {req.upazila},{' '}
+                        <span className="font-semibold">{req.district}</span>
                       </td>
-                      <td className="px-4 py-3">
-                        <span className="px-2 py-1 bg-red-600 text-white rounded-full text-xs font-semibold shadow">
+                      <td className="px-6 py-4 text-center">
+                        <span className="inline-flex items-center justify-center bg-primary text-primary-content text-xs font-black w-10 h-10 rounded-xl shadow-md shadow-primary/20">
                           {req.bloodGroup}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-gray-700 whitespace-nowrap">
-                        {req.donationDate} | {req.donationTime}
+                      <td className="px-6 py-4 text-sm text-base-content/70">
+                        <div className="font-bold text-base-content">
+                          {req.donationDate}
+                        </div>
+                        <div className="text-xs opacity-60">
+                          {req.donationTime}
+                        </div>
                       </td>
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        {req.status === 'done' ? (
-                          <span className="px-2 py-1 rounded-full text-sm font-semibold bg-green-100 text-green-800 capitalize">
-                            {req.status}
-                          </span>
-                        ) : req.status === 'inprogress' ? (
-                          <span className="px-2 py-1 rounded-full text-sm font-semibold bg-yellow-100 text-yellow-800 capitalize">
-                            {req.status}
-                          </span>
-                        ) : req.status === 'cancel' ? (
-                          <span className="px-2 py-1 rounded-full text-sm font-semibold bg-red-100 text-red-800 capitalize">
-                            {req.status}
-                          </span>
-                        ) : (
-                          <span className="px-2 py-1 rounded-full text-sm font-semibold bg-red-100 text-red-500 capitalize">
-                            {req.status}
-                          </span>
-                        )}
+                      <td className="px-6 py-4">
+                        <span
+                          className={`px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest border ${
+                            req.status === 'done'
+                              ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20'
+                              : req.status === 'inprogress'
+                              ? 'bg-blue-500/10 text-blue-500 border-blue-500/20'
+                              : req.status === 'canceled'
+                              ? 'bg-base-content/10 text-base-content/50 border-base-content/10'
+                              : 'bg-primary/10 text-primary border-primary/20'
+                          }`}
+                        >
+                          {req.status}
+                        </span>
                       </td>
-                      <td className="px-4 py-3 text-gray-700 whitespace-nowrap">
-                        {req.status === 'inprogress'
-                          ? `${req.donor?.name} (${req.donor?.email})`
-                          : '-'}
-                      </td>
-                      <td className="px-4 py-3 flex flex-nowrap gap-1 justify-center items-center">
-                        {/* Status buttons only for inprogress */}
-                        {req.status === 'inprogress' && (
-                          <>
-                            <button
-                              onClick={() =>
-                                handleStatusChange(req._id, 'done')
-                              }
-                              className="p-2 rounded-full border border-green-700 bg-green-700/30 text-green-700 shadow hover:bg-green-700/50 transition"
-                              title="Mark Done"
-                            >
-                              <FaCheck />
-                            </button>
-                            <button
-                              onClick={() =>
-                                handleStatusChange(req._id, 'canceled')
-                              }
-                              className="p-2 rounded-full border border-red-700 bg-red-700/30 text-red-700 shadow hover:bg-red-700/50 transition"
-                              title="Mark Canceled"
-                            >
-                              <FaTimes />
-                            </button>
-                          </>
-                        )}
-
-                        {/* Delete */}
-                        <button
-                          onClick={() => handleRequestDelete(req._id)}
-                          className="p-2 rounded-full border border-red-600 bg-red-600/30 text-red-500 shadow hover:bg-red-600/50 transition"
-                          title="Delete Request"
-                        >
-                          <FaTrash />
-                        </button>
-
-                        {/* View */}
-                        <button
-                          onClick={() =>
-                            navigate(`/dashboard/donation-details/${req._id}`)
-                          }
-                          className="p-2 rounded-full border border-blue-600 bg-blue-600/30 text-blue-700 shadow hover:bg-blue-600/50 transition"
-                          title="View Details"
-                        >
-                          <FaEye />
-                        </button>
-
-                        {/* Edit */}
-                        <button
-                          onClick={() =>
-                            navigate(`/dashboard/edit-donation/${req._id}`)
-                          }
-                          className="p-2 rounded-full border border-yellow-600 bg-yellow-600/30 text-yellow-600 shadow hover:bg-yellow-600/50 transition"
-                          title="Edit Request"
-                        >
-                          <FaEdit />
-                        </button>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center justify-center gap-2">
+                          {req.status === 'inprogress' && (
+                            <>
+                              <button
+                                onClick={() =>
+                                  handleStatusChange(req._id, 'done')
+                                }
+                                className="p-2.5 bg-emerald-500/10 text-emerald-500 rounded-xl hover:bg-emerald-500 hover:text-white transition-all shadow-sm"
+                                title="Mark Done"
+                              >
+                                <FaCheck size={14} />
+                              </button>
+                              <button
+                                onClick={() =>
+                                  handleStatusChange(req._id, 'canceled')
+                                }
+                                className="p-2.5 bg-base-content/5 text-base-content/60 rounded-xl hover:bg-base-content hover:text-base-100 transition-all shadow-sm"
+                                title="Cancel Request"
+                              >
+                                <FaTimes size={14} />
+                              </button>
+                            </>
+                          )}
+                          <button
+                            onClick={() =>
+                              navigate(`/dashboard/donation-details/${req._id}`)
+                            }
+                            className="p-2.5 bg-blue-500/10 text-blue-500 rounded-xl hover:bg-blue-500 hover:text-white transition-all shadow-sm"
+                            title="View"
+                          >
+                            <FaEye size={14} />
+                          </button>
+                          <button
+                            onClick={() =>
+                              navigate(`/dashboard/edit-donation/${req._id}`)
+                            }
+                            className="p-2.5 bg-amber-500/10 text-amber-500 rounded-xl hover:bg-amber-500 hover:text-white transition-all shadow-sm"
+                            title="Edit"
+                          >
+                            <FaEdit size={14} />
+                          </button>
+                          <button
+                            onClick={() => handleRequestDelete(req._id)}
+                            className="p-2.5 bg-primary/10 text-primary rounded-xl hover:bg-primary hover:text-white transition-all shadow-sm"
+                            title="Delete"
+                          >
+                            <FaTrash size={14} />
+                          </button>
+                        </div>
                       </td>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            ) : (
-              <div className="px-4 py-12 text-center text-gray-500 font-semibold">
-                No donation requests found.
-              </div>
-            )}
-          </>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="6" className="px-6 py-20 text-center">
+                      <div className="flex flex-col items-center opacity-30">
+                        <span className="text-5xl mb-3">📂</span>
+                        <p className="font-bold text-xl uppercase tracking-widest">
+                          No Requests Found
+                        </p>
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Professional Pagination */}
+        {totalPages > 1 && (
+          <div className="mt-10 flex justify-center items-center gap-4">
+            <button
+              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+              className="px-6 py-2 text-xs font-black uppercase tracking-widest bg-base-100 text-base-content/60 border border-base-300 rounded-2xl hover:bg-primary hover:text-white disabled:opacity-30 transition-all shadow-sm"
+            >
+              Prev
+            </button>
+
+            <div className="flex items-center gap-2 px-3 py-2 bg-base-300/30 rounded-2xl border border-base-300">
+              {[...Array(totalPages)].map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setCurrentPage(idx + 1)}
+                  className={`h-10 w-10 flex items-center justify-center rounded-xl text-xs font-black transition-all ${
+                    currentPage === idx + 1
+                      ? 'bg-primary text-primary-content shadow-lg shadow-primary/30'
+                      : 'text-base-content/40 hover:bg-base-100 hover:text-primary'
+                  }`}
+                >
+                  {idx + 1}
+                </button>
+              ))}
+            </div>
+
+            <button
+              onClick={() =>
+                setCurrentPage(prev => Math.min(prev + 1, totalPages))
+              }
+              disabled={currentPage === totalPages}
+              className="px-6 py-2 text-xs font-black uppercase tracking-widest bg-base-100 text-base-content/60 border border-base-300 rounded-2xl hover:bg-primary hover:text-white disabled:opacity-30 transition-all shadow-sm"
+            >
+              Next
+            </button>
+          </div>
         )}
       </div>
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex justify-center gap-2 p-4">
-          {/* Prev Button */}
-          <button
-            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1} // 🔹 Disable on first page
-            className={`px-3 py-1 rounded ${
-              currentPage === 1
-                ? 'bg-gray-200 cursor-not-allowed'
-                : 'bg-gray-300 hover:bg-gray-400'
-            }`}
-          >
-            Prev
-          </button>
-
-          {/* Page Numbers */}
-          {[...Array(totalPages)].map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => setCurrentPage(idx + 1)}
-              className={`px-3 py-1 rounded ${
-                currentPage === idx + 1
-                  ? 'bg-red-600 text-white'
-                  : 'bg-gray-200 hover:bg-gray-300'
-              }`}
-            >
-              {idx + 1}
-            </button>
-          ))}
-
-          {/* Next Button */}
-          <button
-            onClick={() =>
-              setCurrentPage(prev => Math.min(prev + 1, totalPages))
-            }
-            disabled={currentPage === totalPages} // 🔹 Disable on last page
-            className={`px-3 py-1 rounded ${
-              currentPage === totalPages
-                ? 'bg-gray-200 cursor-not-allowed'
-                : 'bg-gray-300 hover:bg-gray-400'
-            }`}
-          >
-            Next
-          </button>
-        </div>
-      )}
     </section>
   );
 };

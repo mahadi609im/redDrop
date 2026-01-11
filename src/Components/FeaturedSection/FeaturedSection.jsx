@@ -28,10 +28,10 @@ const features = [
 
 const FeaturedSection = () => {
   return (
-    <section className="py-24 bg-white relative overflow-hidden">
+    <section className="py-24 bg-base-100 relative overflow-hidden">
       <div className="conCls">
         {/* Background Decorative Element */}
-        <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-96 h-96 bg-red-50 rounded-full blur-3xl opacity-50"></div>
+        <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-96 h-96 bg-red-500/10 rounded-full blur-3xl opacity-50"></div>
 
         <div className="relative z-10">
           {/* Section Header */}
@@ -51,7 +51,7 @@ const FeaturedSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="text-4xl md:text-5xl font-black text-gray-900 mb-6 tracking-tight"
+              className="text-4xl md:text-5xl font-black text-base-content mb-6 tracking-tight"
             >
               Why Choose <span className="text-red-600">RedDrop?</span>
             </motion.h2>
@@ -78,17 +78,17 @@ const FeaturedSection = () => {
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
                 whileHover={{ y: -10 }}
-                className="group relative bg-white p-10 rounded-[40px] border border-gray-100 shadow-[0_15px_50px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_30px_60px_-15px_rgba(220,38,38,0.15)] transition-all duration-500"
+                className="group relative bg-base-100 p-10 rounded-[40px] border border-base-300 shadow-[0_15px_50px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_30px_60px_-15px_rgba(220,38,38,0.15)] transition-all duration-500"
               >
                 {/* Icon with Gradient Circle */}
                 <div className="relative w-20 h-20 mb-8 mx-auto md:mx-0">
-                  <div className="absolute inset-0 bg-red-600 opacity-10 rounded-3xl rotate-6 group-hover:rotate-12 transition-transform duration-300"></div>
-                  <div className="relative w-full h-full bg-white shadow-sm border border-red-50 rounded-3xl flex items-center justify-center text-red-600 group-hover:bg-red-600 group-hover:text-white transition-all duration-300">
+                  <div className="absolute inset-0 bg-primary opacity-10 rounded-3xl rotate-6 group-hover:rotate-12 transition-transform duration-300"></div>
+                  <div className="relative w-full h-full bg-base-100 shadow-sm border border-primary/10 rounded-3xl flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-content transition-all duration-300">
                     {feature.icon}
                   </div>
                 </div>
 
-                <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-red-600 transition-colors">
+                <h3 className="text-2xl font-bold text-base-content mb-4 group-hover:text-red-600 transition-colors">
                   {feature.title}
                 </h3>
 

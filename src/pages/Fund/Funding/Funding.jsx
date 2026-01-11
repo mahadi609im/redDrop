@@ -8,7 +8,6 @@ import { useQuery } from '@tanstack/react-query';
 const FundingPage = () => {
   const navigate = useNavigate();
   const { loading } = useContext(AuthContext);
-
   const axiosSecure = useAxiosSecure();
 
   const { data: fundings = [], isLoading } = useQuery({
@@ -20,31 +19,30 @@ const FundingPage = () => {
   });
 
   return (
-    <section className="min-h-screen py-16 sm:py-20 px-4 sm:px-6 md:px-20 relative overflow-hidden bg-linear-to-b from-red-50 to-white dark:from-[#1a0c0c] dark:to-[#120909]">
-      {/* Enhanced Glow Effects */}
-      <div className="absolute top-20 left-10 w-48 h-48 sm:w-64 sm:h-64 bg-red-500/20 rounded-full blur-[80px] sm:blur-[100px] animate-pulse"></div>
+    <section className="min-h-screen py-16 sm:py-20 px-4 sm:px-6 md:px-20 relative overflow-hidden bg-base-100 transition-colors duration-300">
+      {/* Dynamic Background Glows based on Theme */}
+      <div className="absolute top-20 left-10 w-48 h-48 sm:w-64 sm:h-64 bg-primary/10 rounded-full blur-[80px] sm:blur-[100px] animate-pulse"></div>
       <div
-        className="absolute bottom-20 right-10 w-56 h-56 sm:w-80 sm:h-80 bg-red-700/10 rounded-full blur-[100px] sm:blur-[120px] animate-pulse"
+        className="absolute bottom-20 right-10 w-56 h-56 sm:w-80 sm:h-80 bg-primary/5 rounded-full blur-[100px] sm:blur-[120px] animate-pulse"
         style={{ animationDelay: '1s' }}
       ></div>
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] sm:w-[500px] sm:h-[500px] bg-red-600/5 rounded-full blur-[120px]"></div>
 
-      {/* Beautiful Header */}
+      {/* Header Section */}
       <div className="relative z-10 text-center mb-10 sm:mb-14 animate-fadeIn">
         {/* Badge */}
-        <div className="inline-block mb-4 sm:mb-5 px-4 sm:px-5 py-1.5 bg-red-100 dark:bg-red-900/30 rounded-full border border-red-200 dark:border-red-800/50">
-          <p className="text-xs font-semibold text-red-600 dark:text-red-400 tracking-wide">
-            💰 COMMUNITY IMPACT
+        <div className="inline-block mb-4 sm:mb-5 px-4 sm:px-5 py-1.5 bg-primary/10 rounded-full border border-primary/20">
+          <p className="text-xs font-bold text-primary tracking-wide uppercase">
+            💰 Community Impact
           </p>
         </div>
 
         {/* Main Title */}
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-4 sm:mb-5 px-4 bg-linear-to-r from-red-700 via-red-600 to-red-500 bg-clip-text text-transparent drop-shadow-sm leading-tight">
-          Funding Contributors
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-black mb-4 sm:mb-5 px-4 text-base-content tracking-tighter">
+          Funding <span className="text-primary">Contributors</span>
         </h1>
 
         {/* Description */}
-        <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto text-sm sm:text-base md:text-lg leading-relaxed px-4 mb-6 sm:mb-8">
+        <p className="text-base-content opacity-70 max-w-2xl mx-auto text-sm sm:text-base md:text-lg leading-relaxed px-4 mb-6 sm:mb-8">
           Honoring every generous contribution that helps save lives through
           emergency blood services across Bangladesh.
         </p>
@@ -52,28 +50,24 @@ const FundingPage = () => {
         {/* Stats Row */}
         <div className="flex items-center justify-center gap-6 sm:gap-8 mb-6 sm:mb-8 flex-wrap px-4">
           <div className="text-center">
-            <p className="text-2xl sm:text-3xl font-bold text-red-600 dark:text-red-400">
+            <p className="text-2xl sm:text-3xl font-black text-primary">
               {fundings.length}
             </p>
-            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-xs sm:text-sm font-bold opacity-50 uppercase">
               Contributors
             </p>
           </div>
-          <div className="w-px h-10 bg-red-200 dark:bg-red-800/30"></div>
+          <div className="w-px h-10 bg-base-300"></div>
           <div className="text-center">
-            <p className="text-2xl sm:text-3xl font-bold text-red-600 dark:text-red-400">
-              24/7
-            </p>
-            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-2xl sm:text-3xl font-black text-primary">24/7</p>
+            <p className="text-xs sm:text-sm font-bold opacity-50 uppercase">
               Coverage
             </p>
           </div>
-          <div className="w-px h-10 bg-red-200 dark:bg-red-800/30"></div>
+          <div className="w-px h-10 bg-base-300"></div>
           <div className="text-center">
-            <p className="text-2xl sm:text-3xl font-bold text-red-600 dark:text-red-400">
-              100%
-            </p>
-            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-2xl sm:text-3xl font-black text-primary">100%</p>
+            <p className="text-xs sm:text-sm font-bold opacity-50 uppercase">
               Transparent
             </p>
           </div>
@@ -82,85 +76,101 @@ const FundingPage = () => {
         {/* Give Fund Button */}
         <button
           onClick={() => navigate('/give-fund')}
-          className="group px-8 sm:px-10 py-3 sm:py-3.5 bg-gradient-to-r from-red-700 via-red-600 to-red-500 text-white text-base sm:text-lg font-bold rounded-xl shadow-[0_8px_24px_rgba(220,38,38,0.4)] hover:shadow-[0_12px_32px_rgba(220,38,38,0.5)] hover:scale-105 active:scale-95 transition-all duration-300 ease-out inline-flex items-center gap-2.5 cursor-pointer"
+          className="group px-8 sm:px-10 py-3 sm:py-3.5 bg-primary text-primary-content text-base sm:text-lg font-black rounded-xl shadow-xl shadow-primary/20 hover:opacity-90 hover:scale-105 active:scale-95 transition-all duration-300 ease-out inline-flex items-center gap-2.5 cursor-pointer uppercase tracking-widest"
         >
-          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" />
-          </svg>
+          <DropletIcon />
           <span>Give Fund Now</span>
-          <svg
-            className="w-5 h-5 group-hover:translate-x-1 transition-transform"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2.5}
-              d="M13 7l5 5m0 0l-5 5m5-5H6"
-            />
-          </svg>
+          <ArrowRightIcon />
         </button>
       </div>
 
-      {/* Funding Table */}
+      {/* Funding Table Container */}
       {loading || isLoading ? (
         <LoadingSpin />
       ) : (
-        <div className="relative z-10  mx-auto mt-10 bg-white/80 dark:bg-[#1a1a1a]/70 backdrop-blur-xl border border-red-500/10 rounded-3xl shadow-[0_0_25px_rgba(255,0,0,0.08)] overflow-x-auto scrollbar-thin scrollbar-thumb-red-600/60 hover:scrollbar-thumb-red-600 scrollbar-track-transparent">
-          {fundings.length === 0 && (
-            <div className="py-10">
-              <p className="text-center text-red-500 font-semibold text-lg">
+        <div className="relative z-10 mx-auto mt-10 bg-base-200/50 backdrop-blur-xl border border-base-300 rounded-[2rem] shadow-2xl overflow-hidden">
+          {fundings.length === 0 ? (
+            <div className="py-20 text-center">
+              <p className="text-primary font-black text-xl uppercase tracking-widest opacity-50">
                 No Fundings yet.
               </p>
             </div>
-          )}
-          {fundings.length > 0 && (
-            <table className="min-w-full table-auto text-sm md:text-base">
-              <thead>
-                <tr className="bg-red-600 text-white text-left">
-                  <th className="px-4 md:px-6 py-3 font-semibold whitespace-nowrap">
-                    User
-                  </th>
-                  <th className="px-4 md:px-6 py-3 font-semibold whitespace-nowrap">
-                    Email
-                  </th>
-                  <th className="px-4 md:px-6 py-3 font-semibold whitespace-nowrap">
-                    Amount
-                  </th>
-                  <th className="px-4 md:px-6 py-3 font-semibold whitespace-nowrap">
-                    Date
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {fundings.map(fund => (
-                  <tr
-                    key={fund._id}
-                    className="border-b border-red-500/10 hover:bg-red-50/60 dark:hover:bg-red-900/20 transition-all"
-                  >
-                    <td className="px-4 md:px-6 py-3 font-semibold text-red-700 dark:text-red-300 whitespace-nowrap">
-                      {fund.name}
-                    </td>
-                    <td className="px-4 md:px-6 py-3 text-gray-700 dark:text-gray-300 whitespace-nowrap">
-                      {fund.email}
-                    </td>
-                    <td className="px-4 md:px-6 py-3 text-gray-700 dark:text-gray-300 whitespace-nowrap">
-                      ${fund.amount}
-                    </td>
-                    <td className="px-4 md:px-6 py-3 text-gray-700 dark:text-gray-300 whitespace-nowrap">
-                      {new Date(fund.fundAt).toLocaleDateString()}
-                    </td>
+          ) : (
+            <div className="overflow-x-auto scrollbar-hide">
+              <table className="min-w-full table-auto">
+                <thead>
+                  <tr className="bg-primary text-primary-content text-left">
+                    <th className="px-6 py-5 font-black uppercase text-xs tracking-[0.2em]">
+                      Contributor
+                    </th>
+                    <th className="px-6 py-5 font-black uppercase text-xs tracking-[0.2em]">
+                      Email Address
+                    </th>
+                    <th className="px-6 py-5 font-black uppercase text-xs tracking-[0.2em]">
+                      Amount
+                    </th>
+                    <th className="px-6 py-5 font-black uppercase text-xs tracking-[0.2em]">
+                      Date
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-base-300">
+                  {fundings.map((fund, idx) => (
+                    <tr
+                      key={fund._id}
+                      className="hover:bg-primary/5 transition-colors group"
+                    >
+                      <td className="px-6 py-5 font-bold text-base-content whitespace-nowrap">
+                        {fund.name}
+                      </td>
+                      <td className="px-6 py-5 opacity-70 text-base-content whitespace-nowrap">
+                        {fund.email}
+                      </td>
+                      <td className="px-6 py-5 whitespace-nowrap">
+                        <span className="px-3 py-1 bg-primary/10 text-primary rounded-lg font-black">
+                          ${fund.amount}
+                        </span>
+                      </td>
+                      <td className="px-6 py-5 opacity-50 text-base-content whitespace-nowrap text-sm font-medium">
+                        {new Date(fund.fundAt).toLocaleDateString('en-GB', {
+                          day: '2-digit',
+                          month: 'short',
+                          year: 'numeric',
+                        })}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
       )}
     </section>
   );
 };
+
+// Helper Icon Components for cleaner code
+const DropletIcon = () => (
+  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+    <path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" />
+  </svg>
+);
+
+const ArrowRightIcon = () => (
+  <svg
+    className="w-5 h-5 group-hover:translate-x-1 transition-transform"
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={3}
+      d="M13 7l5 5m0 0l-5 5m5-5H6"
+    />
+  </svg>
+);
 
 export default FundingPage;

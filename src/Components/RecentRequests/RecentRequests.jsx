@@ -35,7 +35,7 @@ const RecentRequests = () => {
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
           <div className="space-y-2">
-            <h2 className="text-3xl md:text-4xl font-black text-gray-900 leading-tight">
+            <h2 className="text-3xl md:text-4xl font-black text-base-content leading-tight">
               Emergency <span className="text-red-600">Blood Requests</span>
             </h2>
             <p className="text-gray-500 max-w-md">
@@ -61,7 +61,7 @@ const RecentRequests = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="relative group bg-white rounded-3xl p-6 border border-gray-100 shadow-[0_10px_40px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_50px_rgba(220,38,38,0.1)] transition-all duration-500 overflow-hidden"
+                className="relative group bg-base-100 rounded-3xl p-6 border border-base-300 shadow-[0_10px_40px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_50px_rgba(220,38,38,0.1)] transition-all duration-500 overflow-hidden"
               >
                 {/* Blood Group Badge */}
                 <div className="absolute top-0 right-0">
@@ -83,7 +83,7 @@ const RecentRequests = () => {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 gap-3 py-4 border-y border-gray-50">
+                  <div className="grid grid-cols-1 gap-3 py-4 border-y border-base-content/10">
                     <div className="flex items-center gap-3 text-sm text-gray-600">
                       <Hospital size={16} className="text-red-400" />
                       <span className="truncate">{request.hospitalName}</span>
@@ -100,7 +100,7 @@ const RecentRequests = () => {
 
                   <Link
                     to={`/blood-details/${request._id}`}
-                    className="block w-full text-center py-3.5 rounded-2xl bg-gray-50 text-gray-700 font-bold group-hover:bg-red-600 group-hover:text-white transition-all duration-300"
+                    className="block w-full text-center py-3.5 rounded-2xl bg-base-200 text-base-content font-bold group-hover:bg-primary group-hover:text-primary-content transition-all duration-300"
                   >
                     View Details
                   </Link>
@@ -108,8 +108,8 @@ const RecentRequests = () => {
               </motion.div>
             ))
           ) : (
-            <div className="col-span-full text-center py-10 bg-gray-50 rounded-3xl">
-              <p className="text-gray-400 font-medium">
+            <div className="col-span-full text-center py-10 bg-base-200 rounded-3xl">
+              <p className="text-base-content/60 font-medium">
                 No pending requests at the moment.
               </p>
             </div>

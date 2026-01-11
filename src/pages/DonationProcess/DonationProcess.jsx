@@ -74,16 +74,16 @@ const DonationProcess = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#fafafa] text-slate-900 pb-32">
+    <div className="min-h-screen bg-base-100 text-base-content pb-32">
       {/* --- HERO SECTION --- */}
-      <header className="relative pt-32 pb-64 px-6 bg-white overflow-hidden text-center">
+      <header className="relative pt-32 pb-64 px-6 bg-base-200 overflow-hidden text-center">
         <div className="absolute inset-0 bg-[linear-linear(to_right,#80808008_1px,transparent_1px),linear-linear(to_bottom,#80808008_1px,transparent_1px)] bg-size[24px_24px]"></div>
 
         <div className="max-w-4xl mx-auto relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-50 text-red-600 text-sm font-bold mb-6"
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-bold mb-6"
           >
             <CheckCircle2 size={16} />
             <span>Donation Proccess</span>
@@ -93,9 +93,9 @@ const DonationProcess = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-4xl md:text-6xl font-black text-gray-900 mb-6 tracking-tight"
+            className="text-4xl md:text-6xl font-black text-base-content mb-6 tracking-tight"
           >
-            The Donation <span className="text-red-600">Lifecycle.</span>
+            The Donation <span className="text-primary">Lifecycle.</span>
           </motion.h1>
 
           <motion.p
@@ -134,14 +134,14 @@ const DonationProcess = () => {
               </div>
 
               {/* Content Card */}
-              <div className="flex-1 bg-white rounded-[2.5rem] border border-gray-100 p-8 md:p-10 shadow-sm hover:shadow-xl hover:shadow-gray-200/40 transition-all duration-500">
+              <div className="flex-1 bg-base-100 rounded-[2.5rem] border border-base-300 p-8 md:p-10 shadow-sm hover:shadow-xl hover:shadow-base-300/40 transition-all duration-500">
                 <div className="flex items-center gap-4 mb-6">
                   <div
                     className={`md:hidden w-10 h-10 rounded-xl ${step.bg} ${step.color} flex items-center justify-center font-black`}
                   >
                     {step.id}
                   </div>
-                  <h2 className="text-2xl md:text-3xl font-black text-gray-900 tracking-tight italic">
+                  <h2 className="text-2xl md:text-3xl font-black text-base-content tracking-tight italic">
                     {step.title}
                   </h2>
                 </div>
@@ -155,7 +155,7 @@ const DonationProcess = () => {
                   {step.details.map((detail, i) => (
                     <div
                       key={i}
-                      className="flex items-start gap-3 p-4 bg-gray-50/50 rounded-2xl border border-gray-50 transition-colors hover:bg-white hover:border-red-100 group"
+                      className="flex items-start gap-3 p-4 bg-base-200/50 rounded-2xl border border-base-300 transition-colors hover:bg-base-100 hover:border-primary/20 group"
                     >
                       <CheckCircle2
                         size={18}
@@ -179,8 +179,8 @@ const DonationProcess = () => {
           className="mt-20 p-8 md:p-12 rounded-[3rem] bg-linear-to-br from-red-500 to-red-700 text-white shadow-2xl relative overflow-hidden"
         >
           <div className="flex flex-col md:flex-row gap-8 items-center relative z-10">
-            <div className="w-20 h-20 bg-white/20 backdrop-blur-xl rounded-full flex items-center justify-center shrink-0">
-              <Info size={40} className="text-white" />
+            <div className="w-20 h-20 bg-base-100/20 backdrop-blur-xl rounded-full flex items-center justify-center shrink-0">
+              <Info size={40} className="text-primary-content" />
             </div>
             <div>
               <h3 className="text-2xl font-black mb-2 italic">
@@ -195,25 +195,25 @@ const DonationProcess = () => {
             </div>
           </div>
           {/* Background Decorative Circles */}
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-20 -mt-20 blur-3xl" />
+          <div className="absolute top-0 right-0 w-64 h-64 bg-base-100/5 rounded-full -mr-20 -mt-20 blur-3xl" />
         </motion.div>
       </main>
 
       {/* --- FOOTER CTA --- */}
       <section className="max-w-4xl mx-auto px-6 mt-32 text-center">
-        <h2 className="text-3xl font-black text-gray-900 mb-6">
+        <h2 className="text-3xl font-black text-base-content mb-6">
           Still have questions?
         </h2>
         <div className="flex flex-wrap justify-center gap-4">
           <Link
             to="/health-tips"
-            className="px-8 py-4 bg-gray-900 text-white rounded-2xl font-bold text-sm tracking-widest hover:bg-red-600 transition-all shadow-lg"
+            className="px-8 py-4 bg-base-content text-base-100 rounded-2xl font-bold text-sm tracking-widest hover:bg-primary transition-all shadow-lg"
           >
             VIEW ELIGIBILITY
           </Link>
           <Link
             to="/help-center"
-            className="px-8 py-4 bg-white text-gray-900 border border-gray-200 rounded-2xl font-bold text-sm tracking-widest hover:border-red-600 transition-all shadow-sm"
+            className="px-8 py-4 bg-base-100 text-base-content border border-base-300 rounded-2xl font-bold text-sm tracking-widest hover:border-primary transition-all shadow-sm"
           >
             FAQ SECTION
           </Link>

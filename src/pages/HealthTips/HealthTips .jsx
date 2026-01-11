@@ -5,14 +5,12 @@ const HealthTips = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('before');
 
-  // Quick Eligibility Logic State
   const [checker, setChecker] = useState({
     age: '',
     weight: '',
     health: 'yes',
   });
 
-  // Real-time Validation
   const eligibility = useMemo(() => {
     if (!checker.age || !checker.weight)
       return { status: 'neutral', msg: 'Pending Input' };
@@ -112,40 +110,35 @@ const HealthTips = () => {
   };
 
   return (
-    <section className="min-h-screen py-16 sm:py-20 px-4 sm:px-6 md:px-20 relative overflow-hidden bg-linear-to-b from-red-50 to-white dark:from-[#1a0c0c] dark:to-[#120909]">
-      {/* Background Glows */}
-      <div className="absolute top-20 left-10 w-48 h-48 bg-red-500/20 rounded-full blur-[80px] animate-pulse"></div>
-      <div
-        className="absolute bottom-20 right-10 w-56 h-56 bg-red-700/10 rounded-full blur-[100px] animate-pulse"
-        style={{ animationDelay: '1s' }}
-      ></div>
+    <section className="min-h-screen py-16 sm:py-20 px-4 sm:px-6 md:px-20 relative overflow-hidden bg-white dark:bg-base-100 transition-colors duration-300">
+      <div className="absolute top-20 left-10 w-48 h-48 bg-red-500/10 dark:bg-red-500/5 rounded-full blur-[80px] animate-pulse"></div>
 
       {/* Header */}
-      <div className="relative z-10 text-center mb-12 animate-fadeIn">
-        <div className="inline-block mb-4 px-5 py-1.5 bg-red-100 dark:bg-red-900/30 rounded-full border border-red-200 dark:border-red-800/50">
-          <p className="text-xs font-semibold text-red-600 dark:text-red-400 tracking-wide uppercase">
+      <div className="relative z-10 text-center mb-12">
+        <div className="inline-block mb-4 px-5 py-1.5 bg-red-50 dark:bg-red-900/20 rounded-full border border-red-100 dark:border-red-800/30">
+          <p className="text-xs font-bold text-red-600 dark:text-red-400 tracking-wide uppercase">
             ❤️ Donor Wellness Guide
           </p>
         </div>
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-5 bg-linear-to-r from-red-700 via-red-600 to-red-500 bg-clip-text text-transparent leading-tight">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-5 bg-gradient-to-r from-red-700 via-red-600 to-red-500 bg-clip-text text-transparent">
           Health Tips for Donors
         </h1>
       </div>
 
-      {/* Quick Eligibility Checker with Dynamic Link */}
+      {/* Quick Eligibility Checker */}
       <div className="max-w-4xl mx-auto mb-16 relative z-10">
         <div
-          className={`p-6 rounded-3xl bg-white/40 dark:bg-black/20 backdrop-blur-md border transition-all duration-500 ${
+          className={`p-6 rounded-3xl bg-gray-50 dark:bg-base-200 border transition-all duration-500 ${
             eligibility.status === 'valid'
-              ? 'border-green-500/50 shadow-[0_0_20px_rgba(34,197,94,0.1)]'
+              ? 'border-green-500/50'
               : eligibility.status === 'invalid'
-              ? 'border-red-500/50 shadow-[0_0_20px_rgba(239,68,68,0.1)]'
-              : 'border-gray-200 dark:border-red-900/30'
+              ? 'border-red-500/50'
+              : 'border-gray-200 dark:border-base-300'
           }`}
         >
           <div className="flex flex-wrap items-center justify-between gap-6">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center text-red-500">
+              <div className="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center text-red-600">
                 <svg
                   className="w-5 h-5"
                   fill="none"
@@ -161,10 +154,10 @@ const HealthTips = () => {
                 </svg>
               </div>
               <div>
-                <h4 className="text-sm font-bold dark:text-white uppercase tracking-tight">
+                <h4 className="text-sm font-black color-base-content uppercase tracking-tight">
                   Quick Check
                 </h4>
-                <p className="text-[11px] text-gray-500 dark:text-gray-400">
+                <p className="text-[11px] text-gray-600 dark:text-gray-400 font-medium">
                   Verify eligibility in seconds
                 </p>
               </div>
@@ -174,37 +167,28 @@ const HealthTips = () => {
               <input
                 type="number"
                 placeholder="Age"
-                className="flex-1 min-w-[100px] bg-white dark:bg-black/40 border border-gray-200 dark:border-red-900/30 px-4 py-2.5 rounded-xl text-sm outline-none focus:ring-2 ring-red-500/50 dark:text-white transition-all"
+                className="flex-1 min-w-[100px] bg-white dark:bg-base-300 border border-gray-300 dark:border-base-300 px-4 py-2.5 rounded-xl text-sm outline-none focus:ring-2 ring-red-500/50 text-base-content placeholder-gray-500"
                 onChange={e => setChecker({ ...checker, age: e.target.value })}
               />
               <input
                 type="number"
                 placeholder="Weight (kg)"
-                className="flex-1 min-w-[100px] bg-white dark:bg-black/40 border border-gray-200 dark:border-red-900/30 px-4 py-2.5 rounded-xl text-sm outline-none focus:ring-2 ring-red-500/50 dark:text-white transition-all"
+                className="flex-1 min-w-[100px] bg-white dark:bg-base-300 border border-gray-300 dark:border-base-300 px-4 py-2.5 rounded-xl text-sm outline-none focus:ring-2 ring-red-500/50 text-base-content placeholder-gray-500"
                 onChange={e =>
                   setChecker({ ...checker, weight: e.target.value })
                 }
               />
-
-              {/* Dynamic Status Display or Donation Link */}
-              {eligibility.status === 'valid' ? (
-                <button
-                  onClick={() => navigate('/blood-requests')}
-                  className="px-6 py-2.5 rounded-xl text-xs font-black uppercase bg-green-500 text-white hover:bg-green-600 transition-all shadow-lg animate-bounce duration-1000"
-                >
-                  Donate Now →
-                </button>
-              ) : (
-                <div
-                  className={`px-6 py-2.5 rounded-xl text-xs font-black uppercase min-w-[150px] flex items-center justify-center transition-all duration-300 ${
-                    eligibility.status === 'invalid'
-                      ? 'bg-red-500 text-white'
-                      : 'bg-gray-100 dark:bg-red-900/20 text-gray-400'
-                  }`}
-                >
-                  {eligibility.msg}
-                </div>
-              )}
+              <div
+                className={`px-6 py-2.5 rounded-xl text-xs font-black uppercase flex items-center justify-center transition-all ${
+                  eligibility.status === 'valid'
+                    ? 'bg-green-600 text-white cursor-pointer hover:bg-green-700'
+                    : eligibility.status === 'invalid'
+                    ? 'bg-red-600 text-white'
+                    : 'bg-white dark:bg-base-300 text-gray-700 dark:text-gray-400 border border-gray-200 dark:border-transparent'
+                }`}
+              >
+                {eligibility.msg}
+              </div>
             </div>
           </div>
         </div>
@@ -212,15 +196,15 @@ const HealthTips = () => {
 
       {/* Tab Navigation */}
       <div className="flex justify-center mb-12 relative z-10">
-        <div className="inline-flex p-1 bg-gray-100 dark:bg-red-950/20 rounded-2xl border border-gray-200 dark:border-red-900/30 shadow-inner">
+        <div className="inline-flex p-1 bg-gray-100 dark:bg-base-200 rounded-2xl border border-gray-200 dark:border-base-300">
           {['before', 'during', 'after'].map(tab => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-6 py-3 rounded-xl text-sm font-bold transition-all duration-300 capitalize ${
+              className={`px-6 py-3 rounded-xl text-sm font-bold transition-all capitalize ${
                 activeTab === tab
-                  ? 'bg-red-600 text-white shadow-lg scale-105'
-                  : 'text-gray-500 hover:text-red-500 dark:text-gray-400'
+                  ? 'bg-red-600 text-white shadow-lg'
+                  : 'text-gray-700 hover:text-red-600 dark:text-gray-400'
               }`}
             >
               {tab} Donation
@@ -234,42 +218,41 @@ const HealthTips = () => {
         {categories[activeTab].map(item => (
           <div
             key={item.id}
-            className={`group p-8 rounded-2xl bg-white/80 dark:bg-[#1a1a1a]/60 backdrop-blur-xl border-b-4 ${item.border} shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300`}
+            className={`p-8 rounded-2xl bg-white dark:bg-base-200 border-b-4 ${item.border} shadow-md hover:shadow-xl transition-all`}
           >
             <div
-              className={`w-16 h-16 mb-6 rounded-2xl bg-linear-to-br ${item.color} flex items-center justify-center text-4xl shadow-inner border border-white/10`}
+              className={`w-14 h-14 mb-6 rounded-2xl bg-gradient-to-br ${item.color} flex items-center justify-center text-3xl shadow-inner`}
             >
               {item.icon}
             </div>
-            <h3 className="text-xl font-bold mb-3 text-gray-800 dark:text-white group-hover:text-red-600 transition-colors">
+            <h3 className="text-xl font-bold mb-3 text-base-content">
               {item.id}. {item.title}
             </h3>
-            <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-sm md:text-base font-medium">
+            <p className="text-gray-700 dark:text-gray-400 leading-relaxed text-sm font-semibold">
               {item.desc}
             </p>
           </div>
         ))}
       </div>
 
-      {/* Bottom CTA */}
-      <div className="relative z-10 mt-20 max-w-4xl mx-auto bg-linear-to-r from-red-600 to-red-500 rounded-[2.5rem] p-8 sm:p-12 text-center shadow-2xl shadow-red-500/20">
+      {/* CTA Section */}
+      <div className="relative z-10 mt-20 max-w-4xl mx-auto bg-gradient-to-r from-red-600 to-red-500 rounded-[2rem] p-10 text-center shadow-xl">
         <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
           Ready to Save a Life?
         </h2>
-        <p className="text-red-100 mb-8 max-w-xl mx-auto font-medium">
-          Your single donation can save up to three lives. Join our community of
-          lifesavers today.
+        <p className="text-white/90 mb-8 font-medium">
+          Join our community of lifesavers today. Your donation matters.
         </p>
         <div className="flex flex-wrap justify-center gap-4">
           <button
             onClick={() => navigate('/blood-requests')}
-            className="px-8 py-3 bg-white text-red-600 font-bold rounded-xl hover:bg-red-50 transition-all shadow-lg uppercase text-xs tracking-wider"
+            className="px-8 py-3 bg-white text-red-600 font-bold rounded-xl hover:bg-gray-100 transition-all uppercase text-xs tracking-wider"
           >
             View Requests
           </button>
           <button
             onClick={() => navigate('/dashboard/create-donation-request')}
-            className="px-8 py-3 bg-red-800/30 text-white border border-red-400/50 font-bold rounded-xl hover:bg-red-800/40 transition-all backdrop-blur-md uppercase text-xs tracking-wider"
+            className="px-8 py-3 bg-red-800 text-white font-bold rounded-xl hover:bg-red-900 transition-all uppercase text-xs tracking-wider"
           >
             Create Request
           </button>

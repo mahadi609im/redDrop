@@ -54,7 +54,6 @@ const Register = () => {
     return districtObj ? u.district_id === districtObj.id : false;
   });
 
-  // --- Google Login Handler ---
   const handleGoogleLogin = async () => {
     try {
       setLoading(true);
@@ -72,9 +71,7 @@ const Register = () => {
         status: 'active',
       };
 
-      // Save user to DB (Backend handles if user already exists)
       await axiosSecure.post('/users', userInfo);
-
       toast.success(`Welcome back, ${user.displayName}! 👋`);
       navigate('/');
     } catch (err) {
@@ -83,7 +80,6 @@ const Register = () => {
     }
   };
 
-  // --- Email Registration Handler ---
   const handleRegister = async data => {
     if (data.password !== data.confirm_password) {
       toast.error('Passwords do not match!');
@@ -92,8 +88,6 @@ const Register = () => {
 
     try {
       setLoading(true);
-
-      // 1. Image Upload to ImgBB
       const profilePhoto = data.profilePhoto[0];
       const formData = new FormData();
       formData.append('image', profilePhoto);
@@ -104,10 +98,8 @@ const Register = () => {
       const imgRes = await axios.post(image_api_key, formData);
       const photoURL = imgRes.data.data.url;
 
-      // 2. Create User in Firebase
       await registerUser(data.email, data.password);
 
-      // 3. Prepare User Data for Database
       const userInfo = {
         email: data.email,
         displayName: data.name,
@@ -119,7 +111,6 @@ const Register = () => {
         status: 'active',
       };
 
-      // 4. Save to Database & Update Profile
       await axiosSecure.post('/users', userInfo);
       await updateUserProfile({ displayName: data.name, photoURL });
 
@@ -135,20 +126,20 @@ const Register = () => {
   if (loading) return <Loading />;
 
   return (
-    <div className="min-h-screen py-20 px-6 bg-[#FDFDFD] relative overflow-hidden flex items-center justify-center font-sans">
-      {/* Background Decor */}
-      <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-red-50 rounded-full blur-[120px] -z-10" />
+    <div className="min-h-screen py-20 px-6 bg-base-100 text-base-content relative overflow-hidden flex items-center justify-center transition-colors duration-300">
+      {/* Background Decor - Uses primary color with low opacity for glow */}
+      <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] -z-10" />
 
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="max-w-4xl w-full bg-white rounded-[2.5rem] shadow-[0_40px_80px_-15px_rgba(0,0,0,0.08)] border border-gray-100 p-8 md:p-12"
+        className="max-w-4xl w-full bg-base-100 dark:bg-base-200 rounded-[2.5rem] shadow-[0_40px_80px_-15px_rgba(0,0,0,0.15)] border border-base-300 p-8 md:p-12"
       >
         <div className="text-center mb-10">
-          <h1 className="text-3xl md:text-5xl font-black text-gray-900 tracking-tighter mb-4">
-            Join the <span className="text-red-600">Lifesavers.</span>
+          <h1 className="text-3xl md:text-5xl font-black tracking-tighter mb-4">
+            Join the <span className="text-primary">Lifesavers.</span>
           </h1>
-          <p className="text-gray-400 font-medium">
+          <p className="opacity-60 font-medium">
             Create your donor account today
           </p>
         </div>
@@ -158,7 +149,7 @@ const Register = () => {
           <button
             onClick={handleGoogleLogin}
             type="button"
-            className="w-full flex items-center justify-center gap-3 py-4 border-2 border-gray-100 rounded-2xl font-bold text-gray-600 hover:bg-gray-50 transition-all active:scale-[0.98] group"
+            className="w-full flex items-center justify-center gap-3 py-4 border-2 border-base-300 rounded-2xl font-bold hover:bg-base-300 transition-all active:scale-[0.98] group"
           >
             <FcGoogle
               size={24}
@@ -168,8 +159,8 @@ const Register = () => {
           </button>
 
           <div className="relative my-10 text-center">
-            <span className="absolute inset-x-0 top-1/2 h-px bg-gray-100 -translate-y-1/2"></span>
-            <span className="relative bg-white px-4 text-[10px] font-black text-gray-300 uppercase tracking-[0.3em]">
+            <span className="absolute inset-x-0 top-1/2 h-px bg-base-300 -translate-y-1/2"></span>
+            <span className="relative bg-base-100 dark:bg-base-200 px-4 text-[10px] font-black opacity-40 uppercase tracking-[0.3em]">
               Or register with email
             </span>
           </div>
@@ -179,56 +170,54 @@ const Register = () => {
           onSubmit={handleSubmit(handleRegister)}
           className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6"
         >
-          {/* Full Name */}
-          <div className="space-y-2">
-            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">
-              Full Name
-            </label>
-            <div className="relative group">
-              <User
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-red-500 transition-colors"
-                size={18}
-              />
-              <input
-                {...register('name', { required: true })}
-                className="w-full pl-12 pr-4 py-4 rounded-2xl bg-gray-50 border border-transparent focus:bg-white focus:border-red-500 focus:outline-none transition-all font-medium"
-                placeholder="John Doe"
-              />
+          {/* Input Fields Helper Function Style */}
+          {[
+            {
+              label: 'Full Name',
+              name: 'name',
+              icon: <User size={18} />,
+              type: 'text',
+              placeholder: 'John Doe',
+            },
+            {
+              label: 'Email Address',
+              name: 'email',
+              icon: <Mail size={18} />,
+              type: 'email',
+              placeholder: 'email@example.com',
+            },
+          ].map(field => (
+            <div key={field.name} className="space-y-2">
+              <label className="text-[10px] font-black opacity-50 uppercase tracking-widest ml-1">
+                {field.label}
+              </label>
+              <div className="relative group">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 opacity-40 group-focus-within:text-primary group-focus-within:opacity-100 transition-all">
+                  {field.icon}
+                </span>
+                <input
+                  {...register(field.name, { required: true })}
+                  type={field.type}
+                  className="w-full pl-12 pr-4 py-4 rounded-2xl bg-base-200 border border-transparent focus:bg-base-100 focus:border-primary focus:outline-none transition-all font-medium text-base-content"
+                  placeholder={field.placeholder}
+                />
+              </div>
             </div>
-          </div>
-
-          {/* Email */}
-          <div className="space-y-2">
-            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">
-              Email Address
-            </label>
-            <div className="relative group">
-              <Mail
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-red-500 transition-colors"
-                size={18}
-              />
-              <input
-                {...register('email', { required: true })}
-                type="email"
-                className="w-full pl-12 pr-4 py-4 rounded-2xl bg-gray-50 border border-transparent focus:bg-white focus:border-red-500 focus:outline-none transition-all font-medium"
-                placeholder="email@example.com"
-              />
-            </div>
-          </div>
+          ))}
 
           {/* Blood Group */}
           <div className="space-y-2">
-            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">
+            <label className="text-[10px] font-black opacity-50 uppercase tracking-widest ml-1">
               Blood Group
             </label>
-            <div className="relative">
+            <div className="relative group">
               <Droplet
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-red-500"
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-primary opacity-60 group-focus-within:opacity-100"
                 size={18}
               />
               <select
                 {...register('bloodGroup', { required: true })}
-                className="w-full pl-12 pr-4 py-4 rounded-2xl bg-gray-50 border border-transparent focus:bg-white focus:border-red-500 focus:outline-none transition-all font-bold appearance-none cursor-pointer"
+                className="w-full pl-12 pr-4 py-4 rounded-2xl bg-base-200 border border-transparent focus:bg-base-100 focus:border-primary focus:outline-none transition-all font-bold appearance-none cursor-pointer"
               >
                 <option value="">Select Group</option>
                 {['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'].map(bg => (
@@ -242,37 +231,37 @@ const Register = () => {
 
           {/* Profile Image */}
           <div className="space-y-2">
-            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">
+            <label className="text-[10px] font-black opacity-50 uppercase tracking-widest ml-1">
               Profile Image
             </label>
-            <div className="relative">
+            <div className="relative group">
               <Camera
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                className="absolute left-4 top-1/2 -translate-y-1/2 opacity-40 group-focus-within:text-primary group-focus-within:opacity-100"
                 size={18}
               />
               <input
                 type="file"
                 {...register('profilePhoto', { required: true })}
-                className="w-full pl-12 pr-4 py-[11px] rounded-2xl bg-gray-50 border border-transparent text-sm file:hidden cursor-pointer"
+                className="w-full pl-12 pr-4 py-[11px] rounded-2xl bg-base-200 border border-transparent text-sm file:hidden cursor-pointer"
               />
             </div>
           </div>
 
           {/* District */}
           <div className="space-y-2">
-            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">
+            <label className="text-[10px] font-black opacity-50 uppercase tracking-widest ml-1">
               District
             </label>
-            <div className="relative">
+            <div className="relative group">
               <MapPin
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                className="absolute left-4 top-1/2 -translate-y-1/2 opacity-40 group-focus-within:text-primary group-focus-within:opacity-100"
                 size={18}
               />
               <select
                 {...register('district', { required: true })}
                 value={selectedDistrict}
                 onChange={e => setSelectedDistrict(e.target.value)}
-                className="w-full pl-12 pr-4 py-4 rounded-2xl bg-gray-50 border border-transparent focus:bg-white focus:border-red-500 focus:outline-none transition-all font-medium appearance-none cursor-pointer"
+                className="w-full pl-12 pr-4 py-4 rounded-2xl bg-base-200 border border-transparent focus:bg-base-100 focus:border-primary focus:outline-none transition-all font-medium appearance-none cursor-pointer"
               >
                 <option value="">Select District</option>
                 {districts.map(d => (
@@ -286,17 +275,17 @@ const Register = () => {
 
           {/* Upazila */}
           <div className="space-y-2">
-            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">
+            <label className="text-[10px] font-black opacity-50 uppercase tracking-widest ml-1">
               Upazila
             </label>
-            <div className="relative">
+            <div className="relative group">
               <Globe
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                className="absolute left-4 top-1/2 -translate-y-1/2 opacity-40 group-focus-within:text-primary group-focus-within:opacity-100"
                 size={18}
               />
               <select
                 {...register('upazila', { required: true })}
-                className="w-full pl-12 pr-4 py-4 rounded-2xl bg-gray-50 border border-transparent focus:bg-white focus:border-red-500 focus:outline-none transition-all font-medium appearance-none cursor-pointer"
+                className="w-full pl-12 pr-4 py-4 rounded-2xl bg-base-200 border border-transparent focus:bg-base-100 focus:border-primary focus:outline-none transition-all font-medium appearance-none cursor-pointer disabled:opacity-30"
                 disabled={!selectedDistrict}
               >
                 <option value="">Select Upazila</option>
@@ -309,68 +298,57 @@ const Register = () => {
             </div>
           </div>
 
-          {/* Password */}
-          <div className="space-y-2">
-            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">
-              Password
-            </label>
-            <div className="relative">
-              <Lock
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-                size={18}
-              />
-              <input
-                type={showPassword ? 'text' : 'password'}
-                {...register('password', { required: true, minLength: 6 })}
-                className="w-full pl-12 pr-12 py-4 rounded-2xl bg-gray-50 border border-transparent focus:bg-white focus:border-red-500 focus:outline-none transition-all font-medium"
-                placeholder="••••••••"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500 transition-colors"
-              >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
+          {/* Password Fields */}
+          {[
+            {
+              label: 'Password',
+              name: 'password',
+              show: showPassword,
+              setShow: setShowPassword,
+            },
+            {
+              label: 'Confirm Password',
+              name: 'confirm_password',
+              show: showConfirmPassword,
+              setShow: setShowConfirmPassword,
+            },
+          ].map(field => (
+            <div key={field.name} className="space-y-2">
+              <label className="text-[10px] font-black opacity-50 uppercase tracking-widest ml-1">
+                {field.label}
+              </label>
+              <div className="relative group">
+                <Lock
+                  className="absolute left-4 top-1/2 -translate-y-1/2 opacity-40 group-focus-within:text-primary group-focus-within:opacity-100"
+                  size={18}
+                />
+                <input
+                  type={field.show ? 'text' : 'password'}
+                  {...register(field.name, { required: true, minLength: 6 })}
+                  className="w-full pl-12 pr-12 py-4 rounded-2xl bg-base-200 border border-transparent focus:bg-base-100 focus:border-primary focus:outline-none transition-all font-medium text-base-content"
+                  placeholder="••••••••"
+                />
+                <button
+                  type="button"
+                  onClick={() => field.setShow(!field.show)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 opacity-40 hover:text-primary hover:opacity-100 transition-all"
+                >
+                  {field.show ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
             </div>
-          </div>
-
-          {/* Confirm Password */}
-          <div className="space-y-2">
-            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">
-              Confirm Password
-            </label>
-            <div className="relative">
-              <Lock
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-                size={18}
-              />
-              <input
-                type={showConfirmPassword ? 'text' : 'password'}
-                {...register('confirm_password', { required: true })}
-                className="w-full pl-12 pr-12 py-4 rounded-2xl bg-gray-50 border border-transparent focus:bg-white focus:border-red-500 focus:outline-none transition-all font-medium"
-                placeholder="••••••••"
-              />
-              <button
-                type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500 transition-colors"
-              >
-                {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
-            </div>
-          </div>
+          ))}
 
           {/* Submit Button */}
           <div className="md:col-span-2 mt-8">
-            <button className="w-full bg-red-600 hover:bg-gray-900 text-white py-5 rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-red-100 transition-all active:scale-95">
+            <button className="w-full bg-primary hover:opacity-90 text-primary-content py-5 rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-primary/20 transition-all active:scale-95">
               Create Account
             </button>
-            <p className="text-center mt-8 text-sm font-medium text-gray-400">
+            <p className="text-center mt-8 text-sm font-medium opacity-60">
               Already a member?{' '}
               <Link
                 to="/login"
-                className="text-red-600 font-black hover:underline underline-offset-4 transition-all"
+                className="text-primary font-black hover:underline underline-offset-4 transition-all"
               >
                 Login Here
               </Link>

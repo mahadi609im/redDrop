@@ -1,5 +1,5 @@
 import { Link, NavLink, Outlet } from 'react-router';
-import { FaHome, FaUsers } from 'react-icons/fa';
+import { FaHome, FaUsers, FaSun, FaMoon } from 'react-icons/fa'; // Added Sun & Moon icons
 import { BiSolidDonateHeart } from 'react-icons/bi';
 import logo from '../../assets/blood-logo.png';
 import { PiMapPinPlusFill } from 'react-icons/pi';
@@ -17,6 +17,17 @@ const DashBoardLayout = () => {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
 
+  // 🔆 Theme State
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+
+  // Theme change function
+  const toggleTheme = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+    localStorage.setItem('theme', newTheme);
+    document.documentElement.setAttribute('data-theme', newTheme);
+  };
+
   // Close dropdown if clicked outside
   useEffect(() => {
     const handleClickOutside = e => {
@@ -30,9 +41,8 @@ const DashBoardLayout = () => {
 
   // 🔆 Load saved theme
   useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    document.documentElement.setAttribute('data-theme', savedTheme);
-  }, []);
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
 
   const handleLogout = () => {
     toast.success('Logged out successfully!');
@@ -70,7 +80,7 @@ const DashBoardLayout = () => {
         </NavLink>
       </li>
 
-      {/* Logo */}
+      {/* Mobile Logo */}
       <li>
         <NavLink
           to="/"
@@ -181,12 +191,12 @@ const DashBoardLayout = () => {
   );
 
   return (
-    <div className="drawer lg:drawer-open bg-[#fdf2f2]">
+    <div className="drawer lg:drawer-open bg-base-200">
       <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
 
       <div className="drawer-content">
         {/* Navbar */}
-        <nav className="navbar w-full bg-white shadow-md border-b border-red-200 sticky top-0 z-50 px-4 md:px-8">
+        <nav className="navbar w-full bg-base-100 shadow-md border-b border-base-300 sticky top-0 z-50 px-4 md:px-8">
           {/* LEFT SIDE */}
           <div className="navbar-start flex items-center gap-2">
             <label
@@ -216,7 +226,20 @@ const DashBoardLayout = () => {
           </div>
 
           {/* RIGHT SIDE */}
-          <div className="navbar-end flex items-center gap-2 relative">
+          <div className="navbar-end flex items-center gap-3 relative">
+            {/* 🌙 Theme Toggle Button (Added here) */}
+            <button
+              onClick={toggleTheme}
+              className="btn btn-ghost btn-circle text-xl transition-all duration-300"
+              title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+            >
+              {theme === 'light' ? (
+                <FaMoon className="text-slate-700" />
+              ) : (
+                <FaSun className="text-yellow-400" />
+              )}
+            </button>
+
             {/* ===== User Dropdown ===== */}
             {user ? (
               <div className="relative" ref={dropdownRef}>
@@ -244,7 +267,7 @@ const DashBoardLayout = () => {
 
                     {/* ❗ Blocked Icon */}
                     {statusData === 'blocked' && (
-                      <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-0.5 shadow">
+                      <div className="absolute -bottom-1 -right-1 bg-base-100 rounded-full p-0.5 shadow">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           className="w-4 h-4 text-red-500"
@@ -265,14 +288,14 @@ const DashBoardLayout = () => {
                 {open && (
                   <ul
                     className="absolute right-0 mt-2 w-48 p-2 rounded-xl border z-50 shadow-lg
-                  bg-white/90 dark:bg-gray-900/80 backdrop-blur-md
-                  border-gray-200 dark:border-gray-700 menu text-white"
+                  bg-base-100 backdrop-blur-md
+                  border-base-300 menu"
                   >
                     <li>
                       <Link
                         to="/dashboard/profile"
                         onClick={() => setOpen(false)}
-                        className="font-medium px-3 py-2 rounded-md hover:bg-red-600 hover:text-white dark:hover:bg-red-500 transition"
+                        className="font-medium px-3 py-2 rounded-md hover:bg-primary hover:text-primary-content transition"
                       >
                         Profile
                       </Link>
@@ -281,7 +304,7 @@ const DashBoardLayout = () => {
                       <Link
                         to="/dashboard"
                         onClick={() => setOpen(false)}
-                        className="font-medium px-3 py-2 rounded-md hover:bg-red-600 hover:text-white dark:hover:bg-red-500 transition"
+                        className="font-medium px-3 py-2 rounded-md hover:bg-primary hover:text-primary-content transition"
                       >
                         Dashboard
                       </Link>
@@ -289,7 +312,7 @@ const DashBoardLayout = () => {
                     <li>
                       <button
                         onClick={handleLogout}
-                        className="w-full text-left font-medium px-3 py-2 rounded-md hover:bg-red-600 hover:text-white dark:hover:bg-red-500 transition"
+                        className="w-full text-left font-medium px-3 py-2 rounded-md hover:bg-primary hover:text-primary-content transition"
                       >
                         Logout
                       </button>
@@ -310,7 +333,7 @@ const DashBoardLayout = () => {
       <div className="drawer-side is-drawer-close:overflow-visible">
         <label htmlFor="my-drawer-4" className="drawer-overlay"></label>
 
-        <div className="flex min-h-full flex-col items-start bg-white border-r border-red-200 is-drawer-close:w-14 is-drawer-open:w-64">
+        <div className="flex min-h-full flex-col items-start bg-base-100 border-r border-base-300 is-drawer-close:w-14 is-drawer-open:w-64">
           <ul className="menu w-full grow space-y-3 p-3">{links}</ul>
         </div>
       </div>
@@ -324,7 +347,7 @@ const DashBoardLayout = () => {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme="light"
+        theme={theme} // Syncing toast theme with system theme
         transition={Bounce}
       />
     </div>

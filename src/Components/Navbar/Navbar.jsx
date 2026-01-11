@@ -5,6 +5,7 @@ import { AuthContext } from '../../context/AuthContext';
 import { toast } from 'react-toastify';
 import useUserRole from '../../hooks/useUserRole';
 import { LuSun, LuMoon } from 'react-icons/lu';
+import { FaMoon, FaSun } from 'react-icons/fa';
 
 const Navbar = () => {
   const { user, logoutUser } = useContext(AuthContext);
@@ -130,7 +131,7 @@ const Navbar = () => {
                 className={({ isActive }) =>
                   `px-4 py-2 rounded-xl font-bold transition-all ${
                     isActive
-                      ? 'bg-primary text-white shadow-md shadow-red-500/20'
+                      ? 'bg-primary text-primary-content shadow-md shadow-primary/20'
                       : 'hover:bg-primary/10 text-base-content/80 hover:text-primary'
                   }`
                 }
@@ -144,18 +145,16 @@ const Navbar = () => {
 
       {/* Navbar End */}
       <div className="navbar-end flex items-center gap-2">
-        {/* Theme Toggle Button: Logic Corrected */}
+        {/* 🌙 Theme Toggle Button (Added here) */}
         <button
           onClick={toggleTheme}
-          className="btn btn-ghost btn-circle text-2xl transition-all duration-500 hover:bg-base-200"
-          title={
-            theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'
-          }
+          className="btn btn-ghost btn-circle text-xl transition-all duration-300"
+          title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
         >
           {theme === 'light' ? (
-            <LuMoon className="text-slate-700" />
+            <FaMoon className="text-slate-700" />
           ) : (
-            <LuSun className="text-yellow-400 animate-spin-slow" />
+            <FaSun className="text-yellow-400" />
           )}
         </button>
 
@@ -183,7 +182,7 @@ const Navbar = () => {
             {open && (
               <ul className="absolute right-0 mt-4 w-60 p-2 shadow-2xl rounded-2xl bg-base-100 border border-base-300 z-50 animate-fadeIn">
                 <li className="p-4 border-b border-base-300">
-                  <p className="text-[10px] uppercase tracking-widest font-bold text-gray-400">
+                  <p className="text-[10px] uppercase tracking-widest font-bold text-base-content/60">
                     Signed in as
                   </p>
                   <p className="text-sm font-black truncate text-base-content">
@@ -226,7 +225,7 @@ const Navbar = () => {
             </Link>
             <Link
               to="/register"
-              className="btn btn-primary btn-sm text-white px-5 rounded-lg"
+              className="btn btn-primary btn-sm text-primary-content px-5 rounded-lg"
             >
               Register
             </Link>

@@ -41,7 +41,7 @@ const HowItWorks = () => {
   ];
 
   return (
-    <section className="py-20 bg-gray-50/50">
+    <section className="py-20 bg-base-200/50">
       <div className="conCls">
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-16">
@@ -55,7 +55,7 @@ const HowItWorks = () => {
           <motion.h2
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
-            className="text-3xl md:text-4xl font-black text-gray-900"
+            className="text-3xl md:text-4xl font-black text-base-content"
           >
             How <span className="text-red-600">RedDrop</span> Works
           </motion.h2>
@@ -68,7 +68,7 @@ const HowItWorks = () => {
         {/* Steps Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 relative">
           {/* Connector Line (Desktop Only) */}
-          <div className="hidden lg:block absolute top-1/4 left-0 w-full h-0.5 bg-dashed bg-linear-to-r from-transparent via-gray-200 to-transparent z-0"></div>
+          <div className="hidden lg:block absolute top-1/4 left-0 w-full h-0.5 bg-dashed bg-linear-to-r from-transparent via-base-content/10 to-transparent z-0"></div>
 
           {steps.map((step, index) => (
             <motion.div
@@ -87,7 +87,7 @@ const HowItWorks = () => {
               </div>
 
               {/* Step Number Badge */}
-              <div className="absolute top-0 right-1/4 md:right-1/3 bg-white w-8 h-8 rounded-full shadow-md flex items-center justify-center text-sm font-black text-gray-800">
+              <div className="absolute top-0 right-1/4 md:right-1/3 bg-base-100 w-8 h-8 rounded-full shadow-md flex items-center justify-center text-sm font-black text-base-content">
                 {step.id}
               </div>
 

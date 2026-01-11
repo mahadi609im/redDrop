@@ -10,7 +10,7 @@ const HomeLayout = () => {
   if (isLoading) {
     return (
       <div>
-        <header>
+        <header className="mb-16 md:mb-[70px] lg:mb-20">
           <Navbar />
         </header>
         <div className="flex flex-col min-h-screen h-full ">
@@ -25,7 +25,7 @@ const HomeLayout = () => {
 
   return (
     <div className="flex flex-col min-h-screen h-full transition-all duration-500">
-      <header>
+      <header className="mb-16 md:mb-[70px] lg:mb-20">
         <Navbar />
       </header>
       <main className="flex-1 ">

@@ -9,7 +9,7 @@ import {
 
 const ContactSection = () => {
   return (
-    <section className="relative py-24 bg-white overflow-hidden">
+    <section className="relative py-24 bg-base-100 overflow-hidden">
       {/* Modern Background Elements */}
       <div className="absolute inset-0 -z-10">
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-red-50/50 rounded-full blur-[120px] -mr-48 -mt-48"></div>
@@ -41,7 +41,7 @@ const ContactSection = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-5xl md:text-6xl font-black text-gray-900 tracking-tighter"
+            className="text-5xl md:text-6xl font-black text-base-content tracking-tighter"
           >
             Let's Start a <span className="text-red-600">Conversation</span>
           </motion.h2>
@@ -90,7 +90,7 @@ const ContactSection = () => {
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
                 whileHover={{ y: -5 }}
-                className="flex items-center gap-6 p-8 rounded-[2rem] bg-white border border-gray-100 shadow-[0_10px_30px_rgba(0,0,0,0.03)] hover:shadow-xl transition-all group"
+                className="flex items-center gap-6 p-8 rounded-[2rem] bg-base-100 border border-base-300 shadow-[0_10px_30px_rgba(0,0,0,0.03)] hover:shadow-xl transition-all group"
               >
                 <div
                   className={`w-16 h-16 ${item.bg} ${item.color} rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform`}
@@ -101,7 +101,7 @@ const ContactSection = () => {
                   <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">
                     {item.title}
                   </h4>
-                  <p className="text-xl font-black text-gray-900">
+                  <p className="text-xl font-black text-base-content">
                     {item.details}
                   </p>
                 </div>
@@ -116,46 +116,46 @@ const ContactSection = () => {
             viewport={{ once: true }}
             className="lg:col-span-7"
           >
-            <div className="bg-white p-8 md:p-12 rounded-[3rem] border border-gray-100 shadow-[0_20px_60px_rgba(0,0,0,0.05)] relative overflow-hidden">
+            <div className="bg-base-100 p-8 md:p-12 rounded-[3rem] border border-base-300 shadow-[0_20px_60px_rgba(0,0,0,0.05)] relative overflow-hidden">
               <form className="space-y-7 relative z-10">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-7">
                   <div className="space-y-2">
-                    <label className="text-sm font-black text-gray-900 ml-1">
+                    <label className="text-sm font-black text-base-content ml-1">
                       Full Name
                     </label>
                     <input
                       type="text"
                       placeholder="John Doe"
-                      className="w-full px-6 py-4 rounded-2xl bg-gray-50 border border-transparent focus:bg-white focus:border-red-500 focus:ring-4 focus:ring-red-500/5 outline-none transition-all font-medium text-gray-900"
+                      className="w-full px-6 py-4 rounded-2xl bg-base-200 border border-transparent focus:bg-base-100 focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all font-medium text-base-content"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-black text-gray-900 ml-1">
+                    <label className="text-sm font-black text-base-content ml-1">
                       Email Address
                     </label>
                     <input
                       type="email"
                       placeholder="john@example.com"
-                      className="w-full px-6 py-4 rounded-2xl bg-gray-50 border border-transparent focus:bg-white focus:border-red-500 focus:ring-4 focus:ring-red-500/5 outline-none transition-all font-medium text-gray-900"
+                      className="w-full px-6 py-4 rounded-2xl bg-base-200 border border-transparent focus:bg-base-100 focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all font-medium text-base-content"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-black text-gray-900 ml-1">
+                  <label className="text-sm font-black text-base-content ml-1">
                     Your Message
                   </label>
                   <textarea
                     rows="4"
                     placeholder="How can we help you?"
-                    className="w-full px-6 py-4 rounded-2xl bg-gray-50 border border-transparent focus:bg-white focus:border-red-500 focus:ring-4 focus:ring-red-500/5 outline-none transition-all font-medium text-gray-900 resize-none"
+                    className="w-full px-6 py-4 rounded-2xl bg-base-200 border border-transparent focus:bg-base-100 focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all font-medium text-base-content resize-none"
                   ></textarea>
                 </div>
 
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="w-full py-5 bg-gray-900 text-white rounded-2xl font-black text-lg flex items-center justify-center gap-3 shadow-xl hover:bg-black transition-all group"
+                  className="w-full py-5 bg-primary/80 text-white rounded-2xl font-black text-lg flex items-center justify-center gap-3 shadow-xl hover:bg-primary transition-all group"
                 >
                   Send Message
                   <FaPaperPlane className="text-sm group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
@@ -163,7 +163,7 @@ const ContactSection = () => {
               </form>
 
               {/* Subtle Decorative Shape in Form */}
-              <div className="absolute top-0 right-0 w-32 h-32 bg-red-50 rounded-bl-[100px] -z-0 opacity-50"></div>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-red-500/10 rounded-bl-[100px] -z-0 opacity-50"></div>
             </div>
           </motion.div>
         </div>

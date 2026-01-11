@@ -1,9 +1,18 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
 import { motion } from 'framer-motion';
+import { FaArrowDown } from 'react-icons/fa';
 
 const BannerSection = () => {
   const navigate = useNavigate();
+
+  // Scroll function to next section
+  const scrollToNext = () => {
+    window.scrollTo({
+      top: window.innerHeight * 0.8,
+      behavior: 'smooth',
+    });
+  };
 
   // Animations variants
   const fadeInRight = {
@@ -108,6 +117,21 @@ const BannerSection = () => {
               />
             </motion.div>
           </motion.div>
+        </div>
+
+        {/* Scroll Down Indicator (ইঙ্গিত) */}
+        <div className="absolute bottom-8 right-0 md:left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2">
+          <span className="text-[10px] font-black uppercase tracking-[0.3em] text-base-content/30 italic">
+            Scroll
+          </span>
+          <motion.button
+            onClick={scrollToNext}
+            animate={{ y: [0, 10, 0] }}
+            transition={{ duration: 2, repeat: Infinity }}
+            className="w-10 h-10 rounded-full border border-base-300 flex items-center justify-center text-primary bg-base-100/50 backdrop-blur-md hover:bg-primary hover:text-white transition-colors cursor-pointer"
+          >
+            <FaArrowDown />
+          </motion.button>
         </div>
 
         {/* Decorative Wave Bottom */}

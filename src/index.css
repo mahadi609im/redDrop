@@ -25,15 +25,23 @@
   --color-primary-content: #ffffff;
 }
 
-/* Dark Theme - Deep Velvet Charcoal */
+/* Night Theme - Deep Ruby Velvet */
 @plugin "daisyui/theme" {
   name: 'dark';
-  --color-base-100: #0a0505; /* Deepest Black/Red */
-  --color-base-200: #120a0a; /* Section background */
-  --color-base-300: #1a0f0f; /* For borders/dividers */
-  --color-base-content: #f5f5f5;
-  --color-primary: #ff5252; /* Glowing Blood Red */
+  --color-base-100: #0d0a0b;
+  --color-base-200: #141011;
+  --color-base-300: #1f1a1b;
+
+  --color-base-content: #e2e8f0;
+
+  --color-primary: #dc2626;
   --color-primary-content: #ffffff;
+
+  --color-secondary: #9f1239;
+
+  /* Accents */
+  --color-accent: #f43f5e;
+  --color-neutral: #1c1917;
 }
 
 .conCls {

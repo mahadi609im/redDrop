@@ -3,11 +3,23 @@ import { useNavigate, useParams } from 'react-router';
 import { AuthContext } from '../../context/AuthContext';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 import Swal from 'sweetalert2';
+import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import Loading from '../../Components/Loading/Loading';
-import { FaArrowLeft } from 'react-icons/fa';
-// import useAxiosSecure from '../../hooks/useAxiosSecure';
-// import { useParams } from 'react-router';
+import {
+  ArrowLeft,
+  MapPin,
+  Hospital,
+  Calendar,
+  Clock,
+  User,
+  Droplets,
+  MessageCircle,
+  Mail,
+  ShieldCheck,
+  CheckCircle2,
+} from 'lucide-react';
+import { AnimatePresence } from 'framer-motion';
 
 const DonationRequestDetails = () => {
   const { id } = useParams();
@@ -37,179 +49,272 @@ const DonationRequestDetails = () => {
       donor: donorInfo,
     });
     if (res.data.modifiedCount) {
-      await refetch(); // ✅ UI update হবে
+      await refetch();
       setShowModal(false);
-      Swal.fire('Updated!', `Status changed to inprogress`, 'success');
+      Swal.fire({
+        title: 'Thank You!',
+        text: 'You have successfully opted to donate.',
+        icon: 'success',
+        confirmButtonColor: '#d33',
+      });
     }
   };
 
-  if (isLoading) return <Loading></Loading>;
-  if (error) return <p>Something went wrong</p>;
+  if (isLoading) return <Loading />;
+  if (error)
+    return (
+      <div className="text-center py-20 text-error font-bold">
+        Something went wrong. Please try again.
+      </div>
+    );
 
-  const statusColor = {
-    pending:
-      'px-2 py-1 rounded-full text-sm font-semibold bg-yellow-100 text-yellow-800 capitalize',
-    inprogress:
-      'px-2 py-1 rounded-full text-sm font-semibold bg-blue-100 text-blue-800 capitalize',
-    done: 'px-2 py-1 rounded-full text-sm font-semibold bg-green-100 text-green-800 capitalize',
-    canceled:
-      'px-2 py-1 rounded-full text-sm font-semibold bg-red-100 text-red-800 capitalize',
+  const statusColors = {
+    pending: 'badge-warning',
+    inprogress: 'badge-info',
+    done: 'badge-success',
+    canceled: 'badge-error',
   };
 
   return (
-    <section className="min-h-screen py-20 px-6 md:px-16 relative bg-linear-to-b from-red-50 to-white dark:from-[#1a0c0c] dark:to-[#120909] overflow-hidden">
-      {/* Glowing Circles */}
-      <div className="absolute top-16 left-16 w-56 h-56 bg-red-500/20 rounded-full blur-3xl animate-pulse"></div>
-      <div className="absolute bottom-16 right-16 w-72 h-72 bg-red-700/10 rounded-full blur-3xl animate-pulse"></div>
-      <div className="absolute top-1/3 right-0 w-40 h-40 bg-red-600/20 rounded-full blur-2xl animate-pulse"></div>
+    <section className="min-h-screen bg-base-100 py-12 px-4 md:px-12 lg:px-24">
+      <div className="max-w-5xl mx-auto">
+        {/* Header Navigation */}
+        <button
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-2 text-gray-500 hover:text-red-600 transition-colors mb-8 font-medium"
+        >
+          <ArrowLeft size={20} /> Back to Requests
+        </button>
 
-      {/* Main Card */}
-      <div className="relative z-10  mx-auto grid grid-cols-1 md:grid-cols-3 gap-10 items-center">
-        {/* Details */}
-        <div className="bg-white/70 dark:bg-[#1a1a1a]/70 backdrop-blur-xl rounded-3xl p-10 shadow-[0_12px_30px_rgba(255,0,0,0.2)] border border-red-500/20 hover:shadow-[0_15px_40px_rgba(255,0,0,0.3)] transition-all duration-500 col-span-2">
-          <button
-            onClick={() => navigate(-1)}
-            className=" text-red-200/50 shadow cursor-pointer hover:scale-125 hover:text-red-200 transition"
-          >
-            <FaArrowLeft size={20} />
-          </button>
-          <h2 className="text-3xl font-extrabold text-red-700 dark:text-red-400 mb-6">
-            Donation Request Details
-          </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-6 items-stretch">
-            {/* Left Column */}
-            <div className="space-y-4 text-gray-700 dark:text-gray-300 bg-white/70 dark:bg-[#1a1a1a]/70 p-6 rounded-2xl">
-              <p>
-                <span className="font-semibold text-red-100">Recipient:</span>{' '}
-                {requestData.recipientName}
-              </p>
-              <p>
-                <span className="font-semibold text-red-100">District:</span>{' '}
-                {requestData.district}
-              </p>
-              <p>
-                <span className="font-semibold text-red-100">Upazila:</span>{' '}
-                {requestData.upazila}
-              </p>
-              <p>
-                <span className="font-semibold text-red-100">Hospital:</span>{' '}
-                {requestData.hospitalName}
-              </p>
-              <p>
-                <span className="font-semibold text-red-100">Address:</span>{' '}
-                {requestData.fullAddress}
-              </p>
-            </div>
-
-            {/* Vertical Line */}
-            <div className="hidden md:flex justify-center">
-              <div className="w-px bg-red-500/50 mx-4 h-full"></div>{' '}
-              {/* h-full added */}
-            </div>
-
-            {/* Right Column */}
-            <div className="space-y-4 text-gray-700 dark:text-gray-300 bg-white/70 dark:bg-[#1a1a1a]/70 p-6 rounded-2xl">
-              <p>
-                <span className="font-semibold text-red-100">Blood Group:</span>{' '}
-                <span className="inline-block px-4 py-1 rounded-full font-bold bg-red-600 text-white shadow-[0_4px_15px_rgba(255,0,0,0.3)]">
-                  {requestData.bloodGroup}
-                </span>
-              </p>
-              <p>
-                <span className="font-semibold text-red-100">
-                  Donation Date:
-                </span>{' '}
-                {requestData.donationDate}
-              </p>
-              <p>
-                <span className="font-semibold text-red-100">
-                  Donation Time:
-                </span>{' '}
-                {requestData.donationTime}
-              </p>
-              <p>
-                <span className="font-semibold text-red-100">Message:</span>{' '}
-                {requestData.requestMessage}
-              </p>
-              <p>
-                <span className="font-semibold text-red-100">Status:</span>{' '}
-                <span className={statusColor[requestData.status]}>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Main Info Card */}
+          <div className="lg:col-span-2 space-y-6">
+            <div className="bg-white dark:bg-base-200 shadow-sm border border-base-300 rounded-3xl p-8">
+              <div className="flex justify-between items-start mb-6">
+                <div>
+                  <h1 className="text-3xl font-black text-base-content mb-2">
+                    Request Details
+                  </h1>
+                  <p className="text-gray-500 text-sm">
+                    Please review the information carefully before donating.
+                  </p>
+                </div>
+                <div
+                  className={`badge ${
+                    statusColors[requestData.status]
+                  } badge-outline p-4 font-bold uppercase tracking-wider`}
+                >
                   {requestData.status}
-                </span>
-              </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-10">
+                <DetailBox
+                  icon={<User size={18} />}
+                  label="Recipient"
+                  value={requestData.recipientName}
+                />
+                <DetailBox
+                  icon={<MapPin size={18} />}
+                  label="Location"
+                  value={`${requestData.upazila}, ${requestData.district}`}
+                />
+                <DetailBox
+                  icon={<Hospital size={18} />}
+                  label="Hospital"
+                  value={requestData.hospitalName}
+                />
+                <DetailBox
+                  icon={<Calendar size={18} />}
+                  label="Donation Date"
+                  value={requestData.donationDate}
+                />
+                <DetailBox
+                  icon={<Clock size={18} />}
+                  label="Time"
+                  value={requestData.donationTime}
+                />
+                <DetailBox
+                  icon={<MapPin size={18} />}
+                  label="Full Address"
+                  value={requestData.fullAddress}
+                />
+              </div>
+
+              <div className="mt-8 p-6 bg-base-100 rounded-2xl border border-dashed border-base-300">
+                <p className="flex items-center gap-2 text-xs font-black uppercase text-gray-400 mb-2">
+                  <MessageCircle size={14} /> Note from Requester
+                </p>
+                <p className="text-base-content italic">
+                  "
+                  {requestData.requestMessage ||
+                    'No additional message provided.'}
+                  "
+                </p>
+              </div>
             </div>
           </div>
 
-          <button
-            onClick={() => setShowModal(true)}
-            disabled={requestData.status !== 'pending'}
-            className="mt-8 w-full px-6 py-3 bg-red-600 text-white rounded-2xl font-bold shadow-[0_6px_20px_rgba(255,0,0,0.4)] hover:shadow-[0_8px_30px_rgba(255,0,0,0.5)] hover:scale-105 transition-all disabled:bg-red-300 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:shadow-[0_0px_0px_rgba(255,0,0,0.5)]"
-          >
-            Donate
-          </button>
-        </div>
+          {/* Action Sidebar */}
+          <div className="space-y-6">
+            <div className="bg-red-600 text-white rounded-3xl p-8 shadow-xl shadow-red-200 dark:shadow-none">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="p-3 bg-white/20 rounded-2xl">
+                  <Droplets size={32} />
+                </div>
+                <div>
+                  <p className="text-sm font-medium opacity-80 uppercase tracking-widest">
+                    Group Needed
+                  </p>
+                  <h2 className="text-4xl font-black">
+                    {requestData.bloodGroup}
+                  </h2>
+                </div>
+              </div>
+              <p className="text-sm leading-relaxed mb-8 opacity-90 font-medium">
+                Your donation can save a life. By clicking 'Donate Now', you
+                agree to be present at the hospital on time.
+              </p>
+              <button
+                onClick={() => setShowModal(true)}
+                disabled={requestData.status !== 'pending'}
+                className="w-full py-4 bg-white text-red-600 rounded-2xl font-black text-lg hover:bg-gray-100 transition-all active:scale-95 disabled:bg-red-400 disabled:text-white disabled:cursor-not-allowed shadow-lg"
+              >
+                {requestData.status === 'pending'
+                  ? 'Donate Now'
+                  : 'Not Available'}
+              </button>
+            </div>
 
-        {/* Image */}
-        <div className="flex col-span-1 justify-center md:justify-start items-center">
-          <div className="rounded-3xl overflow-hidden shadow-[0_12px_35px_rgba(255,0,0,0.3)] hover:scale-105 transition-transform duration-500 w-full max-w-md h-full py-20">
-            <img
-              src="https://i.ibb.co/qMLcFdxg/pngwing-com-2.png"
-              alt="Blood Donation"
-              className="w-full h-auto object-cover"
-            />
+            <div className="bg-base-200 border border-base-300 rounded-3xl p-6 text-center">
+              <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">
+                Emergency Contact
+              </p>
+              <p className="text-sm font-bold">
+                Contact info will be visible after confirmation
+              </p>
+            </div>
           </div>
         </div>
       </div>
+      {/* Modern Tactical Modal - Enhanced Width & Auto Height */}
+      <AnimatePresence>
+        {showModal && (
+          <div className="fixed inset-0 z-100 flex items-center justify-center p-6">
+            {/* Dynamic Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-slate-950/40 backdrop-blur-[10px]"
+              onClick={() => setShowModal(false)}
+            ></motion.div>
 
-      {/* Modal */}
-      {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
-          <div className="bg-white/90 dark:bg-[#1a1a1a]/80 backdrop-blur-xl p-8 rounded-3xl max-w-md w-full shadow-[0_12px_35px_rgba(255,0,0,0.25)]">
-            <h3 className="text-2xl font-bold text-red-700 mb-4">
-              Confirm Donation
-            </h3>
-            <div className="space-y-4">
-              <div>
-                <label className="block font-semibold text-red-100">
-                  Donor Name
-                </label>
-                <input
-                  type="text"
-                  value="Maha Hasan"
-                  readOnly
-                  className="input input-bordered w-full bg-base-100"
-                />
+            {/* Modal Card */}
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              className="relative bg-base-100 border border-base-300 shadow-2xl rounded-[3rem] max-w-2xl w-full overflow-hidden h-auto p-8 md:p-12"
+            >
+              {/* Top Branding Line */}
+              <div className="absolute top-0 left-0 w-full h-2 bg-linear-to-r from-primary via-red-500 to-primary/80"></div>
+
+              <div className="flex flex-col md:flex-row gap-12 items-center">
+                {/* Left: Branding & Status */}
+                <div className="w-full md:w-2/5 text-center md:text-left space-y-6">
+                  <div className="w-24 h-24 bg-primary/10 text-primary rounded-[2.5rem] flex items-center justify-center mx-auto md:mx-0 shadow-inner group transition-all">
+                    <Droplets
+                      size={48}
+                      className="group-hover:scale-110 transition-transform"
+                    />
+                  </div>
+                  <div>
+                    <h3 className="text-4xl font-black tracking-tighter text-base-content leading-[0.9]">
+                      Confirm <br />
+                      <span className="text-primary italic">Donation.</span>
+                    </h3>
+                    <p className="mt-4 text-sm font-bold text-base-content/40 uppercase tracking-widest">
+                      Life-Saving Protocol
+                    </p>
+                  </div>
+                </div>
+
+                {/* Right: Vertical Fields & Actions */}
+                <div className="w-full md:w-3/5 space-y-8">
+                  <div className="space-y-4">
+                    {/* Field 1: Name */}
+                    <div className="relative group">
+                      <p className="text-[10px] font-black uppercase tracking-widest text-primary mb-2 ml-1">
+                        Donor Full Name
+                      </p>
+                      <div className="flex items-center gap-4 p-5 bg-base-200/50 rounded-3xl border border-transparent group-focus-within:border-primary/30 transition-all shadow-inner">
+                        <User size={20} className="text-base-content/20" />
+                        <input
+                          readOnly
+                          value={user?.displayName}
+                          className="bg-transparent border-none outline-none cursor-not-allowed font-black text-base-content w-full"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Field 2: Email */}
+                    <div className="relative group">
+                      <p className="text-[10px] font-black uppercase tracking-widest text-primary mb-2 ml-1">
+                        Verified Email Address
+                      </p>
+                      <div className="flex items-center gap-4 p-5 bg-base-200/50 rounded-3xl border border-transparent group-focus-within:border-primary/30 transition-all shadow-inner">
+                        <Mail size={20} className="text-base-content/20" />
+                        <input
+                          readOnly
+                          value={user?.email}
+                          className="bg-transparent border-none outline-none font-black text-base-content w-full text-sm cursor-not-allowed"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* CTA Buttons */}
+                  <div className="flex flex-col gap-3 pt-4">
+                    <button
+                      onClick={handleConfirmDonation}
+                      className="btn btn-primary h-16 rounded-3xl font-black text-lg shadow-xl shadow-primary/20 border-none group"
+                    >
+                      <span>YES, I'LL BE THERE</span>
+                      <CheckCircle2
+                        size={20}
+                        className="opacity-50 group-hover:opacity-100 transition-opacity"
+                      />
+                    </button>
+
+                    <button
+                      onClick={() => setShowModal(false)}
+                      className="btn btn-ghost h-14 font-black text-base-content/30 hover:text-error transition-all"
+                    >
+                      DISMISS
+                    </button>
+                  </div>
+                </div>
               </div>
-              <div>
-                <label className="block font-semibold text-red-100">
-                  Donor Email
-                </label>
-                <input
-                  type="email"
-                  value="maha@example.com"
-                  readOnly
-                  className="input input-bordered w-full bg-base-100"
-                />
-              </div>
-              <button
-                onClick={handleConfirmDonation}
-                className="w-full mt-4 px-6 py-3 bg-red-600 text-white rounded-2xl font-bold hover:bg-red-700 shadow-lg transition-all"
-              >
-                Confirm Donation
-              </button>
-              <button
-                onClick={() => setShowModal(false)}
-                className="w-full mt-2 px-6 py-3 bg-gray-300 text-gray-800 rounded-2xl font-semibold hover:bg-gray-400 transition"
-              >
-                Cancel
-              </button>
-            </div>
+            </motion.div>
           </div>
-        </div>
-      )}
+        )}
+      </AnimatePresence>
     </section>
   );
 };
+
+// Reusable Detail Component
+const DetailBox = ({ icon, label, value }) => (
+  <div className="flex items-start gap-4">
+    <div className="p-3 bg-base-200 rounded-xl text-red-600">{icon}</div>
+    <div>
+      <p className="text-[10px] font-black uppercase text-gray-400 tracking-widest mb-0.5">
+        {label}
+      </p>
+      <p className="font-bold text-base-content">{value}</p>
+    </div>
+  </div>
+);
 
 export default DonationRequestDetails;
